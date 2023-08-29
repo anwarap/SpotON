@@ -1,0 +1,348 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title><%= locals.title?title:'SpotON'%></title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
+
+    <!-- All CSS is here
+	============================================ -->
+
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/vendor/signericafat.css">
+    <link rel="stylesheet" href="assets/css/vendor/cerebrisans.css">
+    <link rel="stylesheet" href="assets/css/vendor/simple-line-icons.css">
+    <link rel="stylesheet" href="assets/css/vendor/elegant.css">
+    <link rel="stylesheet" href="assets/css/vendor/linear-icon.css">
+    <link rel="stylesheet" href="assets/css/plugins/nice-select.css">
+    <link rel="stylesheet" href="assets/css/plugins/easyzoom.css">
+    <link rel="stylesheet" href="assets/css/plugins/slick.css">
+    <link rel="stylesheet" href="assets/css/plugins/animate.css">
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/plugins/jquery-ui.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+
+
+</head>
+
+<body>
+
+  
+        <div class="login-register-area pt-115 pb-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                        <div class="login-register-wrapper">
+                            <div class="login-register-tab-list nav">
+                                <a class="active" data-toggle="tab" href="#signup">
+                                    <h4> Register </h4>
+                                </a>
+                               
+                            </div>
+                            <div class="tab-content">
+                                <div id="signup" class="tab-pane active">
+                                    <div class="login-form-container">
+                                        <div class="text-center text-danger">
+
+                                            <% if(typeof signUpMessage !=='undefined' ){ %>
+                                                <p class="" style="    color: red;
+                                                margin-bottom: 5px;">
+                                                    <%= signUpMessage %>
+                                                </p>
+                                                <%} %>
+                                        </div>
+                                        <div class="login-register-form">
+                                            <form action="/signup" method="post" id="submit-form">
+                                                <input type="text" name="fname" placeholder="First Name" id="fname-input">
+                                                <input type="text" name="lname" placeholder="Last Name" id="lname-input">
+                                                <input type="email" name="email" placeholder="Email" id="email-input">
+                                                <input type="text" name="mobile" placeholder="Mobile" id="mobno-input">
+                                                <input type="password" name="password" placeholder="Enter Password" id="password-input">
+                                                <input type="password" name="cpassword" placeholder="Confirm Password" id="confirmpassword-input">
+                                                <div id="message-error" class="text-danger"></div>
+                                                <div class="button-box">
+                                                    <button type="submit">SignUp</button>
+                                                </div>
+                                                <div class="text-end">
+                                                    Already A Member?
+                                                     <a href="/login">Login</a>
+                                                    
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+       
+    
+
+    <!-- All JS is here
+============================================ -->
+<!-- 
+    <script src="assets/js/vendor/modernizr-3.11.7.min.js"></script>
+    <script src="assets/js/vendor/jquery-v3.6.0.min.js"></script>
+    <script src="assets/js/vendor/jquery-migrate-v3.3.2.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/plugins/slick.js"></script>
+    <script src="assets/js/plugins/jquery.syotimer.min.js"></script>
+    <script src="assets/js/plugins/jquery.instagramfeed.min.js"></script>
+    <script src="assets/js/plugins/jquery.nice-select.min.js"></script>
+    <script src="assets/js/plugins/wow.js"></script>
+    <script src="assets/js/plugins/jquery-ui-touch-punch.js"></script>
+    <script src="assets/js/plugins/jquery-ui.js"></script>
+    <script src="assets/js/plugins/magnific-popup.js"></script>
+    <script src="assets/js/plugins/sticky-sidebar.js"></script>
+    <script src="assets/js/plugins/easyzoom.js"></script>
+    <script src="assets/js/plugins/scrollup.js"></script>
+    <script src="assets/js/plugins/ajax-mail.js"></script>
+
+
+    <script src="assets/js/main.js"></script> -->
+
+
+    <script>
+
+    
+        /** Form Validation Start **/
+
+        const form = document.getElementById('submit-form');
+        const fName = document.getElementById('fname-input');
+        const lName = document.getElementById('lname-input');
+        const emailId = document.getElementById('email-input');
+        const mobNo = document.getElementById('mobno-input');
+        const password = document.getElementById('password-input');
+        const confirmPassword = document.getElementById('confirmpassword-input');
+
+
+
+        form.addEventListener('submit', e => {
+
+            // console.log("prevented");
+            e.preventDefault();
+            validateInput();
+        });
+
+        const setError = (element, message) => {
+
+            const inputControl = element.parentElement;
+            // const errorDisplay = inputControl.querySelector('.error');
+            // errorDisplay.innerText=message;
+
+            element.placeholder = message;
+            fName.style.border = '1.5px solid red';
+            lName.style.border = '1.5px solid red';
+            emailId.style.border = '1.5px solid red';
+            mobNo.style.border = '1.5px solid red';
+            password.style.border = '1.5px solid red';
+            confirmPassword.style.border = '1.5px solid red';
+            inputControl.classList.add('error');
+            inputControl.classList.remove('success');
+
+        };
+
+        const setSuccess = element => {
+
+            const inputControl = element.parentElement;
+            // const errorDisplay= inputControl.querySelector('.error');
+            // errorDisplay.innerText='';
+            element.placeholder = '';
+            inputControl.classList.add('success');
+            inputControl.classList.remove('error');
+        };
+
+        const isValidFName = fName => {
+
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(fName));
+        };
+
+        const isValidLName = lName => {
+
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(lName));
+        };
+
+        const isValidEmail = emailId => {
+
+            const re = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+            return re.test(String(emailId).toLowerCase());
+        };
+
+        const isValidMobNo = mobNo => {
+
+            const re = /^[0-9]{10}$/;
+            return re.test(mobNo);
+        };
+
+        const isValidPassword = password => {
+            // Regular expression to validate password
+            // The password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, and one digit.
+            const re = /^[a-zA-Z\d]{8,}$/;  /** /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ **/
+            return re.test(password);
+        };
+
+        const isValidConfirmPassword = confirmPassword => {
+
+            return confirmPassword === isValidPassword;
+        }
+
+        const validateInput = () => {
+            console.log("Entered to validate input");
+            const firstNameValue = fName.value.trim();
+            const lastNameValue = lName.value.trim();
+            const emailIdValue = emailId.value.trim();
+            const mobNoValue = mobNo.value.trim();
+            const passwordValue = document.getElementById('password-input').value.trim();
+            const confirmPasswordValue = document.getElementById('confirmpassword-input').value.trim();
+
+
+            if (firstNameValue === '') {
+
+                setError(fName, 'First Name is required');
+
+            } else if (!isValidFName(firstNameValue)) {
+                //setError(username);
+                document.getElementById('message-error').innerHTML = 'Names should be alphabets';
+
+
+            } else {
+                console.log("fName Ok");
+                setSuccess(fName);
+            }
+
+            if (lastNameValue === '') {
+                console.log('Entered to lname')
+                setError(lName, 'Last Name is required');
+
+            } else if (!isValidLName(lastNameValue)) {
+                //setError(username);
+                document.getElementById('message-error').innerHTML = 'Names should be alphabets';
+
+
+            } else {
+                console.log("lName Ok");
+                setSuccess(lName);
+            }
+
+            if (emailIdValue === '') {
+
+                setError(emailId, 'Email is required');
+
+            } else if (!isValidEmail(emailIdValue)) {
+
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a valid email address';
+
+            } else {
+                console.log("email Ok");
+                setSuccess(emailId);
+            }
+
+            if (mobNoValue === '') {
+
+                setError(mobNo, 'Mobile No is required');
+
+            } else if (!isValidMobNo(mobNoValue)) {
+
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a valid mobile number';
+
+            } else {
+                console.log("Mobile oK")
+                setSuccess(mobNo);
+            }
+
+            if (passwordValue === '') {
+
+                setError(password, 'Password is required');
+
+            } else if (!isValidPassword(passwordValue)) {
+
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a strong password';
+                //setError(password,'Provide a strong password');
+
+            } else {
+                console.log("Password Ok")
+                setSuccess(password);
+            }
+
+            if (confirmPasswordValue === '') {
+
+                setError(confirmPassword, 'Confirm Password is required');
+
+            } else if (confirmPasswordValue !== passwordValue) {
+
+                // document.getElementById('message-error').innerHTML = 'Passwords do not match';
+            } else {
+                console.log("confirm Password ok");
+                setSuccess(confirmPassword);
+            }
+
+            // if(messagesInboxValue===''){
+
+            //     setError(messagesInbox,'Message is mandatory');
+            // }else if(messagesInboxValue.split(' ').length<10){
+
+            //     document.getElementById('message-error').innerHTML='Messages should be atleast 10 words';
+            //     // setError(messagesInbox,'Messages should be atleast 10 words')
+            // }else{
+
+            //     setSuccess(messagesInbox);
+            // }
+
+            //FOR SUBMISSION:
+
+            const inputs = [fName, lName, emailId, mobNo, password, confirmPassword];
+
+            if (inputs.every(input => input.parentElement.classList.contains('success'))) {
+                form.submit();
+                console.log("Form submission successful")
+            }
+
+        };
+
+        /** Form Validation End **/
+
+        /** Password Seeker Start **/
+        const togglePassword = document.querySelector('#password-toggle');
+        const passwordInput = document.querySelector('#password-input');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            this.classList.toggle('bi-eye-fill');
+            this.classList.toggle('bi-eye-slash-fill');
+
+        });
+
+        /** Password Seeker End **/
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
