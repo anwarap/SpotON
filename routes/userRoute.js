@@ -1,22 +1,23 @@
+const express = require('express');
 const userController =require('../controller/userController');
 const productController = require('../controller/productController');
+const addressController = require('../controller/addressController');
 
-const express = require('express');
 const router =express();
-const path =require('path');
+// const path =require('path');
 
 
-const session = require('express-session');
-const {randomUUID} = require('crypto');
+// const session = require('express-session');
+// const {randomUUID} = require('crypto');
 
-router.use(session(
-    {secret:randomUUID(),
-    resave:false,
-    saveUninitialized:false}
-));
+// router.use(session(
+//     {secret:randomUUID(),
+//     resave:false,
+//     saveUninitialized:false}
+// ));
 
 
-router.set('view engine', 'ejs');
+// router.set('view engine', 'ejs');
 router.set('views','./views/user');
 
 router.get('/',userController.loadHome);
@@ -35,5 +36,14 @@ router.post('/otpverify',userController.postOTPVerify);
 
 router.get('/shop',productController.getShop);
 router.get('/shop/productOverview/:id',productController.getProductOverview);
+
+router.get('/profile',userController.getProfile);
+
+router.post('/profile/editProfile',userController.postEditProfile);
+
+router.get('/profile/changePassword',userController.getChangePassword);
+router.post('/profile/changePassword',userController.postChangePassword);
+
+// router.get('/shoppingCart',userController.getShoppingCart);
 
 module.exports = router;

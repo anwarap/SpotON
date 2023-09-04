@@ -26,14 +26,14 @@ const postLogin = async (req,res)=>{
             const passwordMatch = await bcrypt.compare(password,adminData.password);
             if(passwordMatch){
                 req.session.admin = adminData
-                res.render('dashboard');
+                res.redirect('/admin/dashboard');
             }else{
                 req.app.locals.message ='Incorrect password'
-                res.redirect('/admin/login');
+                res.redirect('/admin');
             }
         }else{
             req.app.locals.message ='Incorrect email'
-            res.redirect('/admin/login');
+            res.redirect('/admin');
         }
     } catch (error) {
         console.log(error.message);
@@ -81,7 +81,7 @@ const logoutAdmin = async(req,res)=>{
     try{
         req.session.destroy();       
         // console.log("aaaaaaa");
-        res.redirect('/admin/login');
+        res.redirect('/admin');
     } catch(error){
         console.log(error.message);
     }

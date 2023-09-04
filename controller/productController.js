@@ -85,7 +85,7 @@ const postEditProduct = async(req,res)=>{
             }
             await Products.findOneAndUpdate({_id:id},{$push:{images:{$each:newImages}}})
         }
-        console.log(category);
+        // console.log(category);
         const catData = await Categories.findOne({name:category})
         // console.log(`id: ${id}`);
         // console.log(catData);
@@ -142,7 +142,7 @@ const deleteImage  =async(req,res)=>{
 
 const getShop = async(req,res)=>{
     try {
-        const isLoggedIn = Boolean(req.session.userId);
+        const isLoggedIn = Boolean(req.session.user)
         let page =1;
         if(req.query.page){
             page = req.query.page;
@@ -250,7 +250,7 @@ const getShop = async(req,res)=>{
         if(req.session.userId){
             userData = await User.findById({_id:req.session.userId});
             wishlist = userData.wishlist;
-            cart = userData.cart.map(item => item.produstId.toString());
+            cart = userData.cart.map(item => item.productId.toString());
         }
         res.render('shop',{
             pdtsData,
@@ -281,14 +281,16 @@ const getProductOverview = async(req,res)=>{
     try {
         const id = req.params.id;
         const userId = req.session.userId;
+        const isLoggedIn = Boolean(req.session.user)
         const pdtData = await Products.findById({_id:id});
-// console.log(pdtData.images);
+//  console.log(pdtData.category.Categories.name);
         if(userId) {
             const userData = await User.findById({_id:userId});
         }
         res.render('productOverview',{
             pdtData,
-            page:'Product Overview'
+            page:'Product Overview',
+            isLoggedIn
         })
     } catch(error){
         console.log(error.message);

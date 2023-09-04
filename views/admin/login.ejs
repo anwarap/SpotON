@@ -46,13 +46,22 @@
                                 </a>
                              
                             </div>
+                            <div class="text-center text-danger">
+
+                                <% if(typeof message !=='undefined' ){ %>
+                                    <p class="" style="color:red">
+                                        <%= message %>
+                                    </p>
+                                    <%} %>
+                            </div>
                             <div class="tab-content">
                                 <div id="login" class="tab-pane active">
                                     <div class="login-form-container">
                                         <div class="login-register-form">
-                                            <form action="/admin/login" method="post">
-                                                <input type="text" name="email" placeholder="Username">
-                                                <input type="password" name="password" placeholder="Password">
+                                            <form action="/admin/login" method="post" id="submit-form">
+                                                <input type="text" name="email" placeholder="Username" id="email-input">
+                                                <input type="password" name="password" placeholder="Password" id="password-input">
+                                                <div class="text-danger text-center" id="message-error"></div>
                                                 <div class="button-box">
                                                     <!-- <div class="login-toggle-btn">
                                                         <input type="checkbox">
@@ -110,6 +119,127 @@
   
     <script src="assets/js/main.js"></script>
 
+    <script>
+        /** Form Validation Start */
+
+        const form = document.getElementById('submit-form');
+        const emailId = document.getElementById('email-input');
+        const password = document.getElementById('password-input');
+
+
+
+        form.addEventListener('submit', e => {
+
+            e.preventDefault();
+            console.log("prevented")
+            validateInput();
+        });
+
+        const setError = (element, message) => {
+
+            const inputControl = element.parentElement;
+
+            element.placeholder = message;
+            emailId.style.border = '1.5px solid red';
+            password.style.border = '1.5px solid red';
+
+            inputControl.classList.add('error');
+            inputControl.classList.remove('success');
+        };
+
+        const setSuccess = element => {
+
+            const inputControl = element.parentElement;
+            element.placeholder = '';
+
+            inputControl.classList.add('success');
+            inputControl.classList.remove('error');
+        };
+
+        const isValidEmail = emailId => {
+
+            const re = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+            return re.test(String(emailId).toLowerCase());
+        };
+
+        const isValidPassword = password => {
+
+            const re = /^[a-zA-Z\d]{8,}$/;
+            return re.test(password);
+        }
+
+        const validateInput = () => {
+
+            console.log("Entered Validate input");
+
+            const emailIdValue = emailId.value.trim();
+            const passwordValue = password.value.trim();
+
+            if (emailIdValue === '') {
+
+                setError(emailId, 'Email is required');
+
+            } else if (!isValidEmail(emailIdValue)) {
+
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a valid email address';
+
+            } else {
+                console.log("email Ok");
+                setSuccess(emailId);
+            }
+
+            if (passwordValue === '') {
+
+                setError(password, 'Password is required');
+
+            } else if (!isValidPassword(passwordValue)) {
+
+                //alert('Provide a valid Email address')
+                // document.getElementById('message-error').innerHTML = 'Provide a valid password';
+                //setError(password,'Provide a strong password');
+
+            } else {
+                console.log("Password Ok")
+                setSuccess(password);
+            }
+
+            const inputs = [emailId, password];
+
+            if (inputs.every(input => input.parentElement.classList.contains('success'))) {
+                form.submit();
+                console.log("Form submission successful")
+                //alert('Login Successful');
+            }
+
+
+        };
+
+        /** Form Validation End */
+
+        /** Password Seeker Start **/
+        const togglePassword = document.querySelector('#password-toggle');
+        const passwordInput = document.querySelector('#password-input');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            this.classList.toggle('bi-eye-fill');
+            this.classList.toggle('bi-eye-slash-fill');
+
+        });
+
+        /** Password Seeker End **/
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
+   
 </body>
 
 </html>

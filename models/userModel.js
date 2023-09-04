@@ -25,7 +25,13 @@ const userSchema=new mongoose.Schema({
     status:{
         type:Boolean,
         default:false
-    }
+    },
+    cart:[{
+        productId:{
+            type:mongoose.Schema.ObjectId,
+            ref:'Product'
+        }
+    }]
 })
 
 

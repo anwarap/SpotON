@@ -1,0 +1,273 @@
+
+<%- include('../partials/head.ejs') %>
+
+
+<%- include('../partials/userHeader.ejs') %>
+
+
+<div class="sidebar-cart-active">
+    <div class="sidebar-cart-all">
+        <a class="cart-close" href="#"><i class="icon_close"></i></a>
+        <div class="cart-content">
+            <h3>Shopping Cart</h3>
+            <ul>
+                <li class="single-product-cart">
+                    <div class="cart-img">
+                        <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
+                    </div>
+                    <div class="cart-title">
+                        <h4><a href="#">Simple Black T-Shirt</a></h4>
+                        <span> 1 × $49.00	</span>
+                    </div>
+                    <div class="cart-delete">
+                        <a href="#">×</a>
+                    </div>
+                </li>
+                <li class="single-product-cart">
+                    <div class="cart-img">
+                        <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
+                    </div>
+                    <div class="cart-title">
+                        <h4><a href="#">Norda Backpack</a></h4>
+                        <span> 1 × $49.00	</span>
+                    </div>
+                    <div class="cart-delete">
+                        <a href="#">×</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="cart-total">
+                <h4>Subtotal: <span>$170.00</span></h4>
+            </div>
+            <div class="cart-checkout-btn">
+                <a class="btn-hover cart-btn-style" href="cart.html">view cart</a>
+                <a class="no-mrg btn-hover cart-btn-style" href="checkout.html">checkout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="breadcrumb-area bg-gray" style="    margin-top: 190px">
+    <div class="container">
+        <div class="breadcrumb-content text-center" >
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li class="active">Change Password </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="center-div py-5 col-md-12 col-12 p-5">
+
+    <div class="container w-50 pt-5 pb-5 border border-dark">
+        <h3 class="fs-2 text-black text-center text-decoration-underline fw-bold">CHANGE PASSWORD</h3>
+        <div class="text-center text-danger">
+
+            <% if(typeof oldpass !=='undefined' ){ %>
+                <p class="">
+                    <%= oldpass %>
+                </p>
+                <%} %>
+        </div>
+        <form action="/profile/changePassword" method="post" id="submit-form">
+            <div class="row justify-content-center py-4 ps-4 pe-4">
+                <div class="col-md-12 col-12"> 
+
+                    <!-- Old Password Field -->
+                    <div class="mb-3 position-relative align-items-center">
+                        <label for="oldpassword-input" class="form-label">Old Password *</label>
+                        <input type="password" class="rounded-0 form-control" name="oldpassword"
+                            id="oldpassword-input">
+
+                        <i class="bi bi-eye-slash-fill position-absolute end-0 translate-middle-y end-0 pe-3 eye-icon"
+                            id="oldpassword-toggle"></i>
+                    </div>
+
+                    <!-- New Password Field -->
+                    <div class="mb-3 position-relative align-items-center">
+                        <label for="newpassword-input" class="form-label">New Password *</label>
+                        <input type="password" class="rounded-0 form-control" name="newpassword"
+                            id="newpassword-input">
+
+                        <i class="bi bi-eye-slash-fill position-absolute end-0 translate-middle-y end-0 pe-3 eye-icon"
+                            id="newpassword-toggle"></i>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="mb-3">
+                        <label for="confirm-password-input" class="form-label">Confirm Password *</label>
+                        <input type="password" class="rounded-0 form-control" name="confirmpassword"
+                            id="confirmpassword-input">
+                    </div>
+                </div>
+                <div class="text-danger text-center" id="message-error"></div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="rounded-0 btn btn-dark w-50">UPDATE PASSWORD</button>
+                <br>
+                <span class="login-text">Forgot your Password? </span><a
+                    href="/profile/id=<%= user._id %>/forgotpassword"
+                    class="login-text text-decoration-underline text-primary">Click here</a>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+    integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+    crossorigin="anonymous"></script>
+
+<script>
+
+    /** Form Validation Start **/
+
+    const form = document.getElementById('submit-form');
+    const oldPassword = document.getElementById('oldpassword-input');
+    const newPassword = document.getElementById('newpassword-input');
+    const confirmPassword = document.getElementById('confirmpassword-input');
+
+
+
+    form.addEventListener('submit', e => {
+
+
+        e.preventDefault();
+        console.log("prevented")
+        validateInput();
+    });
+
+    const setError = (element, message) => {
+
+        const inputControl = element.parentElement;
+        // const errorDisplay = inputControl.querySelector('.error');
+        // errorDisplay.innerText=message;
+
+        element.placeholder = message;
+
+        oldPassword.style.border = '1.5px solid red';
+        newPassword.style.border = '1.5px solid red';
+        confirmPassword.style.border = '1.5px solid red';
+        inputControl.classList.add('error');
+        inputControl.classList.remove('success');
+
+    };
+
+    const setSuccess = element => {
+
+        const inputControl = element.parentElement;
+        // const errorDisplay= inputControl.querySelector('.error');
+        // errorDisplay.innerText='';
+        element.placeholder = '';
+        inputControl.classList.add('success');
+        inputControl.classList.remove('error');
+    };
+
+
+    
+
+    const isValidNewPassword = (newPassword) => {
+        // Regular expression to validate password
+        // The password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, and one digit.
+        const re = /^[a-zA-Z\d]{8,}$/;  /** /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ **/
+        return re.test(newPassword);
+    };
+
+
+
+    const validateInput = () => {
+        console.log("Entered to validate input");
+
+        const oldPasswordValue = document.getElementById('oldpassword-input').value.trim();
+        const newPasswordValue = document.getElementById('newpassword-input').value.trim();
+        const confirmPasswordValue = document.getElementById('confirmpassword-input').value.trim();
+
+        if (oldPasswordValue === '') {
+
+            setError(oldPassword, 'Old password is required');
+
+        } else {
+            console.log("Password Ok")
+            setSuccess(oldPassword);
+        }
+
+        if (newPasswordValue === '') {
+
+            setError(newPassword, 'New password is required');
+
+        } else if (!isValidNewPassword(newPasswordValue)) {
+
+            //alert('Provide a valid Email address')
+            document.getElementById('message-error').innerHTML = 'Provide a good new password';
+            //setError(password,'Provide a strong password');
+
+        } else if (newPasswordValue === oldPasswordValue) {
+
+            document.getElementById('message-error').innerHTML = 'Old and new password should be different';
+        } else {
+            console.log("Password Ok")
+            setSuccess(newPassword);
+        }
+
+        if (confirmPasswordValue === '') {
+
+            setError(confirmPassword, 'Confirm Password is required');
+
+        } else if (confirmPasswordValue !== newPasswordValue) {
+
+            document.getElementById('message-error').innerHTML = 'Passwords do not match';
+        } else {
+            console.log("confirm Password ok");
+            setSuccess(confirmPassword);
+        }
+
+
+        //FOR SUBMISSION:
+
+        const inputs = [oldPassword, newPassword, confirmPassword];
+
+
+        if (inputs.every(input => input.parentElement.classList.contains('success'))) {
+            // alert('Password updated successfully');
+            form.submit();
+            console.log("Form submission successful")
+        }
+
+    };
+
+    /** Form Validation End **/
+
+    /** Password Seeker Start **/
+    const toggleOldPassword = document.querySelector('#oldpassword-toggle');
+    const oldPasswordInput = document.querySelector('#oldpassword-input');
+
+    toggleOldPassword.addEventListener('click', function () {
+        const type = oldPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        oldPasswordInput.setAttribute('type', type);
+
+        this.classList.toggle('bi-eye-fill');
+        this.classList.toggle('bi-eye-slash-fill');
+    });
+
+    const toggleNewPassword = document.querySelector('#newpassword-toggle');
+    const newPasswordInput = document.querySelector('#newpassword-input');
+
+    toggleNewPassword.addEventListener('click', function () {
+        const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        newPasswordInput.setAttribute('type', type);
+
+        this.classList.toggle('bi-eye-fill');
+        this.classList.toggle('bi-eye-slash-fill');
+    });
+/** Password Seeker End **/
+
+</script>

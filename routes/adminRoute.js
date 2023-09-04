@@ -6,46 +6,39 @@ const express = require('express');
 const upload = require('../config/multer')
 const router =express();
 
-
+const {isAdminLoggeedIn,isAdminLoggedOut}= require('../middleware/auth')
 const session = require('express-session');
-const {randomUUID}=require('crypto');
 
-router.use(express.json());
-router.use(express.urlencoded({extended: true}));
 
-router.set('view engine','ejs');
 router.set('views','./views/admin');
 
-router.use(session({
-    secret:randomUUID(),
-    resave:false,
-    saveUninitialized:true
-}))
 
 
-router.get('/login',adminController.loadLogin)
-router.post('/login',adminController.postLogin);
 
-router.post('/logout',adminController.logoutAdmin);
+router.get('/',isAdminLoggedOut,adminController.loadLogin)
+router.post('/login',isAdminLoggedOut,adminController.postLogin);
 
-router.get('/dashboard',adminController.loadDashboard);
+router.post('/logout',isAdminLoggeedIn ,adminController.logoutAdmin);
 
-router.get('/users',adminController.loadUsers);
-router.get('/users/status/:id',adminController.blockUser);
+router.get('/dashboard',isAdminLoggeedIn,adminController.loadDashboard);
 
-router.get('/categories',categoryController.loadCategories);
-router.post('/categories',categoryController.addCategories);
-router.post('/categories/edit',upload.single('categoryImage'),categoryController.editCategories);
-router.get('/categories/status/:id',categoryController.getCategoryStatus);
+router.get('/users',isAdminLoggeedIn,adminController.loadUsers);
+router.get('/users/status/:id',isAdminLoggeedIn ,adminController.blockUser);
 
-router.get('/products',productController.loadProducts);
-router.get('/products/addProducts',productController.addProducts);
-router.post('/products/addProducts',upload.array('productImage',3),productController.addProductsDetails);   
-router.get('/products/editProduct/:id',productController.getEditProduct);
-router.post('/products/editProduct',upload.array('productImage',3),productController.postEditProduct);
-router.get('/products/deleteProduct/:id',productController.deleteProduct);
+router.get('/categories',isAdminLoggeedIn ,categoryController.loadCategories);
+router.post('/categories',isAdminLoggeedIn ,categoryController.addCategories);
+router.post('/categories/edit',isAdminLoggeedIn ,upload.single('categoryImage'),categoryController.editCategories);
+router.get('/categories/status/:id',isAdminLoggeedIn ,categoryController.getCategoryStatus);
 
-router.get('/products/imageDelete/:id',productController.deleteImage);
+router.get('/products',isAdminLoggeedIn ,productController.loadProducts);
+router.get('/products',isAdminLoggeedIn ,productController.loadProducts);
+router.get('/products/addProducts',isAdminLoggeedIn ,productController.addProducts);
+router.post('/products/addProducts',upload.array('productImage',3),isAdminLoggeedIn ,productController.addProductsDetails);   
+router.get('/products/editProduct/:id',isAdminLoggeedIn ,productController.getEditProduct);
+router.post('/products/editProduct',upload.array('productImage',3),isAdminLoggeedIn ,productController.postEditProduct);
+router.get('/products/deleteProduct/:id',isAdminLoggeedIn ,productController.deleteProduct);
+
+router.get('/products/imageDelete/:id',isAdminLoggeedIn ,productController.deleteImage);
 
 
 

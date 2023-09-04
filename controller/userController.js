@@ -1,6 +1,7 @@
 const User=require('../models/userModel');
 const Products = require('../models/productModels');
 const Categories = require('../models/categoryModels');
+const Addresses = require('../models/addressModels');
 const bcrypt=require('bcrypt');
 const dotenv = require('dotenv').config();
 // const { request } = require('../routes/userRoute');
@@ -204,17 +205,76 @@ const postOTPVerify = async(req,res)=>{
 }
 
 
-// const loadSoppingCart = async(req,res)=>{
-//     try {
-//         const userId = req.session.userId;
-//         const userData = await User.findById({_id:userId})
-//     } catch (error) {
-//         console.log(error.message);
-//     }
+const getProfile = async(req,res)=>{
+    try {
+        const user = req.session.user;
+        const userData = await User.findById({_id:user._id});
+        const userAddress = await Addresses.findOne({userId:user._id})
+
+        res.render('userProfile',{user:userData,userAddress,isLoggedIn:true,page:'Profile'})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
+
+const postEditProfile = async(req,res)=>{
+    try{
+
+        const {fname,lname,email,mobile}= req.body;
+        // console.log(req.body);
+         await User.findByIdAndUpdate({_id:req.session.user._id},{
+            $set:{fname:req.body.fname,lname:req.body.lname,email:req.body.email,mobile:req.body.mobile}
+        })
+        res.redirect('/profile');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const getChangePassword = async(req,res)=>{
+    try{
+        const user = req.session.user;
+        const userData = await User.findById({_id:user._id});
+        res.render('changePass',{user:userData,isLoggedIn:true})
+    } catch(error){
+        console.log(error.message);
+    }
+}
+
+const postChangePassword = async(req,res)=>{
+    try{
+        const user = req.session.user;
+        const {oldpassword,newpassword,confirmpassword} = req.body;
+        if(newpassword !== confirmpassword){
+            return res.redirect('/profile/changePassword');
+        }
+        const userData = await User.findById({_id: user._id});
+        console.log(oldpassword);
+        
+        const passwordMatch = await bcrypt.compare(oldpassword,userData.password);
+        if(passwordMatch){
+            const sPassword = await securePassword(newpassword);
+            await User.findByIdAndUpdate({_id: user._id},{
+                $set:{password: sPassword}
+            })
+            return res.redirect('/profile')
+        }else{
+            req.app.locals.oldpass = 'old password not match'
+            return res.redirect('/profile/changePassword')
+        }
+    } catch(error){
+        console.log(error.message);
+    }
+}
+
+// const getShoppingCart  =async(req,res)=>{
+//     const user = req.session.user;
+//     const userData = await User.findById({_id: user._id});
+    
 // }
-
-
-
 
 
 module.exports ={
@@ -224,5 +284,9 @@ module.exports ={
     loadLogout,
     postLogin,
     postSignup,
-    postOTPVerify
+    postOTPVerify,
+    getProfile,
+    postEditProfile,
+    getChangePassword,
+    postChangePassword,
 }

@@ -5,20 +5,20 @@
         <header class="header-area transparent-bar section-padding-1">
             <div class="container-fluid">
                 <div class="header-large-device">
-                    <div class="header-top header-top-ptb-1 border-bottom-1">
+                    <div class="header-top header-top-ptb-1 ">
                         <div class="row">
                             <div class="col-xl-4 col-lg-5">
                                 <div class="header-offer-wrap">
-                                    <p><i class="icon-paper-plane"></i> FREE SHIPPING world wide for all orders over <span>$199</span></p>
+                                    <!-- <p><i class="icon-paper-plane"></i> FREE SHIPPING world wide for all orders over <span>$199</span></p> -->
                                 </div>
                             </div>
                             <div class="col-xl-8 col-lg-7">
                                 <div class="header-top-right">
                                     <div class="same-style-wrap">
-                                        <div class="same-style same-style-border track-order">
+                                        <!-- <div class="same-style same-style-border track-order">
                                             <a href="order-tracking.html">Track Your Order</a>
-                                        </div>
-                                        <div class="same-style same-style-border language-wrap">
+                                        </div> -->
+                                        <!-- <div class="same-style same-style-border language-wrap">
                                             <a class="language-dropdown-active" href="#">English <i class="icon-arrow-down"></i></a>
                                             <div class="language-dropdown">
                                                 <ul>
@@ -28,17 +28,21 @@
                                                     <li><a href="#">Spanish</a></li>
                                                 </ul>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="same-style same-style-border currency-wrap">
-                                            <a class="currency-dropdown-active" href="#">US Dollar <i class="icon-arrow-down"></i></a>
-                                            <div class="currency-dropdown">
-                                                <ul>
-                                                    <li><a href="#">USD</a></li>
-                                                    <li><a href="#">EUR</a></li>
-                                                    <li><a href="#">Real</a></li>
-                                                    <li><a href="#">BDT</a></li>
-                                                </ul>
-                                            </div>
+                                            <!-- <a class=" " href="/signup" >Sign Up</a> -->
+                                            <% 
+                                            if( isLoggedIn ){
+                                                %>
+                                                <a href="/logout">Sign Out</a>
+                                                <%
+                                            }else{
+                                                %>
+                                                <a href="/signup">Sign up</a>
+                                                <%
+                                            }
+                                            %>
+                                     
                                         </div>
                                     </div>
                                     <div class="social-style-1 social-style-1-mrg">
@@ -55,16 +59,19 @@
                     <div class="header-bottom">
                         <div class="row align-items-center">
                             <div class="col-xl-2 col-lg-2">
-                                <div class="logo">
-                                    <a href="index.html"><img src="assets/images/logo/logo.png" alt="logo"></a>
-                                </div>
+                                <!-- <div class="logo">
+                                    <a href="index.html"><span style="color: red;
+                                        font-size: 34px;
+                                        font-weight: 500;">Game</span> <span style="font-size: 20px ;color: black;
+                                        font-weight: 400;">Gallery</span></a>
+                                </div> -->
                             </div>
                             <div class="col-xl-8 col-lg-7">
                                 <div class="main-menu main-menu-padding-1 main-menu-lh-1">
                                     <nav>
-                                        <ul>
-                                            <li><a href="index.html">HOME </a>
-                                                <ul class="sub-menu-style">
+                                        <ul style="text-align: center;">
+                                            <li><a href="/">HOME </a>
+                                                <!-- <ul class="sub-menu-style">
                                                     <li><a href="index.html">Home version 1 </a></li>
                                                     <li><a href="index-2.html">Home version 2</a></li>
                                                     <li><a href="index-3.html">Home version 3</a></li>
@@ -75,10 +82,10 @@
                                                     <li><a href="index-8.html">Home version 8</a></li>
                                                     <li><a href="index-9.html">Home version 9</a></li>
                                                     <li><a href="index-10.html">Home version 10</a></li>
-                                                </ul>
+                                                </ul> -->
                                             </li>
-                                            <li><a href="shop.html">SHOP </a>
-                                                <ul class="mega-menu-style mega-menu-mrg-1">
+                                            <li><a href="/shop">SHOP </a>
+                                                <!-- <ul class="mega-menu-style mega-menu-mrg-1">
                                                     <li>
                                                         <ul>
                                                             <li>
@@ -110,10 +117,10 @@
                                                             </li>
                                                         </ul>
                                                     </li>
-                                                </ul>
+                                                </ul> -->
                                             </li>
-                                            <li><a href="#">PAGES </a>
-                                                <ul class="sub-menu-style">
+                                            <!-- <li><a href="#">PAGES </a> -->
+                                                <!-- <ul class="sub-menu-style">
                                                     <li><a href="about-us.html">about us </a></li>
                                                     <li><a href="cart.html">cart page</a></li>
                                                     <li><a href="checkout.html">checkout </a></li>
@@ -123,15 +130,15 @@
                                                     <li><a href="contact.html">contact us </a></li>
                                                     <li><a href="order-tracking.html">order tracking</a></li>
                                                     <li><a href="login-register.html">login / register </a></li>
-                                                </ul>
+                                                </ul> -->
                                             </li>
-                                            <li><a href="blog.html">BLOG </a>
-                                                <ul class="sub-menu-style">
+                                            <!-- <li><a href="blog.html">BLOG </a> -->
+                                                <!-- <ul class="sub-menu-style">
                                                     <li><a href="blog.html">blog standard </a></li>
                                                     <li><a href="blog-no-sidebar.html">blog no sidebar </a></li>
                                                     <li><a href="blog-right-sidebar.html">blog right sidebar</a></li>
                                                     <li><a href="blog-details.html">blog details</a></li>
-                                                </ul>
+                                                </ul> -->
                                             </li>
                                             <li><a href="contact.html">CONTACT </a></li>
                                         </ul>
@@ -153,7 +160,7 @@
                                         </div>
                                     </div>
                                     <div class="same-style-2">
-                                        <a href="login-register.html"><i class="icon-user"></i></a>
+                                        <a href="/profile"><i class="icon-user"></i></a>
                                     </div>
                                     <div class="same-style-2">
                                         <a href="wishlist.html"><i class="icon-heart"></i><span class="pro-count red">03</span></a>
@@ -172,9 +179,10 @@
                     <div class="row align-items-center">
                         <div class="col-5">
                             <div class="mobile-logo">
-                                <a href="index.html">
-                                    <img alt="" src="assets/images/logo/logo.png">
-                                </a>
+                                <a href="/home"><span style="color: red;
+                                        font-size: 34px;
+                                        font-weight: 500;">SpotON</span> <span style="font-size: 20px ;color: black;
+                                        font-weight: 400;"></span></a>
                             </div>
                         </div>
                         <div class="col-7">
@@ -199,4 +207,7 @@
                 </div>
             </div>
         </header>
-    
+
+        
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
