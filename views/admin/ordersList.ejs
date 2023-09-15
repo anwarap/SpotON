@@ -1,0 +1,173 @@
+
+<%- include('../partials/adminAside.ejs') %>
+
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+   <%- include('../partials/adminNavbar.ejs') %>
+
+   <div class="p-5  container ">
+    <div class="card my-4">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <div
+                class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
+                <h6 class="text-white text-capitalize ps-3">Orders</h6>
+            </div>
+        </div>
+        <div class="card-body px-0 pb-5">
+            <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0 text-dark" id="sortTable">
+                    <thead>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">#</th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Date</th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Customer
+                        </th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Products
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Price</th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Payment
+                            Method</th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Status
+                        </th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Details
+                        </th>
+                    </thead>
+                    <tbody>
+                        <% if(orders.length>0){orders.forEach((order)=>{ %>
+                            <tr class="">
+                                <td class="text-xs font-weight-bold mb-0 text-center">
+                                    <%=((pageNum - 1)*limit)+orders.indexOf(order)+1 %>
+                                </td>
+                                <% 
+                                const dd = order.createdAt.getDate();
+                                const mm = order.createdAt.getMonth() + 1;
+                                const yyyy = order.createdAt.getFullYear();
+                                
+                                const formattedDate = `${dd}-${mm}-${yyyy}`; 
+                                %>
+
+                                <td class="align-middle text-center text-sm">
+                                    <p class="text-xs font-weight-bold mb-0"><%= formattedDate %></p>
+                                </td>
+                                    <td class="text-xs font-weight-bold mb-0 text-center">
+                                        <%=order.userId.fname+' '+order.userId.lname%>
+                                    </td>
+                                    <td class="">
+                                        <% order.products.forEach((prod)=>{ %>
+                                                <div class="product-item">
+                                                    <div class="row">
+                                                    <div class="product-image col-12 col-md-6 col-lg-6">
+                                                        <img src="/assets/images/productImages/<%=prod.productId.images[0]%>" style="width:100px;" alt="">
+                                                    </div>
+                                                    <div class="product-details col-12 col-md-6 col-lg-6">
+                                                        <span class="text-xs font-weight-bold mb-0 text-center">
+                                                            <%=prod.productId.name %><br>
+                                                                <small class="text-secondary">Brand:
+                                                                    <%=prod.productId.brand %></small><br>
+                                                                <small class="text-secondary">Quantity:
+                                                                    <%=prod.quantity %></small><br>
+                                                                <!-- <small class="text-secondary">Size:<%=//prod.size %>
+                                                                        </small> -->
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%})%>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-xs font-weight-bold mb-0 text-center">
+                                        <%=order.totalPrice %>
+                                    </td>
+                                    <td class="text-xs font-weight-bold mb-0 text-center">
+                                        <%=order.paymentMethod %>
+                                    </td>
+                                    <td class="text-xs font-weight-bold mb-0 text-center">
+                                        <%=order.status %>
+                                            <% if(order.status==='Order Confirmed' ){%>
+                                                <i class="bi bi-check-circle text-success"></i>
+                                                <%}else if(order.status==='Cancelled' ){%>
+                                                    <i class="bi bi-x-circle text-danger"></i>
+                                                    <%}else if(order.status==='Shipped' ){%>
+                                                        <i class="bi bi-truck text-success"></i>
+                                                        <%}else if(order.status==='Out for delivery' ){%>
+                                                            <i class="bi bi-box-arrow-right text-success"></i>
+                                                            <%}else if(order.status==='Delivered' ){%>
+                                                                <i class="bi bi-check2-circle text-success"></i>
+                                                                <%}else if(order.status==='Cancelled by admin'
+                                                                    ){%>
+                                                                    <i class="bi bi-x-circle text-danger"></i>
+                                                                    <%}else
+                                                                        if(order.status==='Pending return approval'
+                                                                        ){%>
+                                                                        <i
+                                                                            class="bi bi-clock-history text-warning"></i>
+                                                                        <%}else if(order.status==='Returned'
+                                                                            ){%>
+                                                                            <i
+                                                                                class="bi bi-arrow-counterclockwise text-success"></i>
+                                                                            <%}%>
+                                    </td>
+                                    <td class="text-xs font-weight-bold mb-0 text-center"><a
+                                            href="/admin/orders/singleorderDetails?id=<%=order._id %>"
+                                            class="btn btn-outline-dark">DETAILS</a></td>
+                                    
+                            </tr>
+                            <% })}else{ %>
+                                <td  class="fw-bold">No data found</td>
+                                <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Pagination and Show upto -->
+        <div class="mx-3 d-flex justify-content-between border-top pt-3">
+            <div class="text-center">
+                <ul class="list-unstyled d-flex justify-content-center mb-4">
+                    <li class="mx-1 ps-2 pe-2 rounded-pill show-upto-item">SHOW UPTO:</li>
+                    <li class="mx-1 ps-2 pe-2 limit-text rounded-0 <%= limit === 10 ? 'active' : '' %>">
+                        <a href="?limit=10" class="">10</a>
+                    </li>
+                    <li class="mx-1 ps-2 pe-2 limit-text rounded-0 <%= limit === 25 ? 'active' : '' %>">
+                        <a href="?limit=25" class="">25</a>
+                    </li>
+                    <li class="mx-1 ps-2 pe-2 limit-text rounded-0 <%= limit === 50 ? 'active' : '' %>">
+                        <a href="?limit=50" class="">50</a>
+                    </li>
+                    <li class="mx-1 ps-2 pe-2 limit-text rounded-0 <%= limit === 100 ? 'active' : '' %>">
+                        <a href="?limit=100" class="">100</a>
+                    </li>
+                </ul>
+            </div>
+            <nav aria-label="...">
+                <!-- Pagination  -->
+                <div class="row">
+                    <div class="col-lg-12 d-flex  align-items-center justify-content-center">
+                        <div class="product__pagination  d-flex justify-content-end">
+                            <% if(pageNum> 1){
+                                %>
+                                <a class="mx-1 btn pagination-btn"
+                                    href="?pageNum=<%= pageNum-1 %>&limit=<%= limit %>">Prev
+                                </a>
+                                <% } for(let i=1; i<=pageCount; i++){ %>
+                                    <a class="mx-1 btn ps-2 pe-2 rounded-0 pagination-btn" <% if(pageNum===i){
+                                        %>
+                                        style="color: white; background:black"
+                                        <% } %>
+                                            href="?pageNum=<%= i %>&limit=<%= limit %>"><%= i %>
+                                    </a>
+                                    <% } if(pageNum < pageCount){ %>
+                                        <a class="mx-1 btn pagination-btn"
+                                            href="?pageNum=<%= pageNum+1 %>&limit=<%= limit %>">Next
+                                        </a>
+                                        <% } %>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/adminScript.ejs') %>

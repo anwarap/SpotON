@@ -1,0 +1,249 @@
+
+<%- include('../partials/adminAside.ejs') %>
+
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+<%- include('../partials/adminNavbar.ejs') %>
+
+<section class="w-75">
+    <div class="container">
+        <div class="mt-5">
+            <div class="card mb-4 rounded-0">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h4 class="card-title text-decoration-underline">Delivery Address:</h4>
+                            <h6 class="card-text" style="font-size: 1.2rem;">
+                                <%=order.deliveryAddress.name%>
+                            </h6>
+                            <span class="card-text">
+                                <%=order.deliveryAddress.address %>
+                            </span>
+                            <span>
+                                <!-- Not as per model as per user selected address in the postPlaceOrder.js-->
+                                <%=order.deliveryAddress.location%><br>
+                                    <%=order.deliveryAddress.town%><br>
+                                        <%=order.deliveryAddress.state %> -
+                                            <%=order.deliveryAddress.pincode %>
+                            </span>
+                            <div class="mt-2">
+                                <h6>Contact Details: </h6>
+                                <i class="bi bi-envelope"></i>&nbsp;<%=order.deliveryAddress.email %><br>
+                                    <span>
+                                        <i class="bi bi-telephone">&nbsp;</i>
+                                        <%=order.deliveryAddress.mobile %>
+                                    </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-5 mt-md-0 text-nowrap">
+                            <h4 class="card-title text-decoration-underline">Order Details:</h4>
+                            <div class="mb-2">
+                                Customer: <%=order.userId.fname+' '+order.userId.lname %>
+                            </div>
+                            <div class="mb-2">
+                                Date:
+                              
+                                        <% 
+                                        const dd = order.createdAt.getDate();
+                                        const mm = order.createdAt.getMonth() + 1;
+                                        const yyyy = order.createdAt.getFullYear();
+                                        
+                                        const formattedDate = `${dd}-${mm}-${yyyy}`;
+                                         
+                                        %>
+                                  
+                                
+                                        <span>Date: <%= formattedDate %></span><br>
+ 
+                                
+                            </div>
+                            <div class="mb-2 ">
+                                <span>Payment Method: <%=order.paymentMethod %></span><br>
+                                <% if(order.paymentMethod ==='ONLINE'){ %>
+                                    <span>Transaction Id: <%=order.onlineTransactionId %></span><br>
+                                <%}%>
+                                <span>Total Amount: ₹<%=order.totalPrice %></span>
+                            </div>
+                            <div class="mb-2">
+                                <!-- <%// if (order.couponName) { %>
+                                  <span>Coupon Name: <%=// order.couponName %></span><br>
+                                <% //} else { %>
+                                  <span>Coupon Name: No coupon used</span><br>
+                                <% //} %>
+                                <span>Coupon Discount: ₹<%=//order.couponDiscount %></span>
+                              </div> -->
+                            <div>
+                                <strong>Status:</strong>
+                                <%=order.status %>
+                                    <% if(order.status==='Order Confirmed' ){%>
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        <%}else if(order.status==='Cancelled' ){%>
+                                            <i class="bi bi-x-circle text-danger"></i>
+                                            <%}else if(order.status==='Shipped' ){%>
+                                                <i class="bi bi-truck text-success"></i>
+                                                <%}else if(order.status==='Out for delivery' ){%>
+                                                    <i class="bi bi-box-arrow-right text-success"></i>
+                                                    <%}else if(order.status==='Delivered' ){%>
+                                                        <i class="bi bi-check2-circle text-success"></i>
+                                                        <%}else if(order.status==='Cancelled by admin' ){%>
+                                                            <i class="bi bi-x-circle text-danger"></i>
+                                                            <%}else if(order.status==='Pending return approval'
+                                                                ){%>
+                                                                <i class="bi bi-clock-history text-warning"></i>
+                                                                <%}else if(order.status==='Returned' ){%>
+                                                                    <i
+                                                                        class="bi bi-arrow-counterclockwise text-success"></i>
+                                                                    <%}%>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-5 mt-md-0">
+                            <%if(order.status.toString()=='Pending for return approval'){%>
+                                <h4 class="card-title text-decoration-underline">Actions:</h4>
+                                <div class="mt-3">
+                                    <strong>Status: <%=order.status %></strong><br>
+                                    <div class="mt-3">
+                                        <form action="/admin/approve-return/<%=order._id %>" method="post">
+                                            <button type="submit" class="btn btn-success rounded-0">APPROVE
+                                                RETURN</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <%}else{%>
+                                    <h4 class="card-title text-decoration-underline">Actions:</h4>
+                                    <div class="mt-3">
+                                        <strong>Status:</strong>
+                                        <%=order.status %>
+                                            <% if(order.status==='Order Confirmed' ){%>
+                                                <i class="bi bi-check-circle text-success"></i>
+                                                <%}else if(order.status==='Cancelled' ){%>
+                                                    <i class="bi bi-x-circle text-danger"></i>
+                                                    <%}else if(order.status==='Shipped' ){%>
+                                                        <i class="bi bi-truck text-success"></i>
+                                                        <%}else if(order.status==='Out for delivery' ){%>
+                                                            <i class="bi bi-box-arrow-right text-success"></i>
+                                                            <%}else if(order.status==='Delivered' ){%>
+                                                                <i class="bi bi-check2-circle text-success"></i>
+                                                                <%}else if(order.status==='Cancelled by admin'
+                                                                    ){%>
+                                                                    <i class="bi bi-x-circle text-danger"></i>
+                                                                    <%}else
+                                                                        if(order.status==='Pending return approval'
+                                                                        ){%>
+                                                                        <i
+                                                                            class="bi bi-clock-history text-warning"></i>
+                                                                        <%}else if(order.status==='Returned'
+                                                                            ){%>
+                                                                            <i
+                                                                                class="bi bi-arrow-counterclockwise text-success"></i>
+                                                                            <%}%><br>
+                                                                                <% if(order.status.toString()=='Shipped'
+                                                                                    ||
+                                                                                    order.status.toString()=='Order Confirmed'
+                                                                                    ||order.status.toString()=='Out for delivery'
+                                                                                    ) {%>
+                                                                                    <!-- <strong>Change Status :
+                                                                                    </strong><button
+                                                                                        style="border: none;"
+                                                                                        class="bg-white"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#exampleModal"
+                                                                                        class="popupBTN"
+                                                                                        data-id="<%=order._id  %>"><i
+                                                                                            class="bi bi-pencil-square"></i></button>
+                                                                                    <% } %> 
+                                    </div>
+                                    <div class="mt-4">
+                                        <% if(order.status.toString()=='Shipped' ||
+                                            order.status.toString()=='Order Confirmed' ) {%>
+                                            <form
+                                                action="/admin/cancelOrder/<%=order._id %>?status=Cancelled by admin"
+                                                method="post" id="myForm">
+                                                <button type="submit" class="btn btn-danger rounded-0">Cancel
+                                                    Order</button>
+                                            </form>
+                                            <% } %>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- prods -->
+            <div class="row mt-4">
+                <%order.products.forEach((product)=>{{%>
+                    <div class=" mb-3">
+                        <div class="card rounded-0 w-100">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <img src="/assets/images/productImages/<%=product.productId.images[0]%>"
+                                            class="img-fluid" alt="" width="120rem">
+                                    </div>
+                                    <div>
+                                        <h4 class="card-title">
+                                            <%=product.productName%>
+                                        </h4>
+                                        <span class="card-text text-secondary">Brand:
+                                            <%=product.productId.brand%>
+                                        </span><br>
+                                
+                                        <span class="card-text text-secondary">Quantity:
+                                            <%=product.quantity%>
+                                        </span>
+                                        <h5 class="card-title mt-2">₹<%=product.productId.price%>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%}})%>
+            </div>
+            <!-- modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Change
+                                Status
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <form action="/admin/order-status?id=<%=order._id %>" method="post">
+                            <div class="modal-body">
+                                <input type="hidden" name="orderId" id="orderId">
+                                <label for="status">Select delivery status</label><br><br>
+                                <select name="status" class="form-control" id="status">
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Out for delivery">Out for delivery
+                                    </option>
+                                    <option value="Delivered">Delivered</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger"
+                                    data-bs-dismiss="modal">CLOSE</button>
+                                <button type="submit" class="btn btn-success">UPDATE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+</section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script>
+        $(document).on("click", ".popupBTN", function () {
+            var cId = $(this).data('id');
+            console.log(cId);
+            $(".modal-body #orderId").val(cId);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
+    <script src="/static/js/formConfirmation.js"></script>
+
+    
+<%- include('../partials/adminFooter.ejs') %>      
+
+<%- include('../partials/adminScript.ejs') %>

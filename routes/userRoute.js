@@ -2,48 +2,50 @@ const express = require('express');
 const userController =require('../controller/userController');
 const productController = require('../controller/productController');
 const addressController = require('../controller/addressController');
-
+const orderController = require('../controller/orderController');
+const {isUserLoggedIn, isUserLoggedOut ,isUserBlocked} = require('../middleware/auth')
 const router =express();
-// const path =require('path');
 
-
-// const session = require('express-session');
-// const {randomUUID} = require('crypto');
-
-// router.use(session(
-//     {secret:randomUUID(),
-//     resave:false,
-//     saveUninitialized:false}
-// ));
-
-
-// router.set('view engine', 'ejs');
 router.set('views','./views/user');
 
 router.get('/',userController.loadHome);
 
 
 
-router.get('/login',userController.loadLogin);
-router.post('/login',userController.postLogin);
+router.get('/login', isUserLoggedOut,userController.loadLogin);
+router.post('/login', isUserLoggedOut,userController.postLogin);
 
 router.get('/logout',userController.loadLogout)
 
-router.get('/signup',userController.loadSignup);
-router.post('/signup',userController.postSignup);
+router.get('/signup', isUserLoggedOut,userController.loadSignup);
+router.post('/signup', isUserLoggedOut,userController.postSignup);
 
-router.post('/otpverify',userController.postOTPVerify);
+router.post('/otpverify', isUserLoggedOut,userController.postOTPVerify);
 
 router.get('/shop',productController.getShop);
 router.get('/shop/productOverview/:id',productController.getProductOverview);
 
 router.get('/profile',userController.getProfile);
-
 router.post('/profile/editProfile',userController.postEditProfile);
+router.get('/profile/addAddress',addressController.getAddAddress);
+router.post('/profile/addAddress/:returnPage',addressController.postAddAddress);
+router.get('/profile/editAddress/:id',addressController.getEditAddress);
+router.post('/profile/editAdress/:id',addressController.postEditAddress);
+router.get('/profile/deleteAddress/:id',addressController.deleteAddress);
 
 router.get('/profile/changePassword',userController.getChangePassword);
 router.post('/profile/changePassword',userController.postChangePassword);
 
-// router.get('/shoppingCart',userController.getShoppingCart);
+router.get('/shoppingCart',userController.getShoppingCart);
+router.get('/shop/addToCart/:id',userController.addToCart);
+router.post('/shoppingCart/removeItems/:id',userController.removeCartItems);
+router.put('/updateCart',userController.updateCart);
+router.get('/shoppingCart/toCheckout',orderController.getCheckout);
+router.post('/shoppingCart/placeOrder',orderController.placeOrder);
+router.get('/orderSuccess',orderController.getOrderSuccess);
+
+router.get('/profile/myOrder',orderController.getMyOrder);
+router.get('/viewOrderDetails/:orderId',orderController.getOrderDetails)
+router.post('/cancelOrder/:orderId',orderController.cancelOrder);
 
 module.exports = router;

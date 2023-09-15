@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 const loadLogin = async (req,res)=>{
     try {
         res.render('login',{title:'Admin Login'});
-        // console.log("dddd");
+        
     } catch (error) {
         console.log(error.message);
     }
@@ -80,7 +80,6 @@ const blockUser = async(req,res)=>{
 const logoutAdmin = async(req,res)=>{
     try{
         req.session.destroy();       
-        // console.log("aaaaaaa");
         res.redirect('/admin');
     } catch(error){
         console.log(error.message);

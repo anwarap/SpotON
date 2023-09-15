@@ -12,7 +12,6 @@ const { request } = require('http');
 const loadProducts = async(req,res)=>{
     try {
         const pdtsData = await Products.find().populate('category')
-        // console.log(pdtsData);
         res.render('products',{pdtsData,page:'Products'})
     } catch (error) {
         console.log(error.message);
@@ -32,19 +31,16 @@ const addProducts = async(req,res)=>{
 const addProductsDetails = async(req,res)=>{
     try {
         const {
-            brand,productName,category,
+            productName,category,
             quantity,price,description
         } = req.body;
-
+        const brand = req.body.brand.toUpperCase();
         let image = [];
-        // console.log(req.files);
         for(let file of req.files){
             image.push(file.filename);
         }
 
         const catData  =await Categories.find({name:category});
-
-        console.log(catData);
 
         const pdtsData = await new Products({
             brand,name:productName,description,category:catData[0]._id,
@@ -59,10 +55,8 @@ const addProductsDetails = async(req,res)=>{
 const getEditProduct = async(req,res)=>{
     try {
         const id = req.params.id;
-        // console.log(id);
         const pdtData = await Products.findById({_id:id}).populate('category');
         const catData = await Categories.find({isListed:true});
-        // console.log(pdtData);
         res.render('editProduct',{pdtData,catData,page:'Products'})
     } catch (error) {
         console.log(error.message);
@@ -74,7 +68,6 @@ const postEditProduct = async(req,res)=>{
         const {
             id,productName,category,quantity,price,description
         } = req.body;
-        console.log('category  ' + category);
 
         const brand = req.body.brand.toUpperCase();
         
@@ -85,13 +78,9 @@ const postEditProduct = async(req,res)=>{
             }
             await Products.findOneAndUpdate({_id:id},{$push:{images:{$each:newImages}}})
         }
-        // console.log(category);
         const catData = await Categories.findOne({name:category})
-        // console.log(`id: ${id}`);
-        // console.log(catData);
         await Products.findByIdAndUpdate({_id:id},
             {$set:{brand,name:productName,category:catData._id,quantity,description,price}});
-            // console.log('aaaa');
             res.redirect('/admin/products')
     } catch (error) {
         console.log(error.message);
@@ -118,8 +107,6 @@ const deleteImage  =async(req,res)=>{
     try{
         const id = req.params.id;
         const imageURL = req.query.imageURL;   
-        // console.log(imageURL);
-
         await Products.findOneAndUpdate({_id:id},{$pull:{images:imageURL}});
 
         const imgFolder = path.join(__dirname,'../public/assets/images/productImages');
@@ -147,7 +134,7 @@ const getShop = async(req,res)=>{
         if(req.query.page){
             page = req.query.page;
         }
-        let limit = 6;
+        let limit = 9;
 
         let minPrice =1;
         let maxPrice  =Number.MAX_VALUE;
@@ -217,7 +204,7 @@ const getShop = async(req,res)=>{
 
         let sortValue  =1;
         if(req.query.sortValue){
-
+            sortValue = req.query.sortValue;
         }
         let pdtsData;
         if(sortValue == 1){
@@ -280,12 +267,11 @@ const getShop = async(req,res)=>{
 const getProductOverview = async(req,res)=>{
     try {
         const id = req.params.id;
-        const userId = req.session.userId;
+        const user= req.session.user;
         const isLoggedIn = Boolean(req.session.user)
         const pdtData = await Products.findById({_id:id});
-//  console.log(pdtData.category.Categories.name);
-        if(userId) {
-            const userData = await User.findById({_id:userId});
+        if(user) {
+            const userData = await User.findById({_id:user._id});
         }
         res.render('productOverview',{
             pdtData,

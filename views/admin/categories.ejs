@@ -20,9 +20,11 @@
                 <input id="newCatName" class="" type="text" name="categoryName" placeholder="Category Name" style="margin-right: 10px;  margin-bottom:15px">
                 <button type="submit" class="btn bg-gradient-dark me-3" onclick="return validateCategory()">Add</button>
               </form>
-              
             </div>
           </div>
+          <div class="text-center text-success">
+            <%= locals.categoryMessage?categoryMessage:'' %>
+        </div>
           <div class="card-body px-0 pb-2">
             <div class="table-responsive p-3">
 

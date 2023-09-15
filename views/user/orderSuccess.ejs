@@ -1,0 +1,59 @@
+
+<%- include('../partials/head.ejs') %>
+
+
+
+<%- include('../partials/userHeader.ejs') %>
+
+<style>
+    .mainDiv {
+        height: 70vh;
+        display: grid;
+        place-content: center;
+        align-items: center;
+    }
+
+
+    footer{
+        margin-top: 50px;
+    }
+
+</style>
+
+
+
+
+<div class="mainDiv text-center container" style="margin-top: 175px;">
+    <% 
+    if(result == 'success'){
+        %>
+        <h1 style="color: green;">   <span   style="font-size: 60px;">O</span>rder <span>S</span>uccess</h1>
+        <span>Your order will be delivered soon!</span><br>
+        <% 
+    }else if(result == 'failed'){
+        %>
+        <h1 style="color: red;">Order Failed &#10060;</h1>
+        <span>Sorry, something gone wrong </span><br>
+        <% 
+    }
+    %>
+
+    <img src="/assets/images/extra/success.gif" width="400rem" class="img-fluid" alt="">
+    <div class="mt-4">
+        <a  style="    background: red;
+        border: none;
+    " href="/profile/myOrder" class="btn btn-dark me-2 mb-3">Go to Orders</a>
+        <a style="    background: red;
+        border: none;
+    " href="/shop" class="btn btn-secondary mb-3">Continue Shopping</a>
+    </div>
+</div>
+
+
+
+
+
+
+
+<%- include('../partials/footer.ejs') %>
+<%- include('../partials/script.ejs') %>

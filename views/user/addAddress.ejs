@@ -1,0 +1,275 @@
+<%- include('../partials/head.ejs') %>
+<style>
+    small.error{
+        color: red;
+    }
+</style>
+<%- include('../partials/userHeader.ejs') %>
+
+
+    <!-- Add Address Section Begin -->
+    <section class="checkout spad" style="padding-bottom: 256px;">
+        <div class="container" style="padding-block-start: 228px;">
+            <div class="text-center text-danger">
+                <% if(typeof message !=='undefined' ){ %>
+                    <p class="">
+                        <%= message %>
+                    </p>
+                    <%} %>
+            </div>
+            <div class="checkout__form">
+                <form action="/profile/addAddress/<%= returnPage %>" method="post" class="form-outline" id="submit-form">
+                    <div class="row d-flex justify-content-center">
+                        <div class="d-flex flex-column col-lg-8 col-md-6">
+                            <h4 class="checkout__title">Enter Details</h4>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="checkout__input">
+                                        <p>Name<span>*</span></p>
+                                        <input type="text" id="name-input" class="form-control" placeholder="Enter name" name="name" style="position: relative; bottom: 11px;" />
+                                        <small id="nameErr" class="error"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>Email<span>*</span></p>
+                                        <input type="email" id="email-input" class="form-control" placeholder="Email" name="email" style="position: relative; bottom: 11px;" />
+                                        <small id="emailErr" class="error"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>Mobile<span>*</span></p>
+                                        <input type="tel" id="mobno-input" class="form-control" placeholder="Mobile No." name="mobile" style="position: relative; bottom: 11px;" />
+                                        <small id="mobileErr" class="error"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>Town/City<span>*</span></p>
+                                        <input type="text" id="town-input" class="form-control" placeholder="Town" name="town" style="position: relative; bottom: 11px;" />
+                                        <small id="townErr" class="error"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>State<span>*</span></p>
+                                        <input type="text" id="state-input" class="form-control" placeholder="State" name="state" style="position: relative; bottom: 11px;" />
+                                        <small id="stateErr" class="error"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>Country<span>*</span></p>
+                                        <input type="text" id="country-input" class="form-control" placeholder="Country" name="country"  style="position: relative; bottom: 11px;" />
+                                        <small id="countryErr" class="error"></small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>ZIP/Post Code<span>*</span></p>
+                                        <input type="number" id="zipcode-input" class="form-control" placeholder="Enter ZIP Code" name="zip" style="position: relative; bottom: 11px;" />
+                                        <small id="zipErr" class="error"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Address<span>*</span></p>
+                                <input type="text" id="address-input" name="address" placeholder="Street Address" class="checkout__input__add form-control"  style="position: relative; bottom: 11px;" >
+                                <small id="addressErr" class="error"></small>
+                                <div class="text-danger text-center fw-bold" id="message-error"></div>
+                            </div>
+                            <button  type="submit" class="btn btn-dark rounded-pill text-center" style="bottom: -19px; position: relative;">ADD</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Add Address Section End -->
+
+    <script>
+        /** Form Validation Start **/
+        const form = document.getElementById('submit-form');
+        const userName = document.getElementById('name-input');
+        const country = document.getElementById('country-input');
+        const emailId = document.getElementById('email-input');
+        const mobNo = document.getElementById('mobno-input');
+        const town = document.getElementById('town-input');
+        const address = document.getElementById('address-input');
+        const state = document.getElementById('state-input');
+        const zipCode = document.getElementById('zipcode-input');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            console.log('peeeerve');
+            validateInput();
+        });
+        const setError = (element, message) => {
+            const inputControl = element.parentElement;
+            // const errorDisplay = inputControl.querySelector('.error');
+            // errorDisplay.innerText=message;
+            element.placeholder = message;
+            userName.style.border = '1.5px solid red';
+            country.style.border = '1.5px solid red';
+            emailId.style.border = '1.5px solid red';
+            mobNo.style.border = '1.5px solid red';
+            town.style.border = '1.5px solid red';
+            address.style.border = '1.5px solid red';
+            state.style.border = '1.5px solid red';
+            zipCode.style.border = '1.5px solid red';
+            inputControl.classList.add('error');
+            inputControl.classList.remove('success');
+        };
+        const setSuccess = element => {
+            const inputControl = element.parentElement;
+            // const errorDisplay= inputControl.querySelector('.error');
+            // errorDisplay.innerText='';
+            element.placeholder = '';
+            inputControl.classList.add('success');
+            inputControl.classList.remove('error');
+        };
+        const isValidUserName = userName => {
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(userName));
+        };
+        const isValidCountry = country => {
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(country));
+        };
+        const isValidEmail = emailId => {
+            const re = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+            return re.test(String(emailId).toLowerCase());
+        };
+        const isValidMobNo = mobNo => {
+            const re = /^[0-9]{10}$/;
+            return re.test(mobNo);
+        };
+        const isValidTown = town => {
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(town));
+        };
+        const isValidAddress = address => {
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(address));
+        };
+        const isValidState = state => {
+            const rename = /^[a-zA-Z]/;
+            return rename.test(String(state));
+        };
+        const isValidZip = zipCode => {
+            const rename = /^[1-9][0-9]{5}$/;
+            return rename.test(String(zipCode));
+        };
+        const validateInput = () => {
+            console.log("Entered to validate input");
+            const userNameValue = userName.value.trim();
+            const countryValue = country.value.trim();
+            const emailIdValue = emailId.value.trim();
+            const mobNoValue = mobNo.value.trim();
+            const townValue = town.value.trim();
+            const addressValue = address.value.trim();
+            const stateValue = state.value.trim();
+            const zipCodeValue = zipCode.value.trim();
+            if (userNameValue === '') {
+                setError(userName, 'Name is required');
+            } else if (!isValidUserName(userNameValue)) {
+                //setError(username);
+                document.getElementById('message-error').innerHTML = 'Names should be alphabets';
+            } else {
+                console.log("fName Ok");
+                setSuccess(userName);
+            }
+            if (countryValue === '') {
+                setError(country, 'Country is required');
+            } else if (!isValidCountry(countryValue)) {
+                //setError(username);
+                document.getElementById('message-error').innerHTML = 'Enter a valid country';
+            } else {
+                console.log("lName Ok");
+                setSuccess(country);
+            }
+            if (emailIdValue === '') {
+                setError(emailId, 'Email is required');
+            } else if (!isValidEmail(emailIdValue)) {
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a valid email address';
+            } else {
+                console.log("email Ok");
+                setSuccess(emailId);
+            }
+            if (mobNoValue === '') {
+                setError(mobNo, 'Mobile No is required');
+            } else if (!isValidMobNo(mobNoValue)) {
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a valid mobile number';
+            } else {
+                console.log("Mobile oK")
+                setSuccess(mobNo);
+            }
+            if (townValue === '') {
+                setError(town, 'Town/city is required');
+            } else if (!isValidTown(townValue)) {
+                //alert('Provide a valid Email address')
+                document.getElementById('message-error').innerHTML = 'Provide a correct town name';
+                //setError(password,'Provide a strong password');
+            } else {
+                console.log("Town Ok")
+                setSuccess(town);
+            }
+            if (addressValue === '') {
+                setError(address, 'Address is required');
+            } else if (!isValidAddress(addressValue)) {
+                document.getElementById('message-error').innerHTML = 'Enter a valid Address';
+            } else {
+                console.log("Address ok");
+                setSuccess(address);
+            }
+            if (stateValue === '') {
+                setError(state, 'State is required');
+            } else if (!isValidState(stateValue)) {
+                document.getElementById('message-error').innerHTML = 'Enter a valid State';
+            } else {
+                console.log("State ok");
+                setSuccess(state);
+            }
+            if (zipCodeValue === '') {
+                setError(zipCode, 'Zip Code is required');
+            } else if (!isValidZip(zipCodeValue)) {
+                document.getElementById('zip-error').innerHTML = 'Enter a valid zip code';
+            } else {
+                console.log("Zip ok");
+                setSuccess(zipCode);
+            }
+            // if(messagesInboxValue===''){
+            //     setError(messagesInbox,'Message is mandatory');
+            // }else if(messagesInboxValue.split(' ').length<10){
+            //     document.getElementById('message-error').innerHTML='Messages should be atleast 10 words';
+            //     // setError(messagesInbox,'Messages should be atleast 10 words')
+            // }else{
+            //     setSuccess(messagesInbox);
+            // }
+            //FOR SUBMISSION:
+            const inputs = [userName,country, emailId, mobNo,town,address,state,zipCode];
+            if (inputs.every(input => input.parentElement.classList.contains('success'))) {
+                alert('Addresses added successfully');
+                form.submit();
+                console.log("Form submission successful")
+            }
+        };
+        /** Form Validation End **/ 
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
+
+<%- include('../partials/script.ejs') %>
+<%- include('../partials/footer.ejs') %>

@@ -24,25 +24,21 @@ const loadHome =async(req,res)=>{
     try {
        
         const isLoggedIn = Boolean(req.session.user)
-        // console.log(req.session.user);
-        
         res.render('home',{ isLoggedIn })
-        // res.render('home')
         
     } catch (error) {
         console.log(error.message);
-        console.log("fss");
     }
 }
 
 const loadLogout = async(req,res)=>{
     try {
-        // console.log(req.session.name);
 
         req.session.destroy();
         res.redirect('/');
 
     } catch (error) {
+
         console.log(error.message);
     }
 }
@@ -50,8 +46,8 @@ const loadLogout = async(req,res)=>{
 
 const loadLogin =async(req,res)=>{
     try {
+        
         if(req.session.user){
-            // console.log('dddd');
             res.redirect('/');
         }else{
 
@@ -64,8 +60,6 @@ const loadLogin =async(req,res)=>{
 
 const loadSignup = async(req,res)=>{
     try {
-        // var emailExistMessage = req.app.locals.specialContext;
-        // req.app.locals.specialContext =null;
         res.render('signup',{title:"SignUp"});
     } catch (error) {
         console.log(error.message);
@@ -79,27 +73,16 @@ const postLogin = async(req,res)=>{
        const email =req.body.email;
        const password = req.body.password;
        const userData = await User.findOne({email:email});
-    //    console.log(email);
-   
-    //    console.log(userData);
-   
-    //    console.log(password);
        if(userData){
            const passwordMatch = await bcrypt.compare(password,userData.password);
            if( userData.status === false){
                
-               if(passwordMatch){
-   
+               if(passwordMatch){  
                    req.session.user = userData;
-                   // req.session.userId = userData._id;
-                   // res.render('home',{user:userData, title:'Home',})
                     res.redirect('/');
-               
-               
               }else{
                   req.app.locals.message = 'password is not matching';
                    res.render('login');
-               //    console.log("ddd");
                   
               }
            }else{
@@ -121,10 +104,8 @@ const postSignup = async(req,res)=>{
       const {fname,lname,email,mobile,password,cpassword} = req.body;
     if(password === cpassword){
         const userData = await User.findOne({email:email});
-        // console.log(userData);
         if(userData){
             req.app.locals.signUpMessage = 'Email already exists';
-            // console.log('sss');
              res.redirect('/signup');
         }
 
@@ -184,11 +165,9 @@ const sendVerifyMail = async(fname,lname,email,OTP)=>{
 const postOTPVerify = async(req,res)=>{
     try {
         const enteredOtp = Number(req.body.otp);
-        const sharedOtp = Number(req.session.OTP);
-        
+        const sharedOtp = Number(req.session.OTP);   
         const {fname,lname,email,mobile,password}  = req.session;
-    //     console.log(sharedOtp+"aa");
-    //    console.log(enteredOtp+"dd");
+
        if(enteredOtp == sharedOtp){
            const secPassword = await securePassword(password);
            const user = new User({fname,lname,email,mobile,password:secPassword});
@@ -209,9 +188,9 @@ const getProfile = async(req,res)=>{
     try {
         const user = req.session.user;
         const userData = await User.findById({_id:user._id});
-        const userAddress = await Addresses.findOne({userId:user._id})
+        const userAddress = await Addresses.findOne({_id:user._id})
 
-        res.render('userProfile',{user:userData,userAddress,isLoggedIn:true,page:'Profile'})
+        res.render('userProfile',{user:userData,userAddress:userAddress,isLoggedIn:true,page:'Profile'})
     } catch (error) {
         console.log(error.message);
     }
@@ -224,7 +203,7 @@ const postEditProfile = async(req,res)=>{
     try{
 
         const {fname,lname,email,mobile}= req.body;
-        // console.log(req.body);
+
          await User.findByIdAndUpdate({_id:req.session.user._id},{
             $set:{fname:req.body.fname,lname:req.body.lname,email:req.body.email,mobile:req.body.mobile}
         })
@@ -251,10 +230,10 @@ const postChangePassword = async(req,res)=>{
         if(newpassword !== confirmpassword){
             return res.redirect('/profile/changePassword');
         }
+
         const userData = await User.findById({_id: user._id});
-        console.log(oldpassword);
-        
         const passwordMatch = await bcrypt.compare(oldpassword,userData.password);
+
         if(passwordMatch){
             const sPassword = await securePassword(newpassword);
             await User.findByIdAndUpdate({_id: user._id},{
@@ -270,12 +249,111 @@ const postChangePassword = async(req,res)=>{
     }
 }
 
-// const getShoppingCart  =async(req,res)=>{
-//     const user = req.session.user;
-//     const userData = await User.findById({_id: user._id});
-    
-// }
+const getShoppingCart  =async(req,res)=>{
+    try{
 
+        const user = req.session.user;
+        const userData = await User.findById({_id: user._id}).populate('cart.productId');
+        const cartItems = userData.cart;
+        
+        res.render('shoppingCart',{isLoggedIn:true,userData,cartItems})
+    } catch(error){
+        console.log(error.message);
+    }
+}
+
+const addToCart = async(req,res)=>{
+    try {
+        const pdtId = req.params.id;
+        const user = req.session.user;
+        
+    const userData  =await User.findById({_id:user._id});
+    const pdtData = await Products.findById({_id:pdtId});
+
+    if(pdtData.quantity){
+
+        const isproductExist = userData.cart.findIndex((pdt)=>pdt.productId ==pdtId);
+        if(isproductExist === -1){
+            const cartItem = {
+                productId:pdtId,
+                quantity:1,
+                productPrice:pdtData.price,
+
+            }
+            await User.findByIdAndUpdate({_id:user._id},{
+                $push:{
+                    cart:cartItem
+                }
+            })
+            req.session.cartCount++;
+        }else {
+          
+            await User.updateOne({_id:user._id,'cart.productId':pdtId},{
+                $inc:{
+                    "cart.$.quantity":1
+                }
+            })
+        }
+    } 
+    res.redirect('/shoppingCart')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const removeCartItems = async(req,res)=>{
+    try {
+        const pdtId = req.params.id;
+        const user = req.session.user;
+        const userData = await User.findOneAndUpdate(
+            {_id:user._id,'cart.productId':pdtId},
+            {$pull:{
+                cart:{productId:pdtId}
+            }}
+        )
+        req.session.cartCount--;
+        res.redirect('/shoppingCart');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const updateCart = async(req,res)=>{
+    try{
+        const userId = req.session.user._id;
+        const quantity = parseInt(req.body.amt);
+        const prodId = req.body.prodId;
+        const pdtData = await Products.findById({_id: prodId});
+
+        const stock = pdtData.quantity;
+
+        let totalSingle = quantity*pdtData.price;
+        
+        if(stock>=quantity){
+            await User.updateOne({_id:userId,'cart.productId':prodId}, {
+                $set:{'cart.$.quantity':quantity}
+            })
+            
+            const userData = await User.findById({_id:userId}).populate('cart.productId');
+            let totalPrice  =0;
+            
+            userData.cart.forEach(pdt =>{
+                totalPrice += pdt.productPrice*pdt.quantity;
+            })
+            
+            res.json({
+                status:true,
+                data:{totalPrice,totalSingle}
+            })
+        }else{
+            res.json({status:false,
+                data:'producut stock has been exceeded'})
+        }
+        
+    } catch(error){
+        console.log(error.message);
+    }
+}
 
 module.exports ={
     loadSignup,
@@ -289,4 +367,9 @@ module.exports ={
     postEditProfile,
     getChangePassword,
     postChangePassword,
+    getShoppingCart,
+    addToCart,
+    removeCartItems,
+    updateCart,
+
 }

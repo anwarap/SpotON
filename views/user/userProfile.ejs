@@ -72,24 +72,38 @@
                                     <div class="myaccount-tab-menu nav" role="tablist">
                                         <a href="#dashboad" class="active" data-toggle="tab"><i class="fa fa-dashboard"></i>
                                             Dashboard</a>
-                                        <a href="#orders" data-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a>
+                                        <a href="/profile/myOrder" > Orders</a>
                                         <!-- <a href="#payment-method" data-toggle="tab"><i class="fa fa-credit-card"></i> Payment
                                             Method</a> -->
-                                            <a href="#address-edit" data-toggle="tab"><i class="fa fa-map-marker"></i> address</a>
+                                            <%
+                                            if(userAddress && userAddress.addresses.length >= 5){
+                                                %>
+                                                <div class="" >
+                                                    <a>Address Limit Exceeded </a>
+                                                </div>
+                                                <%
+                                            }else{
+                                                %>
+                                                <div class="">
+                                                   
+                                                    <a href="/profile/addAddress?returnPage=profile">Add Address</a>
+                                                </div>
+                                                <%
+                                            }
+                                            %>
                                             <a href="#account-info" data-toggle="tab"><i class="fa fa-user"></i> Edit Profile</a>
                                             <a href="/profile/changePassword" > Change Password</a>
                                         <!-- <a href="login-register.html"><i class="fa fa-sign-out"></i> Logout</a> -->
                                     </div>
                                 </div>
-                                <!-- My Account Tab Menu End -->
-                                <!-- My Account Tab Content Start -->
+                            
                                 <div class="col-lg-9 col-md-8">
                                     <div class="tab-content" id="myaccountContent">
                                         <!-- Single Tab Content Start -->
                                         <div class="tab-pane fade show active" id="dashboad" role="tabpanel">
                                             <div class="myaccount-content">
                                                 <h3>Dashboard</h3>
-                                                <div class="welcome">
+                                                <div >
                                                     <% if (user) { %>
                                                         <ul class="list-group">
                                                           <li class="list-group-item">
@@ -106,78 +120,69 @@
                                                             <span class="fw-bold">Email:</span>
                                                             <%= user.email %>
                                                           </li>
-                                                          <% if(userAddress){ %>
+                                                          
+                                                          <% if(userAddress && userAddress.addresses.length>0){ %>
                                               
-                                              
-                                              
-                                              
-                                                            <li class="list-group-item">
-                                                              <span class=""><b>Address:</b><br>
-                                                                <%= userAddress.addresses[0].userName %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].email %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].address %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].town %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].state %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].country %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].zip %>
-                                                              </span><br>
-                                                              <span class="">
-                                                                <%= userAddress.addresses[0].mobile %>
-                                                              </span><br>
-                                              
-                                              
-                                                            </li>
-                                              
+                                                            <div class="row">
+                                                                <% 
+                                                                userAddress.addresses.forEach((address) => {
+                                                                    %>
+                                                                    <div class="col-sm-6 mb-3">
+                                                                        <div class="card">
+                                                                            <div class="card-body">
+                                                                                <h5 class="card-title"><%= address.userName  %> &nbsp; &nbsp;<%= address.mobile %></h5>
+                                                                                <span class="card-text"><%= address.email  %>
+                                                                                </span><br>
+                                                                                <span class="card-text"><%= address.address  %>
+                                                                                </span><br>
+                                                                                <span class="card-text"><%= address.town  %>
+                                                                                </span><br>
+                                                                                <span class="card-text"><%= address.zip  %>
+                                                                                </span><br>
+                                                                                <span class="card-text"><%= address.state %>
+                                                                                </span>
+                                                                               
+                                                                                <div class="d-flex">
+                                                                                    <div class="">
+                                                                                        <a href="/profile/editAddress/<%= address._id %>?returnPage=profile">
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                                                                            </svg>
+                                                                                        </a>
+                                                                                        <a onclick="showConfirmationModal('<%= address._id %>')" class="ms-2">
+                                                                                            <svg style="color: red;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                                                                            </svg>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% 
+                                                                })
+                                                                %>
+                                                            </div>
+                                                            
+                                                         
                                               
                                                             <% }else{ %>
                                                               <li class="list-group-item">
                                                                 <span class=""><b>Address:</b> No saved address <a
                                                                     class="fw-bold text-primary text-decoration-underline"
-                                                                    href="/profile/id=<%= user._id %>/addaddress">Add Address</a> </span>
+                                                                    href="/profile/addAddress/id=<%= user._id %>?returnPage=profile"></a> </span> 
                                               
                                                               </li>
                                                               <% } %>
                                                                 <li class="list-group-item text-center">
-                                                                  <!-- <span class="fw-bold text-success"><a href="/myorders"> -->
-                                                                      <!-- <button class="btn btn-dark text-white rounded-0 fw-bold fs-7 mt-2 mb-2"><i
-                                                                          class="bi bi-border-style"></i>
-                                                                        MY ORDERS</button>
-                                                                    </a></span> -->
-                                                                  <span class="fw-bold text-success"><a href="/profile/id=<%= user._id %>/addaddress">
-                                                                      <button class="btn btn-dark text-white rounded-0 fw-bold fs-7 mt-2 mb-2"><i
-                                                                          class="bi bi-plus-lg"></i>
-                                                                        ADD ADDRESS</button>
-                                                                    </a></span>
-                                                                  <span class="fw-bold text-success"><a href="/profile/<%= user._id %>/manageaddress">
-                                                                      <button class="btn btn-dark text-white rounded-0 fw-bold fs-7 mt-2 mb-2"><i
-                                                                          class="bi bi-house"></i>
-                                                                        MANAGE ADDRESS</button>
-                                                                    </a></span>
-                                                                  <span class="fw-bold text-success"><a href="/profile/id=<%= user._id %>/managepassword">
-                                                                      <button class="btn btn-dark text-white rounded-0 fw-bold fs-7 mt-2 mb-2"><i
-                                                                          class="bi bi-key"></i>
-                                                                        MANAGE PASSWORD</button>
-                                                                    </a></span>
-                                                                </li>
-                                                                <!-- <li class="list-group-item text-center">
-                                                                  <span class="fw-bold  text-success">Logged in:</span> <span id="datetime" class="ps-2 pe-2"></span>
-                                                                </li> -->
-                                                                <!-- You can add more profile details as needed -->
+                                                            
+                                                               
+                                                                  
                                                         </ul>
                                                         <% } else { %>
-                                                          <!-- User not found -->
+                                                          
                                                           <p>User not found</p>
                                                           <% } %>
                                                     <!-- <p>Hello, <strong>Alex Tuntuni</strong> (If Not <strong>Tuntuni !</strong><a href="login-register.html" class="logout"> Logout</a>)</p> -->
@@ -409,14 +414,41 @@
             </div>
         </footer>
     </div>
+      <!-- Confirmation Modal -->
+      <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to perform this action?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <a href="#" id="confirmationAction" class="btn btn-danger">Confirm</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Confirmation Modal -->
 
     <!-- All JS is here
 ============================================ -->
-
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
     <script src="assets/js/vendor/modernizr-3.11.7.min.js"></script>
     <script src="assets/js/vendor/jquery-v3.6.0.min.js"></script>
     <script src="assets/js/vendor/jquery-migrate-v3.3.2.min.js"></script>
-    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <!-- <script src="assets/js/vendor/bootstrap.bundle.min.js"></script> -->
     <script src="assets/js/plugins/slick.js"></script>
     <script src="assets/js/plugins/jquery.syotimer.min.js"></script>
     <script src="assets/js/plugins/jquery.instagramfeed.min.js"></script>
@@ -439,7 +471,16 @@
 </body>
 
 </html>
-
+<script>
+    function showConfirmationModal(addressId) {
+      const modal = new bootstrap.Modal(
+        document.getElementById("confirmationModal")
+      );
+      const confirmationAction = document.getElementById("confirmationAction");
+      confirmationAction.href = `/profile/deleteAddress/${addressId}`;
+      modal.show();
+    }
+  </script>
     <script>
 
         /** Form Validation Start **/
@@ -479,7 +520,7 @@
             inputControl.classList.remove('success');
 
         };
-
+     
         const setSuccess = element => {
 
             const inputControl = element.parentElement;
