@@ -4,246 +4,266 @@
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 <%- include('../partials/adminNavbar.ejs') %>
 
-<section class="w-75">
-    <div class="container">
-        <div class="mt-5">
-            <div class="card mb-4 rounded-0">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4 class="card-title text-decoration-underline">Delivery Address:</h4>
-                            <h6 class="card-text" style="font-size: 1.2rem;">
-                                <%=order.deliveryAddress.name%>
-                            </h6>
-                            <span class="card-text">
-                                <%=order.deliveryAddress.address %>
-                            </span>
-                            <span>
-                                <!-- Not as per model as per user selected address in the postPlaceOrder.js-->
-                                <%=order.deliveryAddress.location%><br>
-                                    <%=order.deliveryAddress.town%><br>
-                                        <%=order.deliveryAddress.state %> -
-                                            <%=order.deliveryAddress.pincode %>
-                            </span>
-                            <div class="mt-2">
-                                <h6>Contact Details: </h6>
-                                <i class="bi bi-envelope"></i>&nbsp;<%=order.deliveryAddress.email %><br>
-                                    <span>
-                                        <i class="bi bi-telephone">&nbsp;</i>
-                                        <%=order.deliveryAddress.mobile %>
-                                    </span>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mt-5 mt-md-0 text-nowrap">
-                            <h4 class="card-title text-decoration-underline">Order Details:</h4>
-                            <div class="mb-2">
-                                Customer: <%=order.userId.fname+' '+order.userId.lname %>
-                            </div>
-                            <div class="mb-2">
-                                Date:
-                              
-                                        <% 
-                                        const dd = order.createdAt.getDate();
-                                        const mm = order.createdAt.getMonth() + 1;
-                                        const yyyy = order.createdAt.getFullYear();
-                                        
-                                        const formattedDate = `${dd}-${mm}-${yyyy}`;
-                                         
-                                        %>
-                                  
-                                
-                                        <span>Date: <%= formattedDate %></span><br>
- 
-                                
-                            </div>
-                            <div class="mb-2 ">
-                                <span>Payment Method: <%=order.paymentMethod %></span><br>
-                                <% if(order.paymentMethod ==='ONLINE'){ %>
-                                    <span>Transaction Id: <%=order.onlineTransactionId %></span><br>
-                                <%}%>
-                                <span>Total Amount: ₹<%=order.totalPrice %></span>
-                            </div>
-                            <div class="mb-2">
-                                <!-- <%// if (order.couponName) { %>
-                                  <span>Coupon Name: <%=// order.couponName %></span><br>
-                                <% //} else { %>
-                                  <span>Coupon Name: No coupon used</span><br>
-                                <% //} %>
-                                <span>Coupon Discount: ₹<%=//order.couponDiscount %></span>
-                              </div> -->
-                            <div>
-                                <strong>Status:</strong>
-                                <%=order.status %>
-                                    <% if(order.status==='Order Confirmed' ){%>
-                                        <i class="bi bi-check-circle text-success"></i>
-                                        <%}else if(order.status==='Cancelled' ){%>
-                                            <i class="bi bi-x-circle text-danger"></i>
-                                            <%}else if(order.status==='Shipped' ){%>
-                                                <i class="bi bi-truck text-success"></i>
-                                                <%}else if(order.status==='Out for delivery' ){%>
-                                                    <i class="bi bi-box-arrow-right text-success"></i>
-                                                    <%}else if(order.status==='Delivered' ){%>
-                                                        <i class="bi bi-check2-circle text-success"></i>
-                                                        <%}else if(order.status==='Cancelled by admin' ){%>
-                                                            <i class="bi bi-x-circle text-danger"></i>
-                                                            <%}else if(order.status==='Pending return approval'
-                                                                ){%>
-                                                                <i class="bi bi-clock-history text-warning"></i>
-                                                                <%}else if(order.status==='Returned' ){%>
-                                                                    <i
-                                                                        class="bi bi-arrow-counterclockwise text-success"></i>
-                                                                    <%}%>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mt-5 mt-md-0">
-                            <%if(order.status.toString()=='Pending for return approval'){%>
-                                <h4 class="card-title text-decoration-underline">Actions:</h4>
-                                <div class="mt-3">
-                                    <strong>Status: <%=order.status %></strong><br>
-                                    <div class="mt-3">
-                                        <form action="/admin/approve-return/<%=order._id %>" method="post">
-                                            <button type="submit" class="btn btn-success rounded-0">APPROVE
-                                                RETURN</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <%}else{%>
-                                    <h4 class="card-title text-decoration-underline">Actions:</h4>
-                                    <div class="mt-3">
-                                        <strong>Status:</strong>
-                                        <%=order.status %>
-                                            <% if(order.status==='Order Confirmed' ){%>
-                                                <i class="bi bi-check-circle text-success"></i>
-                                                <%}else if(order.status==='Cancelled' ){%>
-                                                    <i class="bi bi-x-circle text-danger"></i>
-                                                    <%}else if(order.status==='Shipped' ){%>
-                                                        <i class="bi bi-truck text-success"></i>
-                                                        <%}else if(order.status==='Out for delivery' ){%>
-                                                            <i class="bi bi-box-arrow-right text-success"></i>
-                                                            <%}else if(order.status==='Delivered' ){%>
-                                                                <i class="bi bi-check2-circle text-success"></i>
-                                                                <%}else if(order.status==='Cancelled by admin'
-                                                                    ){%>
-                                                                    <i class="bi bi-x-circle text-danger"></i>
-                                                                    <%}else
-                                                                        if(order.status==='Pending return approval'
-                                                                        ){%>
-                                                                        <i
-                                                                            class="bi bi-clock-history text-warning"></i>
-                                                                        <%}else if(order.status==='Returned'
-                                                                            ){%>
-                                                                            <i
-                                                                                class="bi bi-arrow-counterclockwise text-success"></i>
-                                                                            <%}%><br>
-                                                                                <% if(order.status.toString()=='Shipped'
-                                                                                    ||
-                                                                                    order.status.toString()=='Order Confirmed'
-                                                                                    ||order.status.toString()=='Out for delivery'
-                                                                                    ) {%>
-                                                                                    <!-- <strong>Change Status :
-                                                                                    </strong><button
-                                                                                        style="border: none;"
-                                                                                        class="bg-white"
-                                                                                        data-bs-toggle="modal"
-                                                                                        data-bs-target="#exampleModal"
-                                                                                        class="popupBTN"
-                                                                                        data-id="<%=order._id  %>"><i
-                                                                                            class="bi bi-pencil-square"></i></button>
-                                                                                    <% } %> 
-                                    </div>
-                                    <div class="mt-4">
-                                        <% if(order.status.toString()=='Shipped' ||
-                                            order.status.toString()=='Order Confirmed' ) {%>
-                                            <form
-                                                action="/admin/cancelOrder/<%=order._id %>?status=Cancelled by admin"
-                                                method="post" id="myForm">
-                                                <button type="submit" class="btn btn-danger rounded-0">Cancel
-                                                    Order</button>
-                                            </form>
-                                            <% } %>
-                                    </div>
-                                    <% } %>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- prods -->
-            <div class="row mt-4">
-                <%order.products.forEach((product)=>{{%>
-                    <div class=" mb-3">
-                        <div class="card rounded-0 w-100">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="/assets/images/productImages/<%=product.productId.images[0]%>"
-                                            class="img-fluid" alt="" width="120rem">
-                                    </div>
-                                    <div>
-                                        <h4 class="card-title">
-                                            <%=product.productName%>
-                                        </h4>
-                                        <span class="card-text text-secondary">Brand:
-                                            <%=product.productId.brand%>
-                                        </span><br>
-                                
-                                        <span class="card-text text-secondary">Quantity:
-                                            <%=product.quantity%>
-                                        </span>
-                                        <h5 class="card-title mt-2">₹<%=product.productId.price%>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%}})%>
-            </div>
-            <!-- modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Change
-                                Status
-                            </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <form action="/admin/order-status?id=<%=order._id %>" method="post">
-                            <div class="modal-body">
-                                <input type="hidden" name="orderId" id="orderId">
-                                <label for="status">Select delivery status</label><br><br>
-                                <select name="status" class="form-control" id="status">
-                                    <option value="Shipped">Shipped</option>
-                                    <option value="Out for delivery">Out for delivery
-                                    </option>
-                                    <option value="Delivered">Delivered</option>
-                                </select>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger"
-                                    data-bs-dismiss="modal">CLOSE</button>
-                                <button type="submit" class="btn btn-success">UPDATE</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-</section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script>
-        $(document).on("click", ".popupBTN", function () {
-            var cId = $(this).data('id');
-            console.log(cId);
-            $(".modal-body #orderId").val(cId);
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.js"></script>
-    <script src="/static/js/formConfirmation.js"></script>
+
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card my-4">
+          <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between">
+              <h6 class="text-white text-capitalize ps-3">Order Details</h6>
+            </div>
+          </div>
+          <div class="card-body px-0 pb-2">
+            <div class="table-responsive p-0">
+                
+
+                <section>
+                    <div class="container">
+                        <div class="mt-5">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4 class="card-title">Delivery Address</h4>
+                                            <h6 class="card-text" style="font-size: 1.2rem;"><strong><%= orderData.deliveryAddress.userName %></strong></h6>
+                                            <span class="card-text">
+                                                <%= orderData.deliveryAddress.address %>
+                                            </span><br>
+                                            <% 
+                                            let location = orderData.deliveryAddress.town+' '+orderData.deliveryAddress.state+' '+orderData.deliveryAddress.zip
+                                            %>
+                                            <span><%= location %></span>
+                                            <div class="mt-2">
+                                                <h6><strong>Phone number</strong></h6>
+                                                <span><%= orderData.deliveryAddress.mobile %></span>
+                                            </div>
+                                        </div>
+
+                                        <%
+                                        if(orderData.status === 'Order Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Out For Delivery' || orderData.status === 'Delivered'){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <h4 class="my-2" style="color: green;"><%= orderData.status %></h4>
+                                                <% 
+                                                if(orderData.status !== 'Delivered'){
+                                                    %>
+                                                    <button style="border: none;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    class="popupBTN" data-id="<%= orderData._id  %>"><i class="bi bi-pencil-square"
+                                                    style="color: blue;"></i>
+                                                    </button>
+                                                    <%  
+                                                }
+                                                %>
+                                            </div>
+                                            <%  
+                                        }else if(orderData.status === 'Pending Return Approval'){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <h4 class="my-2" style="color: orange;"><%= orderData.status %></h4>
+                                            </div>
+                                            <% 
+                                        }
+
+                                         
+                
+                                        if(orderData.status === 'Order Confirmed' || orderData.status === 'Shipped' || orderData.status === 'Out For Delivery'  ){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <!-- <button type="button" class="btn btn-danger confirmCancelBTN" id="cancelOrderBTN" data-toggle="modal"  data-id="<%= orderData._id %>" data-target="#cancelOrderPopup">
+                                                    Cancel Order
+                                                </button> -->
+                                                <a class="btn btn-danger confirmCancelBTN" id="cancelOrderBTN" data-bs-toggle="modal"  data-id="<%= orderData._id %>" href="#cancelOrderModal">
+                                                    Cancel Order
+                                                </a>
+                                            </div>
+                                            <%  
+                                        }else if(orderData.status === 'Pending Return Approval'){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <a href="/admin/approveReturn/<%= orderData._id %>" class="btn btn-warning">Approve</a>
+                                            </div>
+                                            <% 
+                                        }else if(orderData.status === 'Cancelled'){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <h4 style="color: red;">Order Cancelled by User</h4>
+                                            </div>
+                                            <% 
+                                        }else if(orderData.status === 'Cancelled By Admin'){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <h4 style="color: red;">Order Cancelled By Admin</h4>
+                                            </div>
+                                            <% 
+                                        }else if(orderData.status === 'Returned'){
+                                            %>
+                                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                <h4 style="color: orange;"><%= orderData.status %></h4>
+                                            </div>
+                                            <% 
+                                        }
+                                        %>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <!-- prods -->
+                            <div class="row mt-4">
+                                <% 
+                                for(const pdt of orderData.products){
+                                    %>
+                                        <div class="col-sm-6 mb-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex">
+                                                        <a href="/shop/productOverview/<%= pdt.productId._id %>">
+                                                            <div class="mx-3">
+                                                                <img src="/assets/images/productImages/<%= pdt.productId.images[0] %>"
+                                                                    class="img-fluid" alt="" width="120rem">
+                                                            </div>
+                                                        </a>
+                                                        <div>
+                                                            <h4 class="card-title"><%= pdt.productName %></h4>
+                                                            <!-- <span class="card-text" style="color: rgb(99, 99, 99);">Size: M</span><br> -->
+                                                            <span class="card-text" style="color: rgb(99, 99, 99);">Quantity : <%= pdt.quantity %></span>
+                                                            <h5 class="card-title mt-2">₹ <%= pdt.totalPrice%></h5>
+                                                            <!-- <div class="col-md-2 d-flex justify-content-center align-items-center"> -->
+                                                                <h6
+                                                                    <% 
+                                                                    if(pdt.status == 'Order Confirmed' || pdt.status == 'Shipped' || pdt.status == 'Out For Delivery' ||  pdt.status == 'Delivered' ){
+                                                                        %>
+                                                                        style="color: green;"
+                                                                        <%  
+                                                                    }else if( pdt.status == 'Cancelled' || pdt.status == 'Cancelled By Admin' ){
+                                                                        %>
+                                                                        style="color: red;"
+                                                                        <%  
+                                                                    }else if(pdt.status == 'Pending Return Approval'||  pdt.status == 'Returned'){
+                                                                        %>
+                                                                        style="color: orange;"
+                                                                        <%  
+                                                                    }
+                                                                    %>
+                                                                 
+                                                                 ><%= pdt.status %></h6>
+                                                            <!-- </div> -->
+                                                        </div>
+                                                        <div class="col-md-4 d-flex mb-3 pt-2 justify-content-center align-items-center">
+                                                            <% 
+                                                            if(pdt.status == 'Order Confirmed' || pdt.status == 'Shipped' || pdt.status == 'Out For Delivery'){
+                                                                %>
+                                                                <a href="/admin/cancelSinglePdt/<%= orderData._id %>/<%= pdt._id %>?cancelledBy=admin" class="btn btn-danger"> Cancel </a>
+                                                                <%  
+                                                            }else if(pdt.status == 'Pending Return Approval'){
+                                                                %>
+                                                                <a href="/admin/approveReturnSinglePrdt/<%= orderData._id %>/<%= pdt._id %>" class="btn btn-warning"> Approve </a>
+                                                                <%  
+                                                            }
+                                                            %>
+                                                        </div>
+                                                    </div>
+                        
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <%  
+                                }
+                                %>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+                        <!-- Modal Start -->
+                        <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Change Status</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="/admin/changeOrderStatus" method="post">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="orderId" id="orderId" value="">
+                                            <small for="status">Select delivery status</small>
+                                            <select name="status" class="form-control border" id="status">
+                                                <option value="Shipped">Shipped</option>
+                                                <option value="Out For Delivery">Out For Delivery</option>
+                                                <option value="Delivered">Delivered</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Change Status</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal End  -->
+
+
+
+                                                                                          <!-- Order Cancel Confirmation Modal Start  -->
+                                                                                          <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                                            <div class="modal-dialog">
+                                                                                              <div class="modal-content">
+                                                                                                  <div class="modal-header">
+                                                                                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Are You Sure?</h1>
+                                                                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                                  </div>
+                                                                                                  <div class="modal-body">
+                                                                                                          <strong> Do you want to Cancel this Order ?</strong>
+                                                                                                          <div class="modal-footer mt-2">
+                                                                                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                                              <a id="confirmCancelBTN" class="btn btn-primary">Confirm</a>
+                                                                                                          </div>
+                                                                                                  </div>
+                                                                                              </div>
+                                                                                            </div>
+                                                                                        </div> 
+                                                                                        <!-- Order Cancel Confirmation Modal End  -->
 
     
-<%- include('../partials/adminFooter.ejs') %>      
+                                                                                        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+                                                                                        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+                                                                                        crossorigin="anonymous"></script>
+                                                                                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+                                                                                        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+                                                                                        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+    $(document).on("click", ".popupBTN", function () {
+        var cId = $(this).data('id');
+        $(".modal-body #orderId").val(cId);  
+    });
 
+    $('.confirmCancelBTN').click( function () {
+        var orderId = $(this).data('id');
+        var routeURL = `/admin/cancelOrder/${orderId}?cancelledBy=admin`
+        $(".modal-footer #confirmCancelBTN").attr('href', routeURL);
+    });
+</script>
+
+
+
+
+<%- include('../partials/adminFooter.ejs') %>      
+</main>
 <%- include('../partials/adminScript.ejs') %>

@@ -41,7 +41,7 @@ const orderSchema = mongoose.Schema({
     }],
     paymentMethod:{
         type:String,
-        enum:['COD'],
+        enum:['COD','RazorPay','Wallet'],
         required:true
     },
     status:{
@@ -50,6 +50,22 @@ const orderSchema = mongoose.Schema({
                 'Delivered','Cancelled','Cancelled By Admin',
                 'Pending Return Approval','Returned'],
         required:true
+    },
+    couponCode:{
+        type:String,
+    },
+    couponDiscount:{
+        type:String,
+        required:function(){
+            return this.couponCode !== ''
+        }
+    },
+    couponDiscountType:{
+        type:String,
+        enum:['Percentage','Fixed Amount'],
+        required:function(){
+            return this.couponCode !== ''
+        }
     }
    
   },

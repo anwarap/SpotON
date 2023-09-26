@@ -1,0 +1,312 @@
+
+<%- include('../partials/head.ejs') %>
+
+
+<%- include('../partials/userHeader.ejs') %>
+
+
+<div class="sidebar-cart-active">
+    <div class="sidebar-cart-all">
+        <a class="cart-close" href="#"><i class="icon_close"></i></a>
+        <div class="cart-content">
+            <h3>Shopping Cart</h3>
+            <ul>
+                <li class="single-product-cart">
+                    <div class="cart-img">
+                        <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
+                    </div>
+                    <div class="cart-title">
+                        <h4><a href="#">Simple Black T-Shirt</a></h4>
+                        <span> 1 × $49.00	</span>
+                    </div>
+                    <div class="cart-delete">
+                        <a href="#">×</a>
+                    </div>
+                </li>
+                <li class="single-product-cart">
+                    <div class="cart-img">
+                        <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
+                    </div>
+                    <div class="cart-title">
+                        <h4><a href="#">Norda Backpack</a></h4>
+                        <span> 1 × $49.00	</span>
+                    </div>
+                    <div class="cart-delete">
+                        <a href="#">×</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="cart-total">
+                <h4>Subtotal: <span>$170.00</span></h4>
+            </div>
+            <div class="cart-checkout-btn">
+                <a class="btn-hover cart-btn-style" href="cart.html">view cart</a>
+                <a class="no-mrg btn-hover cart-btn-style" href="checkout.html">checkout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="breadcrumb-area bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li class="active">Wishlist </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="cart-main-area pt-115 pb-120">
+    <div class="container">
+        <h3 class="cart-page-title">Your cart items</h3>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <form action="#">
+                    <div class="table-content table-responsive cart-table-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th> Price</th>
+                                    <!-- <th>Qty</th> -->
+                                    <th>Remove</th>
+                                    <th>Add</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <% 
+                                if(wishlist && wishlist.length){
+                                    wishlist.forEach((pdt) => {
+                                        %>
+                                        <tr>
+                                            <!-- <td class="product__cart__item">
+                                                <a href="/shop/productOverview/<%= pdt._id %>">
+                                                    <div class="product__cart__item__pic">
+                                                        <img width="100px" src="/assets/images/productImages/<%= pdt.images[0] %>" alt="Product image">
+                                                    </div>
+                                                    <div class="product__cart__item__text">
+                                                        <h6><%=/// pdt.name %></h6>
+                                                        <h6><%=// pdt.brand %></h6> -->
+                                                        <% 
+                                                       // let currPrice;
+                                                       // if(pdt.offerPrice){
+                                                           // console.log('product has offer'+hello)
+                                                           // currPrice = pdt.offerPrice
+                                                      //  }else{
+                                                          //  currPrice = pdt.price - pdt.discountPrice
+                                                      //  }
+                                                        //let discountPercentage = Math.floor(100 - ( (currPrice*100)/pdt.price ));
+                                                        %>
+                                                        <!-- <h5>&#8377;<%= //currPrice %></h5> -->
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <!-- <td>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-dark" href=>Add To Cart</a>
+                                            </td> -->
+                                        </tr>
+                                 
+                                <tr>
+                                    <!-- <td class="product-thumbnail">
+                                        <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
+                                    </td> -->
+                                    <td class="product__cart__item">
+                                        <a href="/shop/productOverview/<%= pdt._id %>">
+                                            <div class="product__cart__item__pic">
+                                                <img width="100px" src="/assets/images/productImages/<%= pdt.images[0] %>" alt="Product image">
+                                            </div>
+                                    <td class="product-name"> <div class="product__cart__item__text">
+                                        <h6><%= pdt.name %></h6>
+                                        <h6><%= pdt.brand %></h6>
+                                        </div>
+                                    </td>
+                                    <td class="product-price-cart"><span ><%= pdt.price%></span></td>
+                                    <!-- <td class="product-quantity pro-details-quality">
+                                        <div class="cart-plus-minus">
+                                            <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1">
+                                        </div>
+                                    </td> -->
+                                    <td class="product-subtotal">
+                                        <a class="btn btn-danger" href="/removeWishlist/<%= pdt._id %>?returnPage=wishlist">Remove</a>
+                                        
+                                    </td>
+                                    <td class="product-wishlist-cart">
+                                        <a href="/shop/addToCart/<%= pdt._id %>">add to cart</a>
+                                    </td>
+                                </tr>
+                             
+                               
+                                <%  
+                            })
+                        }else{
+                            %>
+                            <tr>
+                                <td>
+                                    <h5> <strong>No wishes yet! Make a new wish</strong> </h5>
+                                </td>
+                            </tr>
+                            <%  
+                        }
+                        %>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="subscribe-area bg-gray pt-115 pb-115">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-md-5">
+                <div class="section-title">
+                    <h2>keep connected</h2>
+                    <p>Get updates by subscribe our weekly newsletter</p>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-7">
+                <div id="mc_embed_signup" class="subscribe-form">
+                    <form id="mc-embedded-subscribe-form" class="validate subscribe-form-style" novalidate="" target="_blank" name="mc-embedded-subscribe-form" method="post" action="https://devitems.us11.list-manage.com/subscribe/post?u=6bbb9b6f5827bd842d9640c82&amp;id=05d85f18ef">
+                        <div id="mc_embed_signup_scroll" class="mc-form">
+                            <input class="email" type="email" required="" placeholder="Enter your email address" name="EMAIL" value="">
+                            <div class="mc-news" aria-hidden="true">
+                                <input type="text" value="" tabindex="-1" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef">
+                            </div>
+                            <div class="clear">
+                                <input id="mc-embedded-subscribe" class="button" type="submit" name="subscribe" value="Subscribe">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-5 col-md-6 col-12 col-sm-12">
+                        <div class="tab-content quickview-big-img">
+                            <div id="pro-1" class="tab-pane fade show active">
+                                <img src="assets/images/product/product-1.jpg" alt="">
+                            </div>
+                            <div id="pro-2" class="tab-pane fade">
+                                <img src="assets/images/product/product-3.jpg" alt="">
+                            </div>
+                            <div id="pro-3" class="tab-pane fade">
+                                <img src="assets/images/product/product-6.jpg" alt="">
+                            </div>
+                            <div id="pro-4" class="tab-pane fade">
+                                <img src="assets/images/product/product-3.jpg" alt="">
+                            </div>
+                        </div>
+                        <div class="quickview-wrap mt-15">
+                            <div class="quickview-slide-active nav-style-6">
+                                <a class="active" data-toggle="tab" href="#pro-1"><img src="assets/images/product/quickview-s1.jpg" alt=""></a>
+                                <a data-toggle="tab" href="#pro-2"><img src="assets/images/product/quickview-s2.jpg" alt=""></a>
+                                <a data-toggle="tab" href="#pro-3"><img src="assets/images/product/quickview-s3.jpg" alt=""></a>
+                                <a data-toggle="tab" href="#pro-4"><img src="assets/images/product/quickview-s2.jpg" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-md-6 col-12 col-sm-12">
+                        <div class="product-details-content quickview-content">
+                            <h2>Simple Black T-Shirt</h2>
+                            <div class="product-ratting-review-wrap">
+                                <div class="product-ratting-digit-wrap">
+                                    <div class="product-ratting">
+                                        <i class="icon_star"></i>
+                                        <i class="icon_star"></i>
+                                        <i class="icon_star"></i>
+                                        <i class="icon_star"></i>
+                                        <i class="icon_star"></i>
+                                    </div>
+                                    <div class="product-digit">
+                                        <span>5.0</span>
+                                    </div>
+                                </div>
+                                <div class="product-review-order">
+                                    <span>62 Reviews</span>
+                                    <span>242 orders</span>
+                                </div>
+                            </div>
+                            <p>Seamlessly predominate enterprise metrics without performance based process improvements.</p>
+                            <div class="pro-details-price">
+                                <span class="new-price">$75.72</span>
+                                <span class="old-price">$95.72</span>
+                            </div>
+                            <div class="pro-details-color-wrap">
+                                <span>Color:</span>
+                                <div class="pro-details-color-content">
+                                    <ul>
+                                        <li><a class="dolly" href="#">dolly</a></li>
+                                        <li><a class="white" href="#">white</a></li>
+                                        <li><a class="azalea" href="#">azalea</a></li>
+                                        <li><a class="peach-orange" href="#">Orange</a></li>
+                                        <li><a class="mona-lisa active" href="#">lisa</a></li>
+                                        <li><a class="cupid" href="#">cupid</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="pro-details-size">
+                                <span>Size:</span>
+                                <div class="pro-details-size-content">
+                                    <ul>
+                                        <li><a href="#">XS</a></li>
+                                        <li><a href="#">S</a></li>
+                                        <li><a href="#">M</a></li>
+                                        <li><a href="#">L</a></li>
+                                        <li><a href="#">XL</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="pro-details-quality">
+                                <span>Quantity:</span>
+                                <div class="cart-plus-minus">
+                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1">
+                                </div>
+                            </div>
+                            <div class="product-details-meta">
+                                <ul>
+                                    <li><span>Categories:</span> <a href="#">Woman,</a> <a href="#">Dress,</a> <a href="#">T-Shirt</a></li>
+                                    <li><span>Tag: </span> <a href="#">Fashion,</a> <a href="#">Mentone</a> , <a href="#">Texas</a></li>
+                                </ul>
+                            </div>
+                            <div class="pro-details-action-wrap">
+                                <div class="pro-details-add-to-cart">
+                                    <a title="Add to Cart" href="#">Add To Cart </a>
+                                </div>
+                                <div class="pro-details-action">
+                                    <a title="Add to Wishlist" href="#"><i class="icon-heart"></i></a>
+                                    <a title="Add to Compare" href="#"><i class="icon-refresh"></i></a>
+                                    <a class="social" title="Social" href="#"><i class="icon-share"></i></a>
+                                    <div class="product-dec-social">
+                                        <a class="facebook" title="Facebook" href="#"><i class="icon-social-facebook"></i></a>
+                                        <a class="twitter" title="Twitter" href="#"><i class="icon-social-twitter"></i></a>
+                                        <a class="instagram" title="Instagram" href="#"><i class="icon-social-instagram"></i></a>
+                                        <a class="pinterest" title="Pinterest" href="#"><i class="icon-social-pinterest"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal end 

@@ -39,7 +39,28 @@ const userSchema=new mongoose.Schema({
             type:Number,
             required:true
         }
+    }],
+    wishlist:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Products'
+    }],
+    wallet:{
+        type:Number,
+        default:0
+    },
+    walletHistory:[{
+        date:{
+            type:Date
+        },
+        amount:{
+            type:Number
+        },
+        message:{
+            type:String
+        }
     }]
+},{
+    timestamps:true,
 })
 
 

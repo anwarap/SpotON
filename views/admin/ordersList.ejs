@@ -24,13 +24,14 @@
                         <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Products
                         </th>
                         <th></th>
-                        <th></th>
-                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Price</th>
-                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Payment
+                        <!-- <th></th> -->
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7" style="    padding-left: 43px;">Price</th>
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7" style="    padding-left: 47px;">Payment
                             Method</th>
-                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Status
+                            
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7" style="    padding-left: 62px;">Status
                         </th>
-                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7">Details
+                        <th scope="" class="text-uppercase text-secondary text-xxs fw-bold opacity-7"  style="    padding-left: 47px;">Details
                         </th>
                     </thead>
                     <tbody>
@@ -57,9 +58,7 @@
                                         <% order.products.forEach((prod)=>{ %>
                                                 <div class="product-item">
                                                     <div class="row">
-                                                    <div class="product-image col-12 col-md-6 col-lg-6">
-                                                        <img src="/assets/images/productImages/<%=prod.productId.images[0]%>" style="width:100px;" alt="">
-                                                    </div>
+                                                    
                                                     <div class="product-details col-12 col-md-6 col-lg-6">
                                                         <span class="text-xs font-weight-bold mb-0 text-center">
                                                             <%=prod.productId.name %><br>
@@ -75,7 +74,7 @@
                                             </div>
                                             <%})%>
                                     </td>
-                                    <td></td>
+                                    <!-- <td></td> -->
                                     <td></td>
                                     <td class="text-xs font-weight-bold mb-0 text-center">
                                         <%=order.totalPrice %>
@@ -91,11 +90,11 @@
                                                     <i class="bi bi-x-circle text-danger"></i>
                                                     <%}else if(order.status==='Shipped' ){%>
                                                         <i class="bi bi-truck text-success"></i>
-                                                        <%}else if(order.status==='Out for delivery' ){%>
-                                                            <i class="bi bi-box-arrow-right text-success"></i>
+                                                        <%}else if(order.status==='Out For Delivery' ){%>
+                                                            <i class="bi bi-box-arrow-right"></i>
                                                             <%}else if(order.status==='Delivered' ){%>
                                                                 <i class="bi bi-check2-circle text-success"></i>
-                                                                <%}else if(order.status==='Cancelled by admin'
+                                                                <%}else if(order.status==='Cancelled By Admin'
                                                                     ){%>
                                                                     <i class="bi bi-x-circle text-danger"></i>
                                                                     <%}else
@@ -110,7 +109,7 @@
                                                                             <%}%>
                                     </td>
                                     <td class="text-xs font-weight-bold mb-0 text-center"><a
-                                            href="/admin/orders/singleorderDetails?id=<%=order._id %>"
+                                            href="/admin/ordersDetails/<%=order._id %>"
                                             class="btn btn-outline-dark">DETAILS</a></td>
                                     
                             </tr>

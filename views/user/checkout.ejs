@@ -114,6 +114,26 @@
                             <div class="billing-info-wrap mr-50">
                                 <h3>Billing Details</h3>
                                 <div class="row">
+                                    <div class="col-lg-8 col-md-6">
+                                        <div class="discount-code-wrapper">
+                                            <div class="title-wrap">
+                                                <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
+                                            </div>
+                                            <div class="discount-code">
+                                                <p>Enter your coupon code if you have one.</p>
+                                                <form  action="" id="applyCoupon" method="" class="">
+                                                    <input type="text" name="code"   placeholder="Enter Coupon code">
+                                                    <button class="cart-btn-2" type="submit">Apply Coupon</button>
+                                                </form>
+                                                <div style="position: relative; top: 10px;">
+                                                    <a class="text-dark text-decoration-underline" style="cursor: pointer;"
+                                                        data-bs-toggle="modal" data-bs-target="#exampleModal">Explore coupons</a>
+                                                    <h6 class="text-danger mt-1" id="coupon-error"></h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br><br>
                                     <form action="/shoppingCart/placeOrder" method="post" id="checkout-form">
                                 
                                         <% 
@@ -337,30 +357,43 @@
                                                 <li>Product Name X 1 <span>$329 </span></li>
                                             </ul>
                                         </div> -->
-                                        <!-- <div class="your-order-info order-subtotal">
+                                         <!-- <div class="your-order-info order-subtotal"> 
                                             <ul>
-                                                <li>Subtotal <span>$329 </span></li>
+                                                <li>Subtotal <span><%= //totalPrice %> </span></li>
                                             </ul>
-                                        </div> -->
-                                        <!-- <div class="your-order-info order-shipping">
-                                            <ul>
-                                                <li>Shipping <p>Enter your full address </p>
-                                                </li>
-                                            </ul>
-                                        </div> -->
+                                        </div>  -->
+                                     
                                         <% 
-                                        //console.log(cart)
+                                      
                                         let totalPrice = 0;
                                         let totalDiscount = 0
                                         for(let i=0; i<cart.length; i++){
                                             totalPrice += cart[i].productId.price*cart[i].quantity
-                                          
+                                            totalDiscount =0
                                         }
                                         %>
-                                        <div class="your-order-info order-total">
+                                        <div class="your-order-info order-subtotal"> 
                                             <ul>
-                                                <li>Total <span><%= totalPrice %> </span></li>
+                                                <li>Subtotal <span><%= totalPrice %> </span></li>
                                             </ul>
+                                        </div> 
+                                        <div class="your-order-info order-subtotal"  id="couponDiscountLabelDiv"> 
+                                            <ul>
+                                                <li>Coupon Discount <span id="couponDiscount"> <%= totalDiscount %> </span></li>
+                                            </ul>
+                                        </div> 
+                                        <div class="your-order-info order-total">
+                                          
+                                                
+                                                <% 
+                                                let payAmount = totalPrice-totalDiscount
+                                                %>
+                                            <ul>
+                                                <li>Total <span id="payAmount"><%=payAmount%> </span></li>
+                                                <ul>
+                                               
+                                            
+                                            
                                         </div>
                                     </div>
                                     <div class="payment-method">
@@ -387,6 +420,8 @@
                                         </div>
                                         
                                         <div class="pay-top sin-payment sin-payment-3">
+                                            <input id="Razorpay" class="" type="radio" value="Razorpay" name="payment" checked>
+                                            <label for="payment">Online Payment </label>
                                             <!-- <input id="payment-method-4" class="input-radio" type="radio" value="cheque" name="payment_method"> -->
                                             <!-- <label for="payment-method-4">PayPal <img alt="" src="assets/images/icon-img/payment.png"><a href="#"></a></label> -->
                                             <div class="payment-box payment_method_bacs">
@@ -405,35 +440,71 @@
                     </div>
                 </div>
             </form>
-            </div>
-        </div>
-        <div class="subscribe-area bg-gray pt-115 pb-115">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-md-5">
-                        <div class="section-title">
-                            <h2>keep connected</h2>
-                            <p>Get updates by subscribe our weekly newsletter</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-7 col-md-7">
-                        <div id="mc_embed_signup" class="subscribe-form">
-                            <form id="mc-embedded-subscribe-form" class="validate subscribe-form-style" novalidate="" target="_blank" name="mc-embedded-subscribe-form" method="post" action="https://devitems.us11.list-manage.com/subscribe/post?u=6bbb9b6f5827bd842d9640c82&amp;id=05d85f18ef">
-                                <div id="mc_embed_signup_scroll" class="mc-form">
-                                    <input class="email" type="email" required="" placeholder="Enter your email address" name="EMAIL" value="">
-                                    <div class="mc-news" aria-hidden="true">
-                                        <input type="text" value="" tabindex="-1" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef">
-                                    </div>
-                                    <div class="clear">
-                                        <input id="mc-embedded-subscribe" class="button" type="submit" name="subscribe" value="Subscribe">
-                                    </div>
+                 <!-- Explore Coupons Modal Start -->
+                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Coupons</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+        <div class="modal-body" style="height: 70vh; overflow-y: auto;">
+            <% 
+            if(coupons && coupons.length){
+                coupons.forEach(coupon => {
+                    %>
+                    <div class="card px-2 mb-4">
+                        <div class="coupon bg-white rounded mb-3 d-flex justify-content-between border-1">
+
+                            <div class="tengah  d-flex w-100 justify-content-start">
+                                <div class="p-2">
+                                    <% 
+                                    if(coupon.usedUsers.includes(userId)){
+                                        %>
+                                        <span class="badge badge-danger my-1">Used</span>
+                                        <%  
+                                    }else{
+                                        %>
+                                        <span class="badge badge-success my-1">Not Used</span>
+                                        <% 
+                                    }
+                                    %>
+                                    <h4 class="lead my-1"><strong>
+                                            <%=coupon.code %>
+                                        </strong></h4>
+                                    <p class="text-muted mb-0 my-1">
+                                        <%= coupon.description %>
+                                    </p>
                                 </div>
-                            </form>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="info m-3 mt-4">
+                                    <!-- <form action="" class="applyCouponModal" method="post"> -->
+                                        <!-- <input type="text" value="<%=// coupon.code  %>" name="code" > -->
+                                            
+                                        <a id="<%= coupon.code %>" class="btn btn-sm btn-outline-secondary btn-block" onclick="copyCoupon('<%= coupon.code  %>')">
+                                            COPY
+                                        </a>
+                                    <!-- </form> -->
+
+                                </div>
+                            </div>
                         </div>
+
                     </div>
-                </div>
-            </div>
+                    <%  
+                })
+            }else{
+                %>
+                <small>No Coupons Available</small>
+                <%  
+            }
+            %>
         </div>
+            </div>
+            
+        </div>
+     
       
     </div>
     <%- include('../partials/footer.ejs') %>
@@ -442,7 +513,13 @@
 ============================================ -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
 
     <!-- Use the minified version files listed below for better performance and remove the files listed above  
 <script src="assets/js/vendor/vendor.min.js"></script>
@@ -460,10 +537,116 @@
                     console.log(res.status);
                     if(res.status == 'COD'){
                         location.href = '/orderSuccess?result=success'
+                    } else if(res.status =='Razorpay'){
+                        razorpayPayment(res.order)
                     }
                 }
             });
         });
+        function razorpayPayment(order){
+        var options = {
+            "key": "rzp_test_q0OuksND0B3228", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "SpotON",
+            "description": "Test Transaction",
+            // "image": "https://example.com/your_logo",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response){
+                verifyPayment(response,order)
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "SpotON Pvt Ltd"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzpl = new Razorpay(options)
+        rzpl.open()
+    }
+
+function verifyPayment(response,order){
+    console.log(response,order);
+    console.log('in verify payment function in checkout');
+    $.ajax({
+        url:'/verifyPayment',
+        method:'post',
+        data:{
+            response,
+            order
+        },
+        success:(res) => {
+            console.log(res);
+            if(res.status == true){
+                location.href = '/orderSuccess?result=success'
+            }else{
+                location.href = '/orderSuccess?result=failed'
+            }
+        }
+    });
+}
+
+
         
 
         </script>
+        
+<script>
+    $('#applyCoupon').submit((e) => {
+        e.preventDefault()
+
+        $.ajax({
+            url:'/applyCoupon',
+            method: 'post',
+            data: $('#applyCoupon').serialize(),   //$(this).serialize(),
+            success: (res) => {
+                if( res.status === true ){
+                    $('#couponDiscount').html(`-₹ ${res.couponDiscount}`)
+                    $('#payAmount').html(`₹ ${res.payAmount}`)
+                    document.getElementById('couponDiscountDiv').hidden = false
+                    document.getElementById('couponDiscountLabelDiv').hidden = false
+                    $('#couponErr').html('')
+
+                    const walletCheckBoxDiv = document.getElementById('walletCheckBoxDiv')
+                    const walletCheckBox = document.getElementById('walletCheckBox')
+                    const razorpayRadio = document.getElementById('Razorpay')
+                    const COD = document.getElementById('COD')
+
+                    if(res.isWalletHasPayAmount){
+                        walletCheckBoxDiv.hidden = false;
+                        walletCheckBox.hidden = true;
+                    }
+                }else{
+                    $('#couponErr').html(res.message)
+
+                }
+            }
+        })
+    })
+</script>
+
+<script>
+    function removeCoupon() {
+        $.ajax({
+            url: '/removeCoupon',
+            method: 'get',
+            success: (res) => {
+                if (res.status == true) {
+                    location.reload()
+                }
+            }
+        })
+    }
+</script>
+<script>
+    function copyCoupon(couponName) {
+        document.getElementById(couponName).innerHTML = "COPIED"
+        navigator.clipboard.writeText(couponName);
+    }
+</script>

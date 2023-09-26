@@ -3,6 +3,7 @@ const adminController = require('../controller/adminController');
 const categoryController = require('../controller/categoryController');
 const productController = require('../controller/productController');
 const orderController = require('../controller/orderController');
+const coupanController = require('../controller/couponController');
 const express = require('express');
 const upload = require('../config/multer')
 const router =express();
@@ -41,10 +42,18 @@ router.get('/products/deleteProduct/:id',productController.deleteProduct);
 router.get('/products/imageDelete/:id',productController.deleteImage);
 
 router.get('/orders',orderController.getOrders);
-router.get('/orders/singleorderDetails',orderController.getSingleOrderDetails);
+router.get('/ordersDetails/:orderId',orderController.getSingleOrderDetails);
+router.post('/changeOrderStatus',orderController.getChangeOrderStatus);
 router.get('/cancelOrder/:orderId',orderController.cancelOrder);
-router.post('/cancelOrder/:orderId',orderController.cancelOrder)
+router.get('/cancelSinglePdt/:orderId/:pdtId',orderController.cancelSinglePdt);
+router.get('/approveReturn/:orderId',orderController.approveReturn);
+router.get('/approveReturnSinglePrdt/:orderId/:pdtId',orderController.approveReturnSinglepdt);
 
-
+router.get('/coupons',coupanController.getCoupons);
+router.get('/coupons/addCoupon',coupanController.getAddCoupon);
+router.post('/coupons/addCoupon',coupanController.postAddCoupon);
+router.get('/coupons/editCoupon/:couponId',coupanController.getEditCoupon);
+router.post('/coupons/editCoupon/:couponId',coupanController.postEditCoupon);
+router.get('/coupons/cancelCoupon/:couponId',coupanController.cancelCoupon);
 
 module.exports=router

@@ -19,10 +19,6 @@ const productsSchema = mongoose.Schema({
         ref:'Categories',
         required:true
     },
-    size:{
-        type:Array,
-        required:true
-    },
     price:{
         type:Number,
         required:true
@@ -41,33 +37,10 @@ const productsSchema = mongoose.Schema({
     isListed:{
         type:Boolean,
         default:true
-    },
-    createdAt:{
-        type:Date,
-        required:true
-    },
-    reviews:[{
-        userId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'User'
-        },
-        title:{
-            type:String
-        },
-        description:{
-            type:String
-        },
-        rating:{
-            type:Number
-        },
-        createdAt:{
-            type:Date
-        
-        }
-    }]
-
-
-    
+    }
+  
+},{
+    timestamps:true,
 });
 
 

@@ -6,8 +6,6 @@ const bcrypt=require('bcrypt');
 const dotenv = require('dotenv').config();
 // const { request } = require('../routes/userRoute');
 const nodemailer = require('nodemailer');
-const { request, response } = require('../routes/userRoute');
-
 const securePassword =async(password)=>{
     try {
         const passwordHash =await bcrypt.hash(password,10);
@@ -199,6 +197,8 @@ const getProfile = async(req,res)=>{
 
 
 
+
+
 const postEditProfile = async(req,res)=>{
     try{
 
@@ -355,6 +355,81 @@ const updateCart = async(req,res)=>{
     }
 }
 
+const getWishlist = async(req,res)=>{
+    try {
+        
+        const userId = req.session.user._id;
+        const isLoggedIn = Boolean(req.session.user._id);
+        const userData = await User.findById({_id:userId}).populate('wishlist');
+        // console.log(userData+'ud');
+        const wishlist = userData.wishlist;
+        // console.log(wishlist+'wl');
+        res.render('wishlist',{isLoggedIn,wishlist});
+    } catch (error) {
+        console.log(error.message);
+    }
+
+}
+
+
+const addToWishlist = async(req,res)=>{
+    try {
+        const {productId} = req.params;
+        const userId= req.session.user._id;
+         console.log(userId+'ui');
+        const userData = await User.findById({_id: userId});
+        // console.log(userData+'asss')
+        // const prodExist = userData.wishlist.find((data)=>data==productId);
+         if(!userData.wishlist.includes(productId)){
+             userData.wishlist.push(productId);
+             await userData.save();
+             req.session.wishCount++;
+         }
+        let {returnPage} = req.query;
+        if(returnPage=='shop'){
+            res.redirect('/shop');
+        }else if(returnPage=='productOverview'){
+            res.redirect(`/shop/productOverview/${productId}`);
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const removeWishlist = async(req,res)=>{
+    try {
+        const {productId} = req.params;
+        const userId = req.session.user._id;
+        await User.findByIdAndUpdate({_id: userId},{
+            $pull:{
+                wishlist:productId
+            }
+        });
+        req.session.wishCount--;
+        const {returnPage} = req.query
+        if(returnPage =='shop'){
+            res.redirect('/shop');
+        }else if(returnPage =='productOverview'){
+            res.redirect(`/shop/productOverview/${productId}`);
+        }else if(returnPage =='wishlist'){
+            res.redirect('/wishlist');
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const getWalletHistory = async(req,res)=>{
+    try {
+        const userId = req.session.user._id;
+        const userData  = await User.findById({_id: userId});
+        const walletHistory = userData.walletHistory.reverse();
+        res.render('walletHistory', {isLoggedIn:true,userData,walletHistory});
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports ={
     loadSignup,
     loadLogin,
@@ -371,5 +446,9 @@ module.exports ={
     addToCart,
     removeCartItems,
     updateCart,
+    getWishlist,
+    addToWishlist,
+    removeWishlist,
+    getWalletHistory,
 
 }

@@ -3,6 +3,7 @@ const userController =require('../controller/userController');
 const productController = require('../controller/productController');
 const addressController = require('../controller/addressController');
 const orderController = require('../controller/orderController');
+const couponController = require('../controller/couponController');
 const {isUserLoggedIn, isUserLoggedOut ,isUserBlocked} = require('../middleware/auth')
 const router =express();
 
@@ -26,6 +27,7 @@ router.get('/shop',productController.getShop);
 router.get('/shop/productOverview/:id',productController.getProductOverview);
 
 router.get('/profile',userController.getProfile);
+// router.get('/profile/editProfile',userController.getProfileEdit)
 router.post('/profile/editProfile',userController.postEditProfile);
 router.get('/profile/addAddress',addressController.getAddAddress);
 router.post('/profile/addAddress/:returnPage',addressController.postAddAddress);
@@ -43,9 +45,25 @@ router.put('/updateCart',userController.updateCart);
 router.get('/shoppingCart/toCheckout',orderController.getCheckout);
 router.post('/shoppingCart/placeOrder',orderController.placeOrder);
 router.get('/orderSuccess',orderController.getOrderSuccess);
+router.post('/verifyPayment',orderController.verifyPayment);
+
+router.get('/wishlist',userController.getWishlist);
+router.get('/addToWishlist/:productId',userController.addToWishlist);
+router.get('/removeWishlist/:productId',userController.removeWishlist);
+
+// router.get('/profile/addMonetToWallet',userController.addToWallet);
 
 router.get('/profile/myOrder',orderController.getMyOrder);
 router.get('/viewOrderDetails/:orderId',orderController.getOrderDetails)
-router.post('/cancelOrder/:orderId',orderController.cancelOrder);
+router.get('/cancelOrder/:orderId',orderController.cancelOrder);
+router.get('/cancelSinglePdt/:orderId/:pdtId',orderController.cancelSinglePdt);
+router.get('/returnOrder/:orderId',orderController.returnOrder);
+router.get('/returnSingleprdt/:orderId/:pdtId',orderController.returnSinglePdt);
+router.get('/downloadInvoice/:orderId',orderController.getInvoice);
+
+router.get('/profile/walletHistory',userController.getWalletHistory);
+
+router.post('/applyCoupon',couponController.applyCoupon);
+router.get('/removeCoupon',couponController.removeCoupon);
 
 module.exports = router;

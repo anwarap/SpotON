@@ -198,7 +198,18 @@
                                     <a title="Add to Cart" href="/shop/addToCart/<%= pdtData._id %>">Add To Cart </a>
                                 </div>
                                 <div class="pro-details-action">
-                                    <a title="Add to Wishlist" href="#"><i class="icon-heart"></i></a>
+                                    <%
+                                    if(isPdtAWish){
+                                        %>
+                                        <a href="/removeWishlist/<%= pdtData._id %>?returnPage=productOverview" style="background-color: red;" class="primary-btn"><i class="bi bi-heart-fill"></i></a>
+                                        <%  
+                                    }else{
+                                        %>
+                                        <a href="/addToWishlist/<%= pdtData._id %>?returnPage=productOverview" class="primary-btn"><i class="bi bi-heart-fill"></i></a>
+                                        <%  
+                                    }
+                                    %>
+                                    <!-- <a title="Add to Wishlist" href="#"><i class="icon-heart"></i></a> -->
                                     <!-- <a title="Add to Compare" href="#"><i class="icon-refresh"></i></a> -->
                                     <!-- <a class="social" title="Social" href="#"><i class="icon-share"></i></a> -->
                                     <div class="product-dec-social">

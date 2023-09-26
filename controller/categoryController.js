@@ -3,7 +3,7 @@ const Categories = require('../models/categoryModels');
 const loadCategories = async(req,res)=>{
     try{
         var categoryMessage = req.app.locals.specialContext;
-        req.app.locals.specialContext = null;
+        req.app.locals.specialContext = null; 
         const categories = await Categories.find({});
         req.session.save();
         res.render('categories',{categories,title:'Categories',page:'Categories',categoryMessage})

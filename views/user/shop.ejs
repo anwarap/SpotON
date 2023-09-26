@@ -106,7 +106,28 @@
                                                             </a>
                                                             <!-- <span class="pro-badge left bg-red">-20%</span> -->
                                                             <div class="product-action-2 tooltip-style-2">
-                                                                <button title="Wishlist"><i class="icon-heart"></i></button>
+                                                                    
+                                                                   
+                                                                <% 
+                                                                if(wishlist && wishlist.length && wishlist.includes(productData[i]._id)){
+                                                                    %> 
+                                                                    <button title="Wishlist"> <a class="bi bi-heart-fill text-danger" href="/removeWishlist/<%= pdtsData[i]._id %>?returnPage=shop"></a></button>
+                                                                    
+                                                                    <% }else{ %>
+                                                                        
+                                                                        <button title="Wishlist"> <a class="bi bi-heart" href="/addToWishlist/<%= pdtsData[i]._id %>?returnPage=shop"></a></button>
+                                                                        <% } %>
+                                                           
+                                                           
+                                                            
+                                                            <!-- <button title="Wishlist"> <a class="icon-heart" ></a><i class=""></i></button> -->
+
+
+                                                            <!-- <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button> -->
+                                                            <!-- <button title="Compare"><i class="icon-refresh"></i></button> -->
+
+
+                                                                <!-- <button title="Wishlist"><i class="icon-heart"></i></button> -->
                                                                 <!-- <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button> -->
                                                                 <!-- <button title="Compare"><i class="icon-refresh"></i></button> -->
                                                             </div>

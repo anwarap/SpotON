@@ -270,12 +270,19 @@ const getProductOverview = async(req,res)=>{
         const user= req.session.user;
         const isLoggedIn = Boolean(req.session.user)
         const pdtData = await Products.findById({_id:id});
+
+        let isPdtAWish = false;
         if(user) {
             const userData = await User.findById({_id:user._id});
+            const wishlist = userData.wishlist;
+            if(wishlist.find((productId)=>productId == id)){
+                isPdtAWish = true;
+            }
         }
         res.render('productOverview',{
             pdtData,
             page:'Product Overview',
+            isPdtAWish,
             isLoggedIn
         })
     } catch(error){
