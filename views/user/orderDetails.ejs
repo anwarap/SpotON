@@ -218,7 +218,8 @@
                                             <h4 class="card-title"><%= pdt.productName %></h4>
                                             <!-- <span class="card-text" style="color: rgb(99, 99, 99);">Size: M</span><br> -->
                                             <span class="card-text" style="color: rgb(99, 99, 99);">Quantity : <%= pdt.quantity %></span>
-                                            <h5 class="card-title mt-2">₹ <%= pdt.productPrice %></h5>
+                                            <h5 class="card-title mt-2">₹ <%=Math.floor(pdt.totalPrice)  %></h5>
+                                            <% console.log(orderData+'od') %>
                                             <!-- <div class="col-md-2 d-flex justify-content-center align-items-center"> -->
                                                 <h6
                                                     <% 

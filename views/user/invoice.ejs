@@ -94,34 +94,34 @@
                                         //let productPrice;
                                         //let totalSingle;
                                         %>
-                                        <td class="text-end">₹ <%=prod.totalPrice%>
+                                        <td class="text-end">₹ <%=prod.productPrice%>
                                         </td>
-                                        <td class="text-end">₹ <%= (prod.totalPrice)* prod.quantity %>
+                                        <td class="text-end">₹ <%= (prod.productPrice)* prod.quantity %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td class="text-end"><strong>Taxes</strong></td>
+                                        <td class="text-end"><strong>N/A</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td class="text-end"><strong>Coupon Discount</strong></td>
+                                        <td class="text-end">
+                                            <strong>
+                                                <%= discount ? discount : 'N/A' %>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                        </td>
+                                        <td class="text-end"><strong>Total</strong></td>
+                                        <td class="text-end"><strong>₹ <%=Math.ceil(order.totalPrice) %></strong>
                                         </td>
                                     </tr>
                                     <% }) %>
 
-                                        <tr>
-                                            <td colspan="3"></td>
-                                            <td class="text-end"><strong>Taxes</strong></td>
-                                            <td class="text-end"><strong>N/A</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3"></td>
-                                            <td class="text-end"><strong>Coupon Discount</strong></td>
-                                            <td class="text-end">
-                                                <strong>
-                                                    <%=// discount ? discount : 'N/A' %>
-                                                </strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="3">
-                                            </td>
-                                            <td class="text-end"><strong>Total</strong></td>
-                                            <td class="text-end"><strong>₹ <%=order.totalPrice %></strong>
-                                            </td>
-                                        </tr>
                             </tbody>
                         </table>
                     </div>
@@ -129,7 +129,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 text-end identity">
-                    <p>Authorized<br><strong>Gent's Garage</strong></p>
+                    <p>Authorized<br><strong>SpotON</strong></p>
                 </div>
             </div>
             <div class="print text-end">

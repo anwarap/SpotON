@@ -1,0 +1,213 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>SpotOn</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
+
+    <!-- All CSS is here
+	============================================ -->
+
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/vendor/signericafat.css">
+    <link rel="stylesheet" href="assets/css/vendor/cerebrisans.css">
+    <link rel="stylesheet" href="assets/css/vendor/simple-line-icons.css">
+    <link rel="stylesheet" href="assets/css/vendor/elegant.css">
+    <link rel="stylesheet" href="assets/css/vendor/linear-icon.css">
+    <link rel="stylesheet" href="assets/css/plugins/nice-select.css">
+    <link rel="stylesheet" href="assets/css/plugins/easyzoom.css">
+    <link rel="stylesheet" href="assets/css/plugins/slick.css">
+    <link rel="stylesheet" href="assets/css/plugins/animate.css">
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/plugins/jquery-ui.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+
+
+    <title>
+        <%=locals.title ? title:'SpotON'%>
+    </title>
+    
+</head>
+
+<body>
+
+        <div class="login-register-area pt-115 pb-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                        <div class="login-register-wrapper">
+                            <div class="login-register-tab-list nav">
+                                <a class="active" data-toggle="tab" href="#login">
+                                    <h4>otp verification page login </h4>
+                                </a>
+                           
+                            </div>
+                            <div class="tab-content">
+                                <div id="login" class="tab-pane active">
+                                    <div class="login-form-container">
+                                        <div class="text-center text-danger">
+                                            <% if(typeof message !=="undefined"){%>
+                                 <p class="" style="    color: red;
+                                 margin-bottom: 5px;">
+                                     <%= message %>
+                                 </p>
+                             <%}%>
+                                     </div>
+                                     <div class="text-center text-success">
+                                        <%=locals.otpErrorMessage?otpErrorMessage:''%> 
+                                    </div>
+                                        <div class="login-register-form">
+                                            <form action="/resetpassword-verifyotp" method="post" id="submit-form">
+                                                <input type="text" name="otp" placeholder="verify OTP"  id="otp-input">
+                                                <div class="text-danger text-center" id="message-error"></div>
+
+                                                <div class="button-box">
+                                                    <button type="submit" id="verifyButton">Verify</button>
+                                                    <div>
+                                                        <input type="hidden" name="email" value="<%= email %>" class="form-control">
+                                                    </div>
+                                                    <br> 
+                                                    <div id="countdown-container">
+                                                        <span id="countdown"></span>
+                                                    </div>
+                                                    <div class="reset" id="resend-container" style="display: none;">
+                                                        <a href="/resend-otp?id=<%= email %>" class="text-danger">Resend OTP</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                          
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+       
+    
+
+    <!-- All JS is here
+============================================ -->
+</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" type="image/x-icon"
+    href="https://i.pinimg.com/1200x/e2/93/8d/e2938d67761f2fca54c4c8da54bc2793.jpg">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="assets/js/vendor/modernizr-3.11.7.min.js"></script>
+    <script src="assets/js/vendor/jquery-v3.6.0.min.js"></script>
+    <script src="assets/js/vendor/jquery-migrate-v3.3.2.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/plugins/slick.js"></script>
+    <script src="assets/js/plugins/jquery.syotimer.min.js"></script>
+    <script src="assets/js/plugins/jquery.instagramfeed.min.js"></script>
+    <script src="assets/js/plugins/jquery.nice-select.min.js"></script>
+    <script src="assets/js/plugins/wow.js"></script>
+    <script src="assets/js/plugins/jquery-ui-touch-punch.js"></script>
+    <script src="assets/js/plugins/jquery-ui.js"></script>
+    <script src="assets/js/plugins/magnific-popup.js"></script>
+    <script src="assets/js/plugins/sticky-sidebar.js"></script>
+    <script src="assets/js/plugins/easyzoom.js"></script>
+    <script src="assets/js/plugins/scrollup.js"></script>
+    <script src="assets/js/plugins/ajax-mail.js"></script>
+
+
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
+<script>
+    var timerReachedZero = false;
+    function startTimer(duration,display){
+        var timer = duration,minutes,seconds;
+        var timerInterval = setInterval(function(){
+            minutes = parseInt(timer/60,10);
+            seconds = parseInt(timer %60,10);
+            minutes = minutes<10?"0" + minutes: minutes;
+            seconds = seconds<10?"0" + seconds:seconds;
+            display.textContent = minutes + ":" + seconds;
+            if(timer <= 0){
+                display.textContent = "Time's up!";
+                /**Hide the countdown container **/
+                document.getElementById("countdown-container").style.display = "none";
+                /**Display the verify button**/
+                document.querySelector(".button-verify").disabled= true;
+                /**Show the resend button**/
+                document.getElementById("resend-container").style.display = "block";
+                /**Set the variable to true**/
+                timerReachedZero = true;
+                clearInterval(timerInterval);
+            }else{
+                timer--;
+            }
+        },1000);
+    }
+    /**Start the countdown when the page load**/
+    window.onload = function(){
+        var oneMinute = 60,
+        display = document.querySelector('#countdown');
+        startTimer(oneMinute,display);
+    };
+</script>
+<script>
+    /** Form Validation Start **/
+    const form = document.getElementById('submit-form');
+    const otp = document.getElementById('otp-input');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        validateInput();
+    });
+    const setError = (element, message) => {
+        const inputControl = element.parentElement;
+        // const errorDisplay = inputControl.querySelector('.error');
+        // errorDisplay.innerText=message;
+        element.placeholder = message;
+        otp.style.border = '1.5px solid red';
+        inputControl.classList.add('error');
+        inputControl.classList.remove('success');
+    };
+    const setSuccess = element => {
+        const inputControl = element.parentElement;
+        // const errorDisplay= inputControl.querySelector('.error');
+        // errorDisplay.innerText='';
+        element.placeholder = '';
+        inputControl.classList.add('success');
+        inputControl.classList.remove('error');
+    };
+    const isValidOTP = otp => {
+        const rename = /^[0-9]{6}$/
+        return rename.test(Number(otp));
+    };
+    const validateInput = () => {
+        console.log("Entered to validate input");
+        const otpValue = otp.value.trim();
+        if (otpValue === '') {
+            setError(otp, 'Please enter OTP');
+        } else if (!isValidOTP(otpValue)) {
+            //setError(username);
+            document.getElementById('message-error').innerHTML = 'Recheck and Enter your OTP';
+        } else {
+            console.log("OTP Ok");
+            setSuccess(otp);
+        }
+        //FOR SUBMISSION:
+        const inputs = [otp];
+        if (inputs.every(input => input.parentElement.classList.contains('success'))) {
+            form.submit();
+            console.log("hidd")
+        }
+    };
+</script>

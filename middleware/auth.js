@@ -2,7 +2,7 @@ const  User = require('../models/userModel');
 
 const isUserLoggedIn = async(req,res,next)=>{
     try{
-        if(req.session.userId){
+        if(req.session.user){
             next()
         }else{
 
@@ -15,7 +15,7 @@ const isUserLoggedIn = async(req,res,next)=>{
 
 const isUserLoggedOut = async(req,res,next)=>{
     try{
-        if(req.session.userId){
+        if(req.session.user){
             return res.redirect('/');
         }
         next();
@@ -27,7 +27,7 @@ const isUserLoggedOut = async(req,res,next)=>{
 
 const isUserBlocked = async(req,res,next)=>{
     try{
-        if(req.session.userId){
+        if(req.session.user._id){
             const userData  = await User.findById({_id:req.session.userId});
             let isUserBlocked = userData.isBlocked
             if(isUserBlocked){

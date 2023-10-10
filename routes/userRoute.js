@@ -15,6 +15,10 @@ router.get('/',userController.loadHome);
 
 router.get('/login', isUserLoggedOut,userController.loadLogin);
 router.post('/login', isUserLoggedOut,userController.postLogin);
+router.get('/forgotpassword',userController.getLoginForgetPassword);
+router.post('/login-resetpassword',userController.postLoginForgetPassword);
+router.post('/resetPassword-verifyotp',userController.postResentverifyOtp)
+
 
 router.get('/logout',userController.loadLogout)
 
@@ -27,7 +31,6 @@ router.get('/shop',productController.getShop);
 router.get('/shop/productOverview/:id',productController.getProductOverview);
 
 router.get('/profile',userController.getProfile);
-// router.get('/profile/editProfile',userController.getProfileEdit)
 router.post('/profile/editProfile',userController.postEditProfile);
 router.get('/profile/addAddress',addressController.getAddAddress);
 router.post('/profile/addAddress/:returnPage',addressController.postAddAddress);
@@ -37,6 +40,8 @@ router.get('/profile/deleteAddress/:id',addressController.deleteAddress);
 
 router.get('/profile/changePassword',userController.getChangePassword);
 router.post('/profile/changePassword',userController.postChangePassword);
+
+
 
 router.get('/shoppingCart',userController.getShoppingCart);
 router.get('/shop/addToCart/:id',userController.addToCart);
@@ -51,8 +56,6 @@ router.get('/wishlist',userController.getWishlist);
 router.get('/addToWishlist/:productId',userController.addToWishlist);
 router.get('/removeWishlist/:productId',userController.removeWishlist);
 
-// router.get('/profile/addMonetToWallet',userController.addToWallet);
-
 router.get('/profile/myOrder',orderController.getMyOrder);
 router.get('/viewOrderDetails/:orderId',orderController.getOrderDetails)
 router.get('/cancelOrder/:orderId',orderController.cancelOrder);
@@ -62,6 +65,8 @@ router.get('/returnSingleprdt/:orderId/:pdtId',orderController.returnSinglePdt);
 router.get('/downloadInvoice/:orderId',orderController.getInvoice);
 
 router.get('/profile/walletHistory',userController.getWalletHistory);
+router.post('/profile/addMoneyTowallet',userController.addMoneyTowallet);
+router.post('/verifyWalletPayment',userController.verifyWalletPayment);
 
 router.post('/applyCoupon',couponController.applyCoupon);
 router.get('/removeCoupon',couponController.removeCoupon);

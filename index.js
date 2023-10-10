@@ -6,6 +6,7 @@ const userRoute = require('./routes/userRoute');
 const adminRoute = require('./routes/adminRoute');
 const {randomUUID} = require('crypto');
 const nocache = require('nocache');
+const { err404, err500 } = require('./middleware/errorHandler')
 const app = express();
 app.set('view engine','ejs');
 app.use(express.json());
@@ -27,6 +28,11 @@ app.use('/assets',express.static(path.join(__dirname,'public/assets')));
 app.use('/',userRoute);
 
 app.use('/admin',adminRoute);
+
+app.set('views','./views/errors');
+
+app.use(err404)
+app.use(err500)
 
 
 app.listen(3003,()=>{

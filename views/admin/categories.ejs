@@ -36,7 +36,7 @@
                     <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7">Name</th>
                     <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7 ps-2">Edit</th>
                     <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7 ps-2">Unlist</th>
-                    <!-- <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7 ps-2">Apply Offer</th> -->
+                    <th class="text-uppercase text-secondary text-xxs text-center font-weight-bolder opacity-7 ps-2">Apply Offer</th>
                   </tr>
                 </thead>
 
@@ -124,32 +124,32 @@
                                                                 <!-- Unlist/List Modal End  -->
                                 </td>
 
-                                <!-- <td class="align-middle text-center">
+                                 <td class="align-middle text-center">
                                   <% 
-                                 // if(offerData && offerData.length){
-                                   // if(categories[i].offer && categories[i].offer!=''){
+                                  if(offerData && offerData.length){
+                                    if(categories[i].offer && categories[i].offer!=''){
                                       %>
-                                      <form action="/admin/removeCategoryOffer/<%= //categories[i]._id %>" method="post">
-                                        <input type="hidden" name="offerId" value="<%=// categories[i].offer._id %>">
-                                        <button type="submit" class="btn btn-danger"><%=// categories[i].offer.name %> <span style="color: white;">x</span></button>
+                                      <form action="/admin/removeCategoryOffer/<%= categories[i]._id %>" method="post">
+                                        <input type="hidden" name="offerId" value="<%= categories[i].offer._id %>">
+                                        <button type="submit" class="btn btn-danger"><%= categories[i].offer.name %> <span style="color: white;">x</span></button>
                                       </form>
                                       <%  
-                                   // }else{
+                                     }else{
                                       %>
                                       <button class="btn btn-success offerBTN" data-bs-toggle="modal"  data-bs-target="#offerModal" data-id="<%= categories[i]._id %>">Apply</button>
                                       <%  
-                                   // }
-                                 // }else{
+                                    }
+                                   }else{
                                     %>
                                     <p>No Offer Available</p>
                                     <%  
-                                 // }
+                                  }
                                   %>
-                                  <a href="#applyOfferModal" class="btn btn-danger applyOfferModal"  data-bs-toggle="modal" data-id="<%=// categories[i]._id %>">Apply</a> -->
+                                  <!-- <a href="#applyOfferModal" class="btn btn-danger applyOfferModal"  data-bs-toggle="modal" data-id="<%= //categories[i]._id %>">Apply</a>  -->
                                 </td> 
 
-                                <!--OFFER Modal -->
-                                <!-- <div class="modal fade" id="offerModal" tabindex="-1"
+                                <!-- OFFER Modal -->
+                                 <div class="modal fade" id="offerModal" tabindex="-1"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -165,11 +165,11 @@
                                                 <label for="offer">Select an offer to apply: </label>
                                                 <select name="offerId" id="offer" class="form-control">
                                                     <% 
-                                                  //  offerData.forEach((offer) => {
+                                                    offerData.forEach((offer) => {
                                                       %>
-                                                      <option value="<%=// offer._id  %>"> <%=// offer.name %> </option>
+                                                      <option value="<%= offer._id  %>"> <%= offer.name %> </option>
                                                       <%  
-                                                  //  })
+                                                   })
                                                     %>
                                                 </select>
 
@@ -186,7 +186,7 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div> 
 
                             </tr>
                          <% 

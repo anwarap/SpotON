@@ -1,17 +1,17 @@
  const Addresses = require('../models/addressModels');
  const User = require('../models/userModel');
 
- const getAddAddress = async(req,res)=>{
+ const getAddAddress = async(req,res,next)=>{
     try {
         const user = req.session.user;
         const returnPage = req.query.returnPage;
         res.render('addAddress',{isLoggedIn:true,returnPage:returnPage});
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
  }
 
-const postAddAddress = async(req,res)=>{
+const postAddAddress = async(req,res,next)=>{
     try {
         const user = req.session.user;
         
@@ -44,11 +44,11 @@ const postAddAddress = async(req,res)=>{
         }
 
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getEditAddress = async(req,res)=>{
+const getEditAddress = async(req,res,next)=>{
     try{
         const addressId = req.params.id;
         const userId = req.session.user._id;
@@ -59,11 +59,11 @@ const getEditAddress = async(req,res)=>{
         const address =  addressData.addresses.find(obj => obj._id.toString() === addressId);
         res.render('editAddress',{address,isLoggedIn:true,returnPage})
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 
-const postEditAddress = async(req,res)=>{
+const postEditAddress = async(req,res,next)=>{
     try {
         const addressId = req.params.id;
         const userId = req.session.user._id;
@@ -86,11 +86,11 @@ const postEditAddress = async(req,res)=>{
             res.redirect('/shoppingCart/toCheckout')
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const deleteAddress = async(req, res) => {
+const deleteAddress = async(req, res,next) => {
     try {
         const addressId = req.params.id;
         const userId = req.session.user._id;
@@ -101,7 +101,7 @@ const deleteAddress = async(req, res) => {
         })
         res.redirect('/profile')
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 

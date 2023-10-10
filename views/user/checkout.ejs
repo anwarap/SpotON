@@ -128,7 +128,7 @@
                                                 <div style="position: relative; top: 10px;">
                                                     <a class="text-dark text-decoration-underline" style="cursor: pointer;"
                                                         data-bs-toggle="modal" data-bs-target="#exampleModal">Explore coupons</a>
-                                                    <h6 class="text-danger mt-1" id="coupon-error"></h6>
+                                                        <h6 class="text-danger" id="couponErr"></h6>
                                                 </div>
                                             </div>
                                         </div>
@@ -369,7 +369,11 @@
                                         let totalDiscount = 0
                                         for(let i=0; i<cart.length; i++){
                                             totalPrice += cart[i].productId.price*cart[i].quantity
-                                            totalDiscount =0
+                                            if(cart[i].productId.offerPrice){
+                                                totalDiscount += (cart[i].productId.price - cart[i].productId.offerPrice)*cart[i].quantity
+                                            }else{
+                                                totalDiscount += 0
+                                            }
                                         }
                                         %>
                                         <div class="your-order-info order-subtotal"> 
@@ -377,11 +381,21 @@
                                                 <li>Subtotal <span><%= totalPrice %> </span></li>
                                             </ul>
                                         </div> 
-                                        <div class="your-order-info order-subtotal"  id="couponDiscountLabelDiv"> 
+                                        <div class="your-order-info order-subtotal"> 
                                             <ul>
-                                                <li>Coupon Discount <span id="couponDiscount"> <%= totalDiscount %> </span></li>
+                                                <li>Offer Discount <span><%=totalDiscount %> </span></li>
                                             </ul>
                                         </div> 
+                                        <div class="your-order-info order-subtotal"  id="couponDiscountDiv" hidden> 
+                                            <ul>
+                                                <li>Coupon Discount <span id="couponDiscount"> <%=Math.round(totalDiscount)%> </span></li>
+                                            </ul>
+                                            <span style="color: rgb(164, 0, 0);">
+                                                
+                                                <a href="" onclick="removeCoupon()">remove</a>
+                                            </span>
+                                        </div> 
+                                       
                                         <div class="your-order-info order-total">
                                           
                                                 
@@ -396,7 +410,34 @@
                                             
                                         </div>
                                     </div>
+
+                                    
+
                                     <div class="payment-method">
+
+                                        <% 
+                                        if(walletBalance > 0){
+                                            %>
+                                            <div class="row">
+                                                <div class="col-lg-1" id="walletCheckBoxDiv" <% if(walletBalance >= payAmount){ %> hidden <% } %>>
+                                                    <!-- <input id="COD" class="" type="" value="COD" name="payment" >
+                                                    <label for="payment">Cash on delivery </label> -->
+                                                    <input type="checkbox" name="walletCheckBox" id="walletCheckBox" style="width: 14px;">
+                                                </div>
+                                                <div class="col-lg-11" style="margin-top: 10px;">
+    
+                                                    <label for="walletCheckBox">
+                                                        <strong>
+                                                            Use wallet Balance <span> &#8377; <%= walletBalance %> </span>
+                                                        </strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <%  
+                                        }
+                                        %>
+
                                         <div class="pay-top sin-payment">
                                             <!-- <input id="payment_method_1" class="input-radio" type="radio" value="cheque" checked="checked" name="payment_method"> -->
                                             <!-- <label for="payment_method_1"> Direct Bank Transfer </label> -->
@@ -412,7 +453,7 @@
                                             </div>
                                         </div>
                                         <div class="pay-top sin-payment">
-                                            <input id="COD" class="" type="radio" value="COD" name="payment" checked>
+                                            <input id="COD" class="" type="radio" value="COD" name="payment" >
                                             <label for="payment">Cash on delivery </label>
                                             <!-- <div class="payment-box payment_method_bacs">
                                                 <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
@@ -427,6 +468,13 @@
                                             <div class="payment-box payment_method_bacs">
                                                 <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
                                             </div>
+                                        </div>
+                                        <div class="pay-top sin-payment">
+                                            <input id="Wallet" class="" type="radio" value="Wallet" name="payment" <% if(walletBalance < payAmount){  %> hidden <% } %> >
+                                            <label for="payment" <% if(walletBalance < payAmount){  %> hidden <% } %>>Wallet <strong>&#8377;<%= walletBalance %></strong></label>
+                                            <!-- <div class="payment-box payment_method_bacs">
+                                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -539,7 +587,9 @@
                         location.href = '/orderSuccess?result=success'
                     } else if(res.status =='Razorpay'){
                         razorpayPayment(res.order)
-                    }
+                    }else if(res.status == 'Wallet'){
+                    location.href = '/orderSuccess?result=success'
+                }
                 }
             });
         });
@@ -607,7 +657,7 @@ function verifyPayment(response,order){
             data: $('#applyCoupon').serialize(),   //$(this).serialize(),
             success: (res) => {
                 if( res.status === true ){
-                    $('#couponDiscount').html(`-₹ ${res.couponDiscount}`)
+                    $('#couponDiscount').html(`₹ ${res.couponDiscount}`)
                     $('#payAmount').html(`₹ ${res.payAmount}`)
                     document.getElementById('couponDiscountDiv').hidden = false
                     document.getElementById('couponDiscountLabelDiv').hidden = false
@@ -629,6 +679,32 @@ function verifyPayment(response,order){
             }
         })
     })
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const walletCheckBox = document.getElementById('walletCheckBox');
+        const razorpayRadio = document.getElementById('Razorpay')
+        const CODRadio = document.getElementById('COD')
+
+        function updatePaymentOptions(){
+            if(walletCheckBox.checked){
+                CODRadio.disabled = true
+                CODRadio.checked = false
+                razorpayRadio.checked = true
+            }else{
+                CODRadio.disabled = false
+            }
+        }
+
+        //For initial setup of options
+        updatePaymentOptions()
+
+        //Listens to changes of options and update payment options
+        walletCheckBox.addEventListener('change',updatePaymentOptions);
+    });
+    
 </script>
 
 <script>

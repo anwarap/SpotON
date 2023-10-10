@@ -30,7 +30,7 @@
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"style="padding-right: px !important;">Category</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Price</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
-                    <!-- <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Apply Offer</th> -->
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Apply Offer</th>
                   </tr>
                 </thead>
 
@@ -126,8 +126,8 @@
                                                                 <!-- Modal End  -->
                               </td>
 
-                              <!-- <% 
-                              //if(pdtsData[i].offerAppliedBy && pdtsData[i].offerAppliedBy === 'Category'){
+                              <% 
+                              if(pdtsData[i].offerAppliedBy && pdtsData[i].offerAppliedBy === 'Category'){
                                 %>
                                 <td>
                                   <small>Offer Already Applied to Category</small>
@@ -138,28 +138,28 @@
                                 </td>
                                 <%  
 
-                             // }else if(pdtsData[i].offerAppliedBy && pdtsData[i].offerAppliedBy === 'Product'){
+                              }else if(pdtsData[i].offerAppliedBy && pdtsData[i].offerAppliedBy === 'Product'){
                                 %>
                                 <td>
-                                   <form action="/admin/removeProductOffer/<%= //pdtsData[i]._id %>" method="post">
-                                    <button type="submit" class="btn btn-danger">
-                                      Remove
+                                   <form action="/admin/removeProductOffer/<%= pdtsData[i]._id %>" method="post">
+                                    <button type="submit" class="btn btn-danger"><%= pdtsData[i].offer.name %>  x
+                                      
                                     </button>
-                                  </form> -->
+                                  </form> 
                                 </td>
                                 <%  
-                             // }else{
+                              }else{
                                 %>
                                 <td>
-                                  <!-- <button class="btn btn-success applyOfferBTN" id="applyPdtOfferBTN" data-bs-toggle="modal"
-                                          data-bs-target="#offerModal" data-id="<%= //pdtsData[i]._id %>">Apply</button> -->
+                                   <button class="btn btn-success applyOfferBTN" id="applyPdtOfferBTN" data-bs-toggle="modal"
+                                          data-bs-target="#offerModal" data-id="<%= pdtsData[i]._id %>">Apply</button>
                                 </td>
                                 <% 
-                             // }
+                              }
                               %> 
 
                               <!-- Modal to apply offer to product start -->
-                              <!-- <div class="modal fade" id="offerModal"
+                              <div class="modal fade" id="offerModal"
                               tabindex="-1" aria-labelledby="exampleModalLabel"
                               aria-hidden="true">
                               <div class="modal-dialog">
@@ -179,13 +179,13 @@
                                               <label for="offer">Select Offer </label>
                                               <select name="offerId" id="offer" class="form-control">
                                                   <% 
-                                                 // offerData.forEach( (offer) => {
+                                                  offerData.forEach( (offer) => {
                                                     %>
-                                                    <option value="<%=// offer._id %>">
-                                                      <%= //offer.name %>
+                                                    <option value="<%= offer._id %>">
+                                                      <%= offer.name %>
                                                     </option>
                                                     <%  
-                                                  //})
+                                                  })
                                                   %>
                                               </select>
 
@@ -197,7 +197,7 @@
                                       </form>
                                   </div>
                               </div>
-                              </div> -->
+                              </div>
                               <!-- Modal to apply offer to product end -->
                               
                             </tr>
@@ -224,6 +224,9 @@
   <%- include('../partials/adminFooter.ejs') %>      
 
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script>

@@ -148,26 +148,48 @@
                             <div class="col-xl-2 col-lg-3">
                                 <div class="header-action header-action-flex header-action-mrg-right">
                                     <div class="same-style-2 header-search-1">
-                                        <a class="search-toggle" href="#">
+                                        <!-- <a class="search-toggle" href="#">
                                             <i class="icon-magnifier s-open"></i>
                                             <i class="icon_close s-close"></i>
-                                        </a>
-                                        <div class="search-wrap-1">
-                                            <form action="#">
+                                        </a> -->
+                                        <!-- <div class="search-wrap-1"> -->
+                                            <!-- <form action="#">
                                                 <input placeholder="Search products…" type="text">
                                                 <button class="button-search"><i class="icon-magnifier"></i></button>
                                             </form>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="same-style-2">
                                         <a href="/profile"><i class="icon-user"></i></a>
+                                        
                                     </div>
                                     <div class="same-style-2">
-                                        <a href="/wishlist"><i class="icon-heart"></i><span class="pro-count red">03</span></a>
+                                        <a href="/wishlist" class="icon-heart">
+                                            <% 
+                                            if(locals.wishCount){
+                                                %>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-white" style="top: -5px;">
+                                                    <%= wishCount %>
+                                                </span>
+                                                <%  
+                                            }
+                                            %>
+                                        </a>
+                                        
                                     </div>
                                     <div class="same-style-2 header-cart">
                                         <a class="" href="/shoppingCart">
-                                            <i class="icon-basket-loaded"></i><span class="pro-count red">02</span>
+                                            <i class="icon-basket-loaded"></i>
+                                            <% 
+                                            if(locals.cartCount){
+                                                %>
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-white" style="top: 0;">
+                                                    <%= cartCount %>
+                                                </span>
+                                                <%  
+                                            }
+                                            %>
+                                            
                                         </a>
                                     </div>
                                 </div>

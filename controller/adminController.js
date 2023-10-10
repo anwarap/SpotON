@@ -7,17 +7,17 @@ const bcrypt = require('bcrypt');
 
 
 
-const loadLogin = async (req,res)=>{
+const loadLogin = async (req,res,next)=>{
     try {
         res.render('login',{title:'Admin Login'});
         
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
 
-const postLogin = async (req,res)=>{
+const postLogin = async (req,res,next)=>{
     try {
         const {email,password} = req.body;     
         const adminData = await Admin.findOne({email});
@@ -36,29 +36,29 @@ const postLogin = async (req,res)=>{
             res.redirect('/admin');
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const loadDashboard = async(req,res)=>{
+const loadDashboard = async(req,res,next)=>{
     try {
         res.render('dashboard',{page:'Dashboard'})
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
 
-const loadUsers = async(req,res)=>{
+const loadUsers = async(req,res,next)=>{
     try {
         const userData = await User.find({});
         res.render('users',{userData, page:'Users'});
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const blockUser = async(req,res)=>{
+const blockUser = async(req,res,next)=>{
     try{
         const userid = req.params.id;
         const userData = await User.findById({_id:userid});
@@ -72,17 +72,17 @@ const blockUser = async(req,res)=>{
         }
         res.redirect('/admin/users');
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 
 
-const logoutAdmin = async(req,res)=>{
+const logoutAdmin = async(req,res,next)=>{
     try{
         req.session.destroy();       
         res.redirect('/admin');
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 

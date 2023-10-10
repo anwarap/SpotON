@@ -1,18 +1,25 @@
 const Categories = require('../models/categoryModels');
+const Products = require('../models/productModels');
+const Offers = require('../models/offerModels');
 
-const loadCategories = async(req,res)=>{
+
+const loadCategories = async(req,res,next)=>{
     try{
         var categoryMessage = req.app.locals.specialContext;
         req.app.locals.specialContext = null; 
-        const categories = await Categories.find({});
+        const categories = await Categories.find({}).populate('offer')
+        const offerData = await Offers.find({$or:[
+            {status:'Starting Soon'},
+            {status:'Available'}
+        ]})
         req.session.save();
-        res.render('categories',{categories,title:'Categories',page:'Categories',categoryMessage})
+        res.render('categories',{categories,title:'Categories',page:'Categories',categoryMessage,offerData})
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 
-const addCategories = async(req,res)=>{
+const addCategories = async(req,res,next)=>{
     try {
         const categoryName = req.body.categoryName.toUpperCase();
         if(categoryName){
@@ -33,11 +40,11 @@ const addCategories = async(req,res)=>{
             res.redirect('/admin/categories')
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const editCategories = async(req,res)=>{
+const editCategories = async(req,res,next)=>{
     try {
        const id = req.body.categoryId;
        const newName = req.body.categoryName.toUpperCase();
@@ -56,13 +63,13 @@ const editCategories = async(req,res)=>{
     }
     res.redirect('/admin/categories')
     }catch (error) {
-        console.log(error.messsage);
+        next(error)
     }
 
 }
 
 
-const getCategoryStatus = async(req,res)=>{
+const getCategoryStatus = async(req,res,next)=>{
     try {
         const id = req.params.id;
         const categoryData  = await Categories.findById({_id:id});
@@ -78,7 +85,73 @@ const getCategoryStatus = async(req,res)=>{
             res.redirect('/admin/categories')
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
+    }
+}
+
+const applyOfferToCategory = async(req,res,next) =>{
+    try {
+        const {offerId, categoryId ,override} = req.body;
+
+        await Categories.findByIdAndUpdate({_id:categoryId},{
+            $set:{offer:offerId}
+        })
+        const offerData = await Offers.findById({_id:offerId});
+        const products = await Products.find({category:categoryId});
+
+        for(const pdt of products){
+            const actualPrice = pdt.price;
+            console.log(actualPrice+'actualPrice');
+            let offerPrice = 0;
+            if(offerData.status == 'Available'){
+                offerPrice = Math.round(actualPrice - ((actualPrice*offerData.discount)/100))
+            }
+            if(override){
+                await Products.updateOne({_id:pdt._id},{
+                    $set:{
+                        offerPrice,
+                        offertype: 'Offers',
+                        offer:offerId,
+                        offerAppliedBy:'Category'
+                    }
+                })
+            }else{
+                await Products.updateOne({_id:pdt._id,offer:{$exists:false}},{
+                    $set:{
+                        offerPrice,
+                        offerType: 'Offers',
+                        offer:offerId,
+                        offerAppliedBy:'Category'
+                    }
+                })
+            }
+        }
+        res.redirect('/admin/categories')
+    } catch (error) {
+        next(error)
+    }
+}
+
+const removeCategoryOffer = async(req,res,next)=>{
+    try {
+        const {catId} = req.params;
+        await Categories.findByIdAndUpdate({_id: catId},{
+            $unset:{offer:''}
+        });
+        await Products.updateMany({
+            category:catId,
+            offerAppliedBy:'Category'
+        },{
+            $unset:{
+                offer:'',
+                offerType:'',
+                offerPrice:'',
+                offerAppliedBy:''
+            }
+        });
+        res.redirect('/admin/Categories')
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -87,5 +160,7 @@ module.exports ={
     loadCategories,
     addCategories,
     getCategoryStatus,
-    editCategories
+    editCategories,
+    applyOfferToCategory,
+    removeCategoryOffer
 }

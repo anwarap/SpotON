@@ -4,8 +4,17 @@ const Categories = require('../models/categoryModels');
 const Addresses = require('../models/addressModels');
 const bcrypt=require('bcrypt');
 const dotenv = require('dotenv').config();
-// const { request } = require('../routes/userRoute');
+const crypto = require('crypto');
+const {updateWallet} = require('../helpers/helpersFunction');
 const nodemailer = require('nodemailer');
+const RazorPay = require('razorpay');
+
+
+var instance = new RazorPay({
+    key_id:process.env.key_id,
+    key_secret:process.env.key_secret
+})
+
 const securePassword =async(password)=>{
     try {
         const passwordHash =await bcrypt.hash(password,10);
@@ -18,18 +27,18 @@ let getOTP =()=>Math.floor(Math.random()*1000000);
 
 
 
-const loadHome =async(req,res)=>{
+const loadHome =async(req,res,next)=>{
     try {
        
         const isLoggedIn = Boolean(req.session.user)
         res.render('home',{ isLoggedIn })
         
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const loadLogout = async(req,res)=>{
+const loadLogout = async(req,res,next)=>{
     try {
 
         req.session.destroy();
@@ -37,12 +46,12 @@ const loadLogout = async(req,res)=>{
 
     } catch (error) {
 
-        console.log(error.message);
+        next(error)
     }
 }
 
 
-const loadLogin =async(req,res)=>{
+const loadLogin =async(req,res,next)=>{
     try {
         
         if(req.session.user){
@@ -52,31 +61,35 @@ const loadLogin =async(req,res)=>{
             res.render('login')
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const loadSignup = async(req,res)=>{
+const loadSignup = async(req,res,next)=>{
     try {
-        res.render('signup',{title:"SignUp"});
+        var emailExistMessage = req.app.locals.specialContext;
+        req.app.locals.specialContext = null;
+        res.render('signup',{title:"SignUp",emailExistMessage});
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
 
 
-const postLogin = async(req,res)=>{
+const postLogin = async(req,res,next)=>{
     try {
        const email =req.body.email;
        const password = req.body.password;
        const userData = await User.findOne({email:email});
        if(userData){
            const passwordMatch = await bcrypt.compare(password,userData.password);
-           if( userData.status === false){
+           if( userData.isBlocked === false){
                
                if(passwordMatch){  
                    req.session.user = userData;
+                   req.session.cartCount = userData.cart.length;
+                   req.session.wishCount = userData.wishlist.length
                     res.redirect('/');
               }else{
                   req.app.locals.message = 'password is not matching';
@@ -90,21 +103,98 @@ const postLogin = async(req,res)=>{
            }
        }
     } catch (error) {
-       console.log(error.message);
+        next(error)
     }
    }
+
    
    
+const getLoginForgetPassword = async(req,res,next)=>{
+    try {
+        var passwordErrorMessage = req.app.locals.specialContext;
+        req.app.locals.specialContext = null;
+        res.render('loginForgetPassword',{ title: 'Forgot Password',passwordErrorMessage})
+    } catch (error) {
+        next(error)
+    }
+}
+
+const postLoginForgetPassword = async(req,res,next)=>{
+    try {
+        const {newpassword,confirmpassword,email} = req.body;
+        const userData = await User.findOne({email:email});
+        if(userData){
+            
+            if(newpassword === confirmpassword){
+    
+                req.session.newpassword = newpassword;
+                req.session.confirmpassword = confirmpassword;
+                req.session.userData = userData;
+                var otpErrorMessage = req.app.locals.specialContext;
+                req.app.locals.specialContext = null;
+                const OTP = getOTP();
+                req.session.otp = OTP;
+                req.session.save();
+                sendVerifyMail(userData.fname, userData.lname, userData.email,OTP);
+                res.render('forgetOtpPage',{title:'Resent password OTP Verification',email,otpErrorMessage});
+            }
+        }else{
+            req.app.locals.specialContext = 'Email not found';
+            return res.redirect('/forgotpassword');
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+const postResentverifyOtp  =async(req,res,next)=>{
+    try {
+   
+        const otp = Number(req.body.otp);
+        const userData = req.session.userData;
+       
+        const OTP = Number(req.session.otp);
+        const newpassword = req.session.newpassword;
+        const confirmpassword = req.session.confirmpassword;
+        if (OTP === otp) {
+            if (newpassword !== confirmpassword) {
+                req.app.locals.specialContext = 'Both passwords are not matching'
+                return res.redirect(`/forgotpassword`);
+            } else {
+                const secPassword = await securePassword(newpassword);
+              
+                await User.findOneAndUpdate(
+                    { _id: userData._id },
+                    {
+                        $set: {
+                            password: secPassword
+                        }
+                    }
+                    );
+                    req.app.locals.specialContext = 'Password changed successfully';
+                
+                return res.redirect('/login');
+            }
+        } else {
+            req.app.locals.specialContext = 'Invalid OTP entered';
+            req.session.destroy();
+            return res.redirect('/login');
+        }
+        
+    } catch (error) {
+        next(error)
+    }
+}
    
 
-const postSignup = async(req,res)=>{
+const postSignup = async(req,res,next)=>{
     try{
       const {fname,lname,email,mobile,password,cpassword} = req.body;
     if(password === cpassword){
         const userData = await User.findOne({email:email});
         if(userData){
-            req.app.locals.signUpMessage = 'Email already exists';
-             res.redirect('/signup');
+            req.app.locals.specialContext = 'Email already exists';
+            return res.redirect('/signup');
         }
 
         const OTP = req.session.OTP = getOTP();
@@ -113,20 +203,17 @@ const postSignup = async(req,res)=>{
         req.session.email = email; 
         req.session.mobile = mobile;
         req.session.password = password;
-        console.log(req.session.OTP);
+     
         sendVerifyMail(fname, lname, email, OTP);
-        res.render('otpPage',{title:"OTP verify page",fname,lname,email,mobile,password,signUpMessage:"please check your email"})
+        res.render('otpPage',{title:"OTP verify page",fname,lname,email,mobile,password,emailExistMessage:"please check your email"})
 
-    }else{
-        req.app.locals.signUpMessage = 'Passwords do not match';
-         res.redirect('/signup');
     }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const sendVerifyMail = async(fname,lname,email,OTP)=>{
+const sendVerifyMail = async(fname,lname,email,OTP,next)=>{
     try{
         const transporter =nodemailer.createTransport({
             host:'smtp.gmail.com',
@@ -155,12 +242,12 @@ const sendVerifyMail = async(fname,lname,email,OTP)=>{
         }
     })
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 
 
-const postOTPVerify = async(req,res)=>{
+const postOTPVerify = async(req,res,next)=>{
     try {
         const enteredOtp = Number(req.body.otp);
         const sharedOtp = Number(req.session.OTP);   
@@ -177,12 +264,12 @@ const postOTPVerify = async(req,res)=>{
         res.render('otpPage',{fname,lname,email,mobile,password:password,message:"Invalid OTP"});
     }
 } catch (error) {
-    console.log(error.message);
+    next(error)
 }
 }
 
 
-const getProfile = async(req,res)=>{
+const getProfile = async(req,res,next)=>{
     try {
         const user = req.session.user;
         const userData = await User.findById({_id:user._id});
@@ -190,7 +277,7 @@ const getProfile = async(req,res)=>{
 
         res.render('userProfile',{user:userData,userAddress:userAddress,isLoggedIn:true,page:'Profile'})
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
@@ -199,7 +286,7 @@ const getProfile = async(req,res)=>{
 
 
 
-const postEditProfile = async(req,res)=>{
+const postEditProfile = async(req,res,next)=>{
     try{
 
         const {fname,lname,email,mobile}= req.body;
@@ -209,21 +296,21 @@ const postEditProfile = async(req,res)=>{
         })
         res.redirect('/profile');
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getChangePassword = async(req,res)=>{
+const getChangePassword = async(req,res,next)=>{
     try{
         const user = req.session.user;
         const userData = await User.findById({_id:user._id});
         res.render('changePass',{user:userData,isLoggedIn:true})
     } catch(error){
-        console.log(error.message);
+        next(error) 
     }
 }
 
-const postChangePassword = async(req,res)=>{
+const postChangePassword = async(req,res,next)=>{
     try{
         const user = req.session.user;
         const {oldpassword,newpassword,confirmpassword} = req.body;
@@ -245,24 +332,39 @@ const postChangePassword = async(req,res)=>{
             return res.redirect('/profile/changePassword')
         }
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getShoppingCart  =async(req,res)=>{
+const getShoppingCart  =async(req,res,next)=>{
     try{
 
-        const user = req.session.user;
-        const userData = await User.findById({_id: user._id}).populate('cart.productId');
+        const userId = req.session.user._id;
+        const userData = await User.findById({_id: userId}).populate('cart.productId').populate('cart.productId.offer');
         const cartItems = userData.cart;
+
+        for(const { productId } of cartItems ){
+        
+            await User.updateOne(
+                { _id: userId, 'cart.productId': productId._id },
+                {
+                    $set: {
+                        'cart.$.productPrice': productId.price
+                        
+                    }
+                }
+            )
+        }
+       
         
         res.render('shoppingCart',{isLoggedIn:true,userData,cartItems})
     } catch(error){
-        console.log(error.message);
+        next(error)
+      
     }
 }
 
-const addToCart = async(req,res)=>{
+const addToCart = async(req,res,next)=>{
     try {
         const pdtId = req.params.id;
         const user = req.session.user;
@@ -297,11 +399,11 @@ const addToCart = async(req,res)=>{
     } 
     res.redirect('/shoppingCart')
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const removeCartItems = async(req,res)=>{
+const removeCartItems = async(req,res,next)=>{
     try {
         const pdtId = req.params.id;
         const user = req.session.user;
@@ -314,20 +416,27 @@ const removeCartItems = async(req,res)=>{
         req.session.cartCount--;
         res.redirect('/shoppingCart');
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const updateCart = async(req,res)=>{
+const updateCart = async(req,res,next)=>{
     try{
         const userId = req.session.user._id;
         const quantity = parseInt(req.body.amt);
         const prodId = req.body.prodId;
         const pdtData = await Products.findById({_id: prodId});
-
+        
         const stock = pdtData.quantity;
+        let totalSingle;
+        if(pdtData.offerPrice){
 
-        let totalSingle = quantity*pdtData.price;
+            totalSingle = quantity*pdtData.price;
+
+        }else{
+
+            totalSingle = quantity*pdtData.price;
+        }
         
         if(stock>=quantity){
             await User.updateOne({_id:userId,'cart.productId':prodId}, {
@@ -336,14 +445,24 @@ const updateCart = async(req,res)=>{
             
             const userData = await User.findById({_id:userId}).populate('cart.productId');
             let totalPrice  =0;
-            
-            userData.cart.forEach(pdt =>{
-                totalPrice += pdt.productPrice*pdt.quantity;
-            })
-            
+            let totalDiscount=0;
+
+           let cartItems = userData.cart
+
+            for(let i=0;i<cartItems.length;i++){
+
+                totalPrice += cartItems[i].productId.price*cartItems[i].quantity;                                         
+                if(cartItems[i].productId.offerPrice){
+             totalDiscount += (cartItems[i].productId.price - cartItems[i].productId.offerPrice)*cartItems[i].quantity;
+          
+            }else{
+                totalDiscount += 0
+            }
+            }
+ 
             res.json({
                 status:true,
-                data:{totalPrice,totalSingle}
+                data:{totalPrice,totalSingle,totalDiscount}
             })
         }else{
             res.json({status:false,
@@ -351,35 +470,33 @@ const updateCart = async(req,res)=>{
         }
         
     } catch(error){
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getWishlist = async(req,res)=>{
+const getWishlist = async(req,res,next)=>{
     try {
         
         const userId = req.session.user._id;
         const isLoggedIn = Boolean(req.session.user._id);
         const userData = await User.findById({_id:userId}).populate('wishlist');
-        // console.log(userData+'ud');
         const wishlist = userData.wishlist;
-        // console.log(wishlist+'wl');
+
         res.render('wishlist',{isLoggedIn,wishlist});
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 
 }
 
 
-const addToWishlist = async(req,res)=>{
+const addToWishlist = async(req,res,next)=>{
     try {
         const {productId} = req.params;
         const userId= req.session.user._id;
-         console.log(userId+'ui');
+        
         const userData = await User.findById({_id: userId});
-        // console.log(userData+'asss')
-        // const prodExist = userData.wishlist.find((data)=>data==productId);
+        
          if(!userData.wishlist.includes(productId)){
              userData.wishlist.push(productId);
              await userData.save();
@@ -392,11 +509,11 @@ const addToWishlist = async(req,res)=>{
             res.redirect(`/shop/productOverview/${productId}`);
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const removeWishlist = async(req,res)=>{
+const removeWishlist = async(req,res,next)=>{
     try {
         const {productId} = req.params;
         const userId = req.session.user._id;
@@ -415,18 +532,75 @@ const removeWishlist = async(req,res)=>{
             res.redirect('/wishlist');
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getWalletHistory = async(req,res)=>{
+const getWalletHistory = async(req,res,next)=>{
     try {
         const userId = req.session.user._id;
         const userData  = await User.findById({_id: userId});
         const walletHistory = userData.walletHistory.reverse();
         res.render('walletHistory', {isLoggedIn:true,userData,walletHistory});
     } catch (error) {
-        console.log(error.message);
+        next(error)
+    }
+}
+
+const addMoneyTowallet = async(req,res,next)=>{
+    try {
+        const amount = req.body.amount;
+  
+        const id = crypto.randomBytes(8).toString('hex');
+
+        var options = {
+            amount: amount*100,
+            currency:'INR',
+            receipt :"hello"+id
+        }
+
+
+        instance.orders.create(options,(err,order)=>{
+            if(err){
+            
+                res.json({status:false})
+            }else{
+              
+                res.json({status:true,order})
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+const verifyWalletPayment = async(req,res,next)=>{
+    try {
+        const userId = req.session.user._id;
+        const details = req.body;
+        const amount = parseInt(details.order.amount)/100;
+
+        
+        let hmac = crypto.createHmac('sha256',process.env.key_secret);
+        hmac.update(details.response.razorpay_order_id+'|'+details.response.razorpay_payment_id)
+        hmac = hmac.digest('hex');
+    
+        if(hmac === details.response.razorpay_signature){
+            const walletHistory = {
+                date:new Date(),
+                amount,
+                message:'Deposited via Razorpay'
+            }
+            await User.findByIdAndUpdate({_id:userId},{
+                $inc:{wallet:amount},
+                $push:{walletHistory}
+            });
+            res.json({status:true})
+        }else{
+            res.json({status:false})
+        }
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -450,5 +624,9 @@ module.exports ={
     addToWishlist,
     removeWishlist,
     getWalletHistory,
-
+    getLoginForgetPassword,
+    postLoginForgetPassword,
+    postResentverifyOtp,
+    addMoneyTowallet,
+    verifyWalletPayment
 }

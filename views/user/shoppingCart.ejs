@@ -65,7 +65,8 @@
                     
                             <div class="table-content table-responsive cart-table-content">
                                 <% 
-                                let totalPrice = 0
+                                let totalPrice = 0;
+                                let totalDiscount= 0;
                                 
                                 let currPrice
                                 if(cartItems.length){
@@ -82,6 +83,7 @@
                                             <th>Quantity</th>
                                             <th>Subtotal</th>
                                             <th>action</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -96,7 +98,18 @@
                                                     <a href="#"><img src="/assets/images/productImages/<%= cartItems[i].productId.images[0] %>" alt="product image" class="img-fluid" style="width: 89px;height: auto;"></a>
                                                 </td>
                                                 <td class="product-name"><a href="#"><%= cartItems[i].productId.name %></a></td>
-                                                <%= //currPrice = cartItems[i].productId.price - cartItems[i].productId.discountPrice  %>
+                                                
+                                                <% if(cartItems[i].productId.offerPrice){
+                                          
+                                                    currPrice = cartItems[i].productId.offerPrice
+                                                }else{
+                                                    currPrice = cartItems[i].productId.price  
+                                                 
+                                                }
+                                                %>
+                                                <h5>&#8377;<%= currPrice %></h5>
+
+                                                <span style="color: red;" id="<%= cartItems[i]._id %>msg"></span>
                                                 <td class="product-price-cart">
                                                     <span class="amount">  <%= cartItems[i].productId.price%></span></td>
                                                 <!-- <td class="product-quantity pro-details-quality"> -->
@@ -128,8 +141,18 @@
         
                                                     </td>
                                                 </td>
-                                                <td class="product-subtotal" id="total<%= cartItems[i]._id %>" class="cart__price">&#8377;<%=cartItems[i].productId.price*cartItems[i].quantity  %></td>
-                                                <%  totalPrice += cartItems[i].productId.price*cartItems[i].quantity %>
+                                                <td class="product-subtotal" id="total<%= cartItems[i]._id %>" class="cart__price">&#8377;<%= cartItems[i].productId.price*cartItems[i].quantity  %></td>
+                                                <% 
+                                                totalPrice += cartItems[i].productId.price*cartItems[i].quantity;                                         
+                                                       if(cartItems[i].productId.offerPrice){
+
+                                                    
+                                                    totalDiscount += (cartItems[i].productId.price - cartItems[i].productId.offerPrice)*cartItems[i].quantity;
+
+                                                }else{
+                                                    totalDiscount += 0
+                                                }
+                                                %>
                                                 <td class="product-remove" >
                                                     <form action="/shoppingCart/removeItems/<%= cartItems[i].productId._id %>" method="post">
                                          <button type="submit"><i class="icon_close" ></i></button> 
@@ -259,6 +282,7 @@
                                         <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                                     </div>
                                     <h5>Total price <span id="totalPrice">&#8377; <%= totalPrice %></span></h5>
+                                    <h5>Offer Discount <span id="totalDiscount">&#8377; <%= totalDiscount %></span></h5>
                                     <div class="total-shipping">
                                         <!-- <h5>Total shipping</h5>
                                         <ul>
@@ -266,7 +290,7 @@
                                             <li><input type="checkbox"> Express <span>$30.00</span></li>
                                         </ul>
                                     </div> -->
-                                    <h4 class="grand-totall-title">Grand Total <span id="GrandTotal">&#8377; <%= totalPrice %></span></h4>
+                                    <h4 class="grand-totall-title">Grand Total <span id="amount">&#8377; <%= totalPrice -  totalDiscount %></span></h4>
                                     <a href="/shoppingCart/toCheckout">Proceed to Checkout</a>
                                 </div>
                             </div>
@@ -296,8 +320,6 @@
                 }
                 quantity.innerText = parsedQuantity
                 
-                console.log(maxQuantity+'mq');
-                console.log(parsedQuantity+'pq');
                 ajaxConnection(parsedQuantity, prodId, spanID)
         
                 //btn dis
@@ -340,13 +362,14 @@
                     data: { amt, prodId },
                     success: (res) => {
                         if (res.status == true) {
-                            // console.log(res.data.totalSingle);
+            
                             $(`#total${spanID}`).html(`₹${res.data.totalSingle}`)
                             $(`#totalPrice`).html(`₹${res.data.totalPrice}`)
-                            $(`#GrandTotal`).html(`₹${res.data.totalPrice}`)
+                            // $(`#GrandTotal`).html(`₹${res.data.totalPrice}`)
                             
-                            // $(`#totalDiscount`).html(`-₹${res.data.totalDiscount}`)
-                            // $(`#amount`).html(`₹${res.data.totalPrice - res.data.totalDiscount}`)
+                            $(`#totalDiscount`).html(`₹${res.data.totalDiscount}`)
+                       
+                            $(`#amount`).html(`₹${res.data.totalPrice - res.data.totalDiscount}`)
         
                             document.getElementById(`${spanID}plus`).disabled = false
                             document.getElementById(`${spanID}minus`).disabled = false
@@ -360,3 +383,30 @@
         </script>
 
         <%- include('../partials/script.ejs') %>
+        
+<script src="/assets/js/vendor/modernizr-3.11.7.min.js"></script>
+<script src="/assets/js/vendor/jquery-v3.6.0.min.js"></script>
+<script src="/assets/js/vendor/jquery-migrate-v3.3.2.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/plugins/slick.js"></script>
+<script src="/assets/js/plugins/jquery.syotimer.min.js"></script>
+<script src="/assets/js/plugins/jquery.instagramfeed.min.js"></script>
+<script src="/assets/js/plugins/jquery.nice-select.min.js"></script>
+<script src="/assets/js/plugins/wow.js"></script>
+<script src="/assets/js/plugins/jquery-ui-touch-punch.js"></script>
+<script src="/assets/js/plugins/jquery-ui.js"></script>
+<script src="/assets/js/plugins/magnific-popup.js"></script>
+<script src="/assets/js/plugins/sticky-sidebar.js"></script>
+<script src="/assets/js/plugins/easyzoom.js"></script>
+<script src="/assets/js/plugins/scrollup.js"></script>
+<script src="/assets/js/plugins/ajax-mail.js"></script>
+
+<!-- Use the minified version files listed below for better performance and remove the files listed above  
+<script src="assets/js/vendor/vendor.min.js"></script>
+<script src="assets/js/plugins/plugins.min.js"></script>  -->
+<!-- Main JS -->
+<script src="/assets/js/main.js"></script>
+
+</body>
+
+</html>

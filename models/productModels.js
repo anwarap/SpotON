@@ -37,6 +37,21 @@ const productsSchema = mongoose.Schema({
     isListed:{
         type:Boolean,
         default:true
+    },
+    offerType:{
+        type:String,
+        enum:['Offers','BrandOffers'],
+        required:function(){
+            this.offer !==''
+        }
+    },
+    offer:{
+        type:mongoose.Schema.Types.ObjectId,
+        refPath:'offerType'
+    },
+    offerPrice:{type:Number},
+    offerAppliedBy:{
+        type:String
     }
   
 },{

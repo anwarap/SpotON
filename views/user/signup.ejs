@@ -51,12 +51,9 @@
                                     <div class="login-form-container">
                                         <div class="text-center text-danger">
 
-                                            <% if(typeof signUpMessage !=='undefined' ){ %>
-                                                <p class="" style="    color: red;
-                                                margin-bottom: 5px;">
-                                                    <%= signUpMessage %>
-                                                </p>
-                                                <%} %>
+                                            <div class="text-center text-center">
+                                                <%=locals.emailExistMessage?emailExistMessage:''%> 
+                                            </div>
                                         </div>
                                         <div class="login-register-form">
                                             <form action="/signup" method="post" id="submit-form">
@@ -192,7 +189,7 @@
         const isValidPassword = password => {
             // Regular expression to validate password
             // The password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, and one digit.
-            const re = /^[a-zA-Z\d]{8,}$/;  /** /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ **/
+            const re = /^\d{5,}$/;  /** /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ **/
             return re.test(password);
         };
 
@@ -288,7 +285,7 @@
 
             } else if (confirmPasswordValue !== passwordValue) {
 
-                // document.getElementById('message-error').innerHTML = 'Passwords do not match';
+                 document.getElementById('message-error').innerHTML = 'Passwords do not match';
             } else {
                 console.log("confirm Password ok");
                 setSuccess(confirmPassword);

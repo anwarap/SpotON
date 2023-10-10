@@ -4,6 +4,7 @@ const categoryController = require('../controller/categoryController');
 const productController = require('../controller/productController');
 const orderController = require('../controller/orderController');
 const coupanController = require('../controller/couponController');
+const offerController = require('../controller/offerController');
 const express = require('express');
 const upload = require('../config/multer')
 const router =express();
@@ -55,5 +56,16 @@ router.post('/coupons/addCoupon',coupanController.postAddCoupon);
 router.get('/coupons/editCoupon/:couponId',coupanController.getEditCoupon);
 router.post('/coupons/editCoupon/:couponId',coupanController.postEditCoupon);
 router.get('/coupons/cancelCoupon/:couponId',coupanController.cancelCoupon);
+
+router.get('/offers',offerController.getOffer);
+router.get('/offers/addOffer',offerController.getAddOffer);
+router.get('/offers/editOffer/:offerId',offerController.getEditOffer);
+router.post('/offers/addOffer',offerController.postAddOffer);
+router.post('/offers/editOffer/:offerId',offerController.postEditOffer);
+router.get('/offers/cancelOffer/:offerId',offerController.getCancelOffer);
+router.post('/applyOfferToCategory',categoryController.applyOfferToCategory);
+router.post('/removeCategoryOffer/:catId',categoryController.removeCategoryOffer);
+router.post('/applyOfferToProduct',productController.applyOfferToProduct);
+router.post('/removeProductOffer/:productId',productController.removeProductOffer);
 
 module.exports=router

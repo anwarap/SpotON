@@ -1,30 +1,33 @@
 
-    <!-- All JS is here
-============================================ -->
+<script>
+    function checkEnterKey(event){
+        if(event.key === 'Enter' || event.keyCode === 13){
+            submitQuery();
+        }
+}
 
-<script src="assets/js/vendor/modernizr-3.11.7.min.js"></script>
-<script src="assets/js/vendor/jquery-v3.6.0.min.js"></script>
-<script src="assets/js/vendor/jquery-migrate-v3.3.2.min.js"></script>
-<script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
-<script src="assets/js/plugins/slick.js"></script>
-<script src="assets/js/plugins/jquery.syotimer.min.js"></script>
-<script src="assets/js/plugins/jquery.instagramfeed.min.js"></script>
-<script src="assets/js/plugins/jquery.nice-select.min.js"></script>
-<script src="assets/js/plugins/wow.js"></script>
-<script src="assets/js/plugins/jquery-ui-touch-punch.js"></script>
-<script src="assets/js/plugins/jquery-ui.js"></script>
-<script src="assets/js/plugins/magnific-popup.js"></script>
-<script src="assets/js/plugins/sticky-sidebar.js"></script>
-<script src="assets/js/plugins/easyzoom.js"></script>
-<script src="assets/js/plugins/scrollup.js"></script>
-<script src="assets/js/plugins/ajax-mail.js"></script>
+function submitQuery(){
+    const query = document.getElementById('queryInput').value;
+    const baseURL =  'http://localhost:3000/shop';
+    const urlWithQuery = `${baseURL}?search=${encodeURIComponent(query)}`;
 
-<!-- Use the minified version files listed below for better performance and remove the files listed above  
-<script src="assets/js/vendor/vendor.min.js"></script>
-<script src="assets/js/plugins/plugins.min.js"></script>  -->
-<!-- Main JS -->
-<script src="assets/js/main.js"></script>
+    window.location.href = urlWithQuery;
 
-</body>
+    //To open link in new tab
+    // window.open(urlWithQuery, '_blank');
+}
 
-</html>
+</script>
+
+<script src="/assets/validations/registerValidation.js"></script>
+<script>
+const togglePassword = document.querySelector('#togglePassword')
+const passwordInput = document.querySelector('#password')
+
+togglePassword.addEventListener('click',function (){
+const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+passwordInput.setAttribute('type', type);
+this.classList.toggle('bi-eye-fill')
+this.classList.toggle('bi-eye-slash-fill')
+});
+</script>

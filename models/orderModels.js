@@ -33,6 +33,13 @@ const orderSchema = mongoose.Schema({
             type:String,
             required: true
         },
+        totalDiscount:{
+            type:String,
+            // required: true
+        },
+        offerId:{
+            type:String,
+        },
         status:{
             type:String,
             enum:['Order Confirmed','Shipped','Out For Delivery','Delivered','Cancelled',

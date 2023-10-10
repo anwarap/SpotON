@@ -1,25 +1,25 @@
 const Coupons = require('../models/couponModels');
 const User = require('../models/userModel');
 
-const getCoupons = async(req,res)=>{
+const getCoupons = async(req,res,next)=>{
     try {
         const coupons = await Coupons.find();
         res.render('coupons',{coupons})
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getAddCoupon = async(req,res)=>{
+const getAddCoupon = async(req,res,next)=>{
     try {
         const couponTypes = Coupons.schema.path('discountType').enumValues;
         res.render('addCoupon',{couponTypes})
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const postAddCoupon = async(req,res)=>{
+const postAddCoupon = async(req,res,next)=>{
     try {
         const {discountAmount,discountType,maxDiscountAmount,minPurchase,expiryDate,description}= req.body;
         const code = req.body.code.toUpperCase();
@@ -41,11 +41,11 @@ const postAddCoupon = async(req,res)=>{
         }
         res.redirect('/admin/coupons');
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const getEditCoupon = async(req,res)=>{
+const getEditCoupon = async(req,res,next)=>{
     try {
         const couponId = req.params.couponId;
         const couponData = await Coupons.findById({_id:couponId});
@@ -53,11 +53,11 @@ const getEditCoupon = async(req,res)=>{
 
         res.render('editCoupon',{couponData,couponTypes});
     } catch (error) {
-        
+        next(error)
     }
 }
 
-const postEditCoupon = async(req,res)=>{
+const postEditCoupon = async(req,res,next)=>{
     try {
         const couponId = req.params.couponId;
         const {discountAmount,discountType,maxDiscountAmount,minPurchase,expiryDate,description,couponCount} = req.body;
@@ -75,11 +75,11 @@ const postEditCoupon = async(req,res)=>{
         }
         res.redirect('/admin/coupons')
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const cancelCoupon = async(req,res)=>{
+const cancelCoupon = async(req,res,next)=>{
     try {
         const couponId = req.params.couponId;
         const couponData = await Coupons.findById({_id: couponId});
@@ -87,29 +87,34 @@ const cancelCoupon = async(req,res)=>{
         await couponData.save();
         res.redirect('/admin/coupons');
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const applyCoupon = async(req,res)=>{
+const applyCoupon = async(req,res,next)=>{
     try {
         const userId = req.session.user._id;
         const code = req.body.code.toUpperCase();
-        const couponData = await Coupons.findOne({code})
+        const couponData = await Coupons.findOne({code:code})
         const userData = await User.findById({_id:userId}).populate('cart.productId');
         let cart = userData.cart;
         let totalPrice = 0;
+        let totalDiscountPrice =0;
         cart.forEach(pdt=>{
             totalPrice += pdt.productPrice*pdt.quantity;
+            if(pdt.productId.offerPrice){
+                totalDiscountPrice += (pdt.productPrice - pdt.productId.offerPrice)*pdt.quantity;
+            }else{
+                totalDiscountPrice +=0
+            }
         })
-        const cartAmount = totalPrice;
+        const cartAmount = totalPrice - totalDiscountPrice;
         if(couponData && !couponData.isCancelled){
             if(cartAmount >= couponData.minPurchase){
                 if(couponData.expiryDate >= new Date()){
                     if(couponData.couponCount >= couponData.usedUsers.length){
-                        const isCodeUsed = couponData.usedUsers.find(id => id == userId);
-                        console.log(couponData+'ca');
-                        console.log(isCodeUsed);
+                        const isCodeUsed = couponData.usedUsers.find((id) => id == userId);
+
                         if(!isCodeUsed){
                             req.session.coupon = couponData;
                             let payAmount;
@@ -118,12 +123,12 @@ const applyCoupon = async(req,res)=>{
                             }else if(couponData.discountType === 'Percentage'){
                                 const reducePrice = cartAmount*(couponData.discountAmount/100) ;
                                 if(reducePrice >= couponData.maxDiscountAmount){
-                                    payAmount = cartAmount - couponData.maxDiscountAmount
+                                    payAmount =Math.round(cartAmount - couponData.maxDiscountAmount) 
                                 }else{
-                                    payAmount = cartAmount - reducePrice
+                                    payAmount =Math.round(cartAmount - reducePrice) 
                                 }
                             }
-                            const couponDiscount = cartAmount -payAmount;
+                            const couponDiscount =Math.round(cartAmount -payAmount);
                             let isWalletHasPayAmount = false;
                             if(userData.wallet >= payAmount){
                                 isWalletHasPayAmount = true;
@@ -153,16 +158,16 @@ const applyCoupon = async(req,res)=>{
             res.json({status:false,message:'coupon doesnot exist'})
         }
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
-const removeCoupon = async(req,res)=>{
+const removeCoupon = async(req,res,next)=>{
     try {
-        req.session.couponData = null;
+        req.session.coupon = null;
         res.json({status:true})
     } catch (error) {
-        console.log(error.message);
+        next(error);
     }
 }
 

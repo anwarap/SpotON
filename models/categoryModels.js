@@ -13,7 +13,13 @@ const categoriesSchema = mongoose.Schema({
     isListed:{
         type:Boolean,
         default:true
+    },
+    offer:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Offers'
     }
+},{
+    timestamps:true,
 });
 
 module.exports = mongoose.model("Categories",categoriesSchema);

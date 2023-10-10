@@ -146,13 +146,17 @@
                                 </div>
                             </div> -->
                             <p>
-                                <%=// pdtData.description %>
+                                <%= pdtData.description %>
                             </p>
                             <div class="pro-details-price">
-                                <span class="new-price">
+                                <!-- <span class="new-price">
                                     &#8377; 
-                                    <%= pdtData.price %>
-                                </span>
+                                    <%= //pdtData.price %>
+                                </span> -->
+                                <div class="d-flex justify-content-center align-items-center" >
+                                    <h3>&#8377;<%= currPrice  %> <br><span>&#8377;<%= pdtData.price %></span></h3>
+                                    <h4 class="mx-3 text-success"><%= discountPercentage %>% Off </h4 >
+                                </div>
                                 <!-- <span class="old-price">95.72</span> -->
                             </div>
                             <!-- <div class="pro-details-color-wrap">
@@ -168,7 +172,7 @@
                                     </ul>
                                 </div>
                             </div> -->
-                            <!-- <div class="pro-details-size">
+                             <!-- <div class="pro-details-size">
                                 <span>Size:</span>
                                 <div class="pro-details-size-content">
                                     <ul>
@@ -179,7 +183,7 @@
                                         <li><a href="#">XL</a></li>
                                     </ul>
                                 </div>
-                            </div> -->
+                            </div>  -->
                             <div class="pro-details-quality">
                                 <!-- <span>Quantity:</span> -->
                                 <div class="cart-plus-minus">

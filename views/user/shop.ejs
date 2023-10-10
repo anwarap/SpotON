@@ -62,8 +62,30 @@
             <div class="container">
                 <div class="row flex-row-reverse">
                     <div class="col-lg-9">
-                        <!-- <div class="shop-topbar-wrapper">
-                            <div class="shop-topbar-left">
+                        
+                        <div class="shop-topbar-wrapper">
+                            <!-- <div class="col-lg-9"> -->
+                                <div class="row">
+                                    <div class="col text-right mr-2 my-2">
+            
+                                        <a class="text-dark <% if(sortValue == 1){ %> font-weight-bold <% } %>" 
+                                            href="?sortValue=1&category=<%=category  %>&brand=<%=brand  %>&minPrice=<%=minPrice  %>&maxPrice=<%=maxPrice  %>&search=<%=search  %>">
+                                            &nbsp;Latest&nbsp;
+                                        </a> |
+            
+                                        <a class="text-dark <% if(sortValue == 2){ %> font-weight-bold <% } %>" 
+                                            href="?sortValue=2&category=<%=category  %>&brand=<%=brand  %>&minPrice=<%=minPrice  %>&maxPrice=<%=maxPrice  %>&search=<%=search  %>">
+                                            &nbsp;Price Low to High&nbsp;
+                                        </a> |
+            
+                                        <a class="text-dark <% if(sortValue == 3){ %> font-weight-bold <% } %>" 
+                                            href="?sortValue=3&category=<%=category  %>&brand=<%=brand  %>&minPrice=<%=minPrice  %>&maxPrice=<%=maxPrice  %>&search=<%=search  %>">
+                                            &nbsp;Price High to Low&nbsp;
+                                        </a>
+            
+                                    </div>
+                                </div>
+                            <!-- <div class="shop-topbar-left">
                                 <div class="view-mode nav">
                                     <a class="active" href="#shop-1" data-toggle="tab"><i class="icon-grid"></i></a>
                                     <a href="#shop-2" data-toggle="tab"><i class="icon-menu"></i></a>
@@ -87,8 +109,8 @@
                                         <option value=""> price</option>
                                     </select>
                                 </div>
-                            </div>
-                        </div> -->
+                            </div> -->
+                        </div>
                         <div class="shop-bottom-area">
                             <div class="tab-content jump">
                                 <div id="shop-1" class="tab-pane active">
@@ -103,35 +125,49 @@
                                                         <div class="product-img product-img-zoom mb-15">
                                                             <a href="/shop/productOverview/<%= pdtsData[i]._id %>">
                                                                 <img src="/assets/images/productImages/<%= pdtsData[i].images[0] %>" alt="">
+                                                                <% 
+                                                                if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
+                                                                    console.log(pdtsData[i].offer.name)
+                                                                    %>
+                                                                    <!-- <span class="label"></span> -->
+                                                            <span class="pro-badge left bg-red"><%= pdtsData[i].offer.name %></span>
+
+                                                                    <%  
+                                                                }
+                                                                %>
                                                             </a>
-                                                            <!-- <span class="pro-badge left bg-red">-20%</span> -->
                                                             <div class="product-action-2 tooltip-style-2">
                                                                     
                                                                    
                                                                 <% 
-                                                                if(wishlist && wishlist.length && wishlist.includes(productData[i]._id)){
+                                                                if(wishlist.includes(pdtsData[i]._id)){
+                                                                    
                                                                     %> 
-                                                                    <button title="Wishlist"> <a class="bi bi-heart-fill text-danger" href="/removeWishlist/<%= pdtsData[i]._id %>?returnPage=shop"></a></button>
+                                                                    <button title="Wishlist"> <a  href="/removeWishlist/<%= pdtsData[i]._id %>?returnPage=shop"><i class="bi bi-heart-fill text-danger"></i></a></button>
                                                                     
                                                                     <% }else{ %>
-                                                                        
-                                                                        <button title="Wishlist"> <a class="bi bi-heart" href="/addToWishlist/<%= pdtsData[i]._id %>?returnPage=shop"></a></button>
+                                                                       
+                                                                        <button title="Wishlist"> <a  href="/addToWishlist/<%= pdtsData[i]._id %>?returnPage=shop"><i class="bi bi-heart"></i></a></button>
                                                                         <% } %>
                                                            
                                                            
-                                                            
-                                                            <!-- <button title="Wishlist"> <a class="icon-heart" ></a><i class=""></i></button> -->
-
-
-                                                            <!-- <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button> -->
-                                                            <!-- <button title="Compare"><i class="icon-refresh"></i></button> -->
-
-
-                                                                <!-- <button title="Wishlist"><i class="icon-heart"></i></button> -->
-                                                                <!-- <button title="Quick View" data-toggle="modal" data-target="#exampleModal"><i class="icon-size-fullscreen icons"></i></button> -->
-                                                                <!-- <button title="Compare"><i class="icon-refresh"></i></button> -->
+                                                
                                                             </div>
                                                         </div>
+                                                        <% 
+                                                            let currPrice;
+                                                            let discount=0;
+                                                            let dis=0;
+                                                            if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
+                                                                discount = pdtsData[i].offer.discount;
+                                                                dis = Math.round((pdtsData[i].price*discount)/100);
+                                                                currPrice = pdtsData[i].price-dis
+                                                               
+                                                            }else{
+                                                                currPrice = pdtsData[i].price;
+                                                            }
+                                                            
+                                                            %>
                                                         <div class="product-content-wrap-2 text-center">
 
                                                             <!-- <div class="product-rating-wrap">
@@ -146,8 +182,8 @@
                                                             </div> -->
                                                             <h3><a href="/shop/productOverview"> <%= pdtsData[i].name %></a></h3>
                                                             <div class="product-price-2">
-                                                                <span class="new-price">&#8377; <%= pdtsData[i].price %></span>
-                                                                <!-- <span class="old-price">&#8377; <%= //pdtsData[i].price %></span> -->
+                                                                <span class="new-price">&#8377; <%= currPrice %></span>
+                                                                <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
                                                             </div>
                                                         </div>
                                                         <div class="product-content-wrap-2 product-content-position text-center">
@@ -163,15 +199,18 @@
                                                             </div> -->
                                                             <h3><a href="product-details.html"><%= pdtsData[i].name %></a></h3>
                                                             <div class="product-price-2">
-                                                                <span class="new-price">&#8377; <%= pdtsData[i].price %></span> 
-                                                                <!-- <span class="old-price">&#8377; <%= //pdtsData[i].price %></span> -->
+                                                                <span class="new-price">&#8377; <%= currPrice %></span> 
+                                                                <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
                                                             </div>
-                                                            <!-- <form action="/shoppingCart" <%= //pdtsData[i]._id %>
-
-                                                                <div class="pro-add-to-cart" >
-                                                                    <button title="Add to Cart">Add To Cart</button>
-                                                                </div>
-                                                            </form> -->
+                                                            
+                                                            
+                                                             <div class="d-flex align-content-center">
+                                                
+                                                <div>
+                                                    
+                                                    <strong class="ml-3" style="color: green;"><%= discount %>% off</strong>
+                                                </div>
+                                            </div>
                                                             <form action="/shop/addToCart/<%= pdtsData[i]._id %>">
                                                                 <div class="pro-add-to-cart"  href="#" >
                                                                     <button title="Add to Cart" >Add To Cart</button>
@@ -1118,6 +1157,8 @@
                                     </div>
                                 </div>
                             </div>
+                            
+            
                              <!-- <div class="sidebar-widget shop-sidebar-border mb-40 pt-40">
                                 <h4 class="sidebar-widget-title">Refine By </h4>
                                 <div class="sidebar-widget-list">
