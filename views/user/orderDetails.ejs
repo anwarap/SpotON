@@ -149,9 +149,15 @@
                             <%  
                         }else if(status == 4){
                             %>
+                            <% if(rdate <=7) { %>
                             <div class="col-md-2 d-flex justify-content-center align-items-center">
-                                <a href="/returnOrder/<%= orderData._id %>" class="btn btn-warning">Return</a>
+                                <button style="border: none;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                class="popupBTN  btn btn-warning" data-id="<%= orderData._id  %>">Return
+                                
+                                </button>
                             </div>
+                            <% } %>
+                            <!-- <a href="/returnOrder/<%=//orderData._id %>" class="btn btn-warning">Return</a> -->
                             <% 
                         }else if(status == 5){
                             %>
@@ -249,7 +255,15 @@
                                                 <%  
                                             }else if(pdt.status == 'Delivered'){
                                                 %>
-                                                <a href="/returnSinglePrdt/<%= orderData._id %>/<%= pdt._id %>" class="btn btn-warning"> Return </a>
+                                                <% if(rdate <=7) { %>
+                                                    <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                        <button style="border: none;" data-bs-toggle="modal" data-bs-target="#exampleModa"
+                                                        class="popupBTN  btn btn-warning" data-id="<%= orderData._id  %>">Return
+                                                        
+                                                        </button>
+                                                    </div>
+                                                    <% } %>
+                                                <!-- <a href="/returnSinglePrdt/<%= //orderData._id %>/<%= //pdt._id %>" class="btn btn-warning"> Return </a> -->
                                                 <%  
                                             }
                                             %>
@@ -259,6 +273,35 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade " id="exampleModa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Reason For the Return</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="/returnSinglePrdt/<%= orderData._id %>/<%= pdt._id %>" method="post">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="orderId" id="orderId" value="">
+                                            <small for="status">Reason For the Return</small>
+                                            <select name="status" class="form-control border" id="status">
+                                                <option value="Shipped">Colour Doesnot Like</option>
+                                                <option value="Out For Delivery">Not Fit</option>
+                                                <option value="Delivered">Damage</option>
+                                            </select>
+                        
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Return</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Confirmation Modal -->
                     <%  
                 }
                 %>
@@ -271,7 +314,37 @@
         </div>
     </div>
 </section>
-<!-- Confirmation Modal -->
+ <!-- Modal Start -->
+ <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reason For the Return</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form action="/returnOrder/<%= orderData._id %>" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="orderId" id="orderId" value="">
+                    <small for="status">Reason For the Return</small>
+                    <select name="status" class="form-control border" id="status">
+                        <option value="Shipped">Colour Doesnot Like</option>
+                        <option value="Out For Delivery">Not Fit</option>
+                        <option value="Delivered">Damage</option>
+                    </select>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Return</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal End  -->
+
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
 aria-hidden="true">
 <div class="modal-dialog">

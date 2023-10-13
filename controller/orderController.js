@@ -48,15 +48,15 @@ const placeOrder = async(req,res,next)=>{
         cart.forEach((pdt)=>{
             let discountPrice;
             let totalDiscount;
-            console.log(pdt.productId.offerPrice+'lll');
-            console.log(pdt.productId.price+'gggg');
+            // console.log(pdt.productId.offerPrice+'lll');
+            // console.log(pdt.productId.price+'gggg');
             if(pdt.productId.offerPrice){
                 discountPrice = pdt.productId.price - pdt.productId.offerPrice;;
                 totalDiscount = discountPrice*pdt.quantity;
             }else{
                 totalDiscount=0
             }
-            console.log(totalDiscount+'fhfh');
+            // console.log(totalDiscount+'fhfh');
             const product = {
                 productId: pdt.productId._id,
                 productName: pdt.productId.name,
@@ -117,7 +117,8 @@ const placeOrder = async(req,res,next)=>{
                     status:'Order Confirmed',
                     couponCode,
                     couponDiscount,
-                    couponDiscountType
+                    couponDiscountType,
+                    date:new Date()
                 }).save()
                 
                             for(const {productId,quantity}of cart){
@@ -145,7 +146,7 @@ const placeOrder = async(req,res,next)=>{
             if(isWalletSelected){
                 totalPrice = totalPrice-walletAmount;
             }
-            console.log(totalPrice+'kkk');
+            // console.log(totalPrice+'kkk');
             var options ={
                 amount:totalPrice*100,
                 currency:'INR',
@@ -169,7 +170,8 @@ const placeOrder = async(req,res,next)=>{
                 status: 'Order Confirmed',
                 couponCode,
                 couponDiscount,
-                couponDiscountType
+                couponDiscountType,
+                date: new Date()
             }).save()
 
 
@@ -250,7 +252,8 @@ const verifyPayment = async(req,res,next)=>{
                 status:'Order Confirmed',
                 couponCode,
                 couponDiscount,
-                couponDiscountType
+                couponDiscountType,
+                date:new Date()
 
             }).save()
 
@@ -339,9 +342,16 @@ const getOrderDetails = async(req,res,next)=>{
         break;
         case 'Returned':status = 8;
         break;
+        
       }
+
+      let orderedDate = new Date(orderData.date)
+      const day1 =orderedDate.getDate();
+      const date = new Date();
+      const day2 = date.getDate();
+      const rdate = Math.abs(day2-day1)
     
-      res.render('orderDetails',{isLoggedIn:true,orderData,status})
+      res.render('orderDetails',{isLoggedIn:true,orderData,status,rdate})
     } catch (error) {
         next(error)
     }
@@ -684,7 +694,7 @@ const approveReturn = async(req,res,next)=>{
        const orderId = req.params.orderId;
        const orderData = await Orders.findById({_id: orderId}) ;
        let refundAmount = 0;
-       console.log(orderData+'ooooo');
+    //    console.log(orderData+'ooooo');
        for(const pdt of orderData.products){
         if(pdt.status === 'Pending Return Approval'){
             pdt.status = 'Returned'

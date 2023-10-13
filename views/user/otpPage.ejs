@@ -13,7 +13,12 @@
 
     <!-- All CSS is here
 	============================================ -->
-
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/x-icon"
+        href="https://i.pinimg.com/1200x/e2/93/8d/e2938d67761f2fca54c4c8da54bc2793.jpg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/vendor/signericafat.css">
     <link rel="stylesheet" href="assets/css/vendor/cerebrisans.css">
@@ -60,14 +65,29 @@
                              <%}%>
                                      </div>
                                         <div class="login-register-form">
-                                            <form action="/otpverify" method="post">
-                                                <input type="number" name="otp" placeholder="verify OTP">
+                                            <form action="/otpverify" method="post" id="submit-form">
+                                                <label for="firstname-input" class="form-label"></label>
+                                                <input type="hidden" value="add ejs symbol fname ejs symbol close">
+
+                                                <input type="text" name="otp" placeholder="verify OTP"  id="otp-input">
                                                 
                                                 <div class="button-box">
-                                                    <button type="submit">Verify</button>
+                                                    <button type="submit" id="verifyButton">Verify</button>
                                                 </div>
-                                             
+                                                <div class="text-danger text-center" id="message-error"></div>
+                                                <div>
+                                                    <input type="hidden" name="email" value="<%= email %>" class="form-control">
+                                                </div>
+                                                <br> 
+                                                <div id="countdown-container">
+                                                    <span id="countdown"></span>
+                                                </div>
+                                                <div class="reset" id="resend-container" style="color: rgb(255, 0, 0);">
+                                                    you didnot get the otp before the time ends click here
+                                                    <a href="/resend-otp?id=<%= email %>">Resend OTP</a>
+                                                </div>
                                             </form>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -80,10 +100,93 @@
         </div>
        
        
+        <script>
+            var timerReachedZero = false;
+            function startTimer(duration,display){
+                var timer = duration,minutes,seconds;
+                var timerInterval = setInterval(function(){
+                    minutes = parseInt(timer/60,10);
+                    seconds = parseInt(timer %60,10);
+                    minutes = minutes<10?"0" + minutes: minutes;
+                    seconds = seconds<10?"0" + seconds:seconds;
+                    display.textContent = minutes + ":" + seconds;
+                    if(timer <= 0){
+                        display.textContent = "Time's up!";
+                        /**Hide the countdown container **/
+                        document.getElementById("countdown-container").style.display = "none";
+                        /**Display the verify button**/
+                        document.querySelector(".button-verify").disabled= true;
+                        /**Show the resend button**/
+                        document.getElementById("resend-container").style.display = "block";
+                        /**Set the variable to true**/
+                        timerReachedZero = true;
+                        clearInterval(timerInterval);
+                    }else{
+                        timer--;
+                    }
+                },1000);
+            }
+            /**Start the countdown when the page load**/
+            window.onload = function(){
+                var oneMinute = 60,
+                display = document.querySelector('#countdown');
+                startTimer(oneMinute,display);
+            };
+        </script>
+        <script>
+            /** Form Validation Start **/
+            const form = document.getElementById('submit-form');
+            const otp = document.getElementById('otp-input');
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                validateInput();
+            });
+            const setError = (element, message) => {
+                const inputControl = element.parentElement;
+                // const errorDisplay = inputControl.querySelector('.error');
+                // errorDisplay.innerText=message;
+                element.placeholder = message;
+                otp.style.border = '1.5px solid red';
+                inputControl.classList.add('error');
+                inputControl.classList.remove('success');
+            };
+            const setSuccess = element => {
+                const inputControl = element.parentElement;
+                // const errorDisplay= inputControl.querySelector('.error');
+                // errorDisplay.innerText='';
+                element.placeholder = '';
+                inputControl.classList.add('success');
+                inputControl.classList.remove('error');
+            };
+            const isValidOTP = otp => {
+                const rename = /^[0-9]{6}$/
+                return rename.test(Number(otp));
+            };
+            const validateInput = () => {
+                console.log("Entered to validate input");
+                const otpValue = otp.value.trim();
+                if (otpValue === '') {
+                    setError(otp, 'Please enter OTP');
+                } else if (!isValidOTP(otpValue)) {
+                    //setError(username);
+                    document.getElementById('message-error').innerHTML = 'Recheck and Enter your OTP';
+                } else {
+                    console.log("OTP Ok");
+                    setSuccess(otp);
+                }
+                //FOR SUBMISSION:
+                const inputs = [otp];
+                if (inputs.every(input => input.parentElement.classList.contains('success'))) {
+                    form.submit();
+                    console.log("hidd")
+                }
+            };
+        </script>
     
 
     <!-- All JS is here
 ============================================ -->
+
 
     <script src="assets/js/vendor/modernizr-3.11.7.min.js"></script>
     <script src="assets/js/vendor/jquery-v3.6.0.min.js"></script>

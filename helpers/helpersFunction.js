@@ -19,7 +19,7 @@ function getMonthName(monthNumber) {
 }
 
 const updateWallet = async(userId, amount, message) => {
-
+    console.log('updated');
     const walletHistory = {
         date: new Date(),
         amount,

@@ -101,7 +101,7 @@ const applyOfferToCategory = async(req,res,next) =>{
 
         for(const pdt of products){
             const actualPrice = pdt.price;
-            console.log(actualPrice+'actualPrice');
+            // console.log(actualPrice+'actualPrice');
             let offerPrice = 0;
             if(offerData.status == 'Available'){
                 offerPrice = Math.round(actualPrice - ((actualPrice*offerData.discount)/100))

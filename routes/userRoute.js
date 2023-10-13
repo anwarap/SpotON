@@ -17,7 +17,8 @@ router.get('/login', isUserLoggedOut,userController.loadLogin);
 router.post('/login', isUserLoggedOut,userController.postLogin);
 router.get('/forgotpassword',userController.getLoginForgetPassword);
 router.post('/login-resetpassword',userController.postLoginForgetPassword);
-router.post('/resetPassword-verifyotp',userController.postResentverifyOtp)
+router.post('/resetPassword-verifyotp',userController.postResentverifyOtp);
+router.get('/resend-otp',userController.getResendOtp);
 
 
 router.get('/logout',userController.loadLogout)
@@ -60,8 +61,8 @@ router.get('/profile/myOrder',orderController.getMyOrder);
 router.get('/viewOrderDetails/:orderId',orderController.getOrderDetails)
 router.get('/cancelOrder/:orderId',orderController.cancelOrder);
 router.get('/cancelSinglePdt/:orderId/:pdtId',orderController.cancelSinglePdt);
-router.get('/returnOrder/:orderId',orderController.returnOrder);
-router.get('/returnSingleprdt/:orderId/:pdtId',orderController.returnSinglePdt);
+router.post('/returnOrder/:orderId',orderController.returnOrder);
+router.post('/returnSingleprdt/:orderId/:pdtId',orderController.returnSinglePdt);
 router.get('/downloadInvoice/:orderId',orderController.getInvoice);
 
 router.get('/profile/walletHistory',userController.getWalletHistory);

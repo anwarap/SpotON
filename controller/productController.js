@@ -214,11 +214,11 @@ const getShop = async(req,res,next)=>{
         let pdtsData;
         if(sortValue == 1){
             pdtsData = await Products.find(query).populate('category').populate('offer').sort({createdAt:-1}).limit(limit*1).skip((page - 1)*limit);
-            console.log(pdtsData+'pdtsData');
+            // console.log(pdtsData+'pdtsData');
         }else{
             pdtsData = await Products.find(query).populate('category').populate('offer');
             pdtsData.forEach((pdt)=>{
-                console.log(pdt.offerPrice+'pddd');
+                // console.log(pdt.offerPrice+'pddd');
                 if(pdt.offerPrice){
                     pdt.actualPrice = pdt.offerPrice
                 }else{
@@ -328,12 +328,12 @@ const applyOfferToProduct = async(req,res,next)=>{
         const product = await Products.findById({_id:productId});
         const offerData = await Offers.findById({_id:offerId});
         const actualPrice = product.price;
-        console.log(product+'products');
-        console.log(actualPrice+'acp');
+        // console.log(product+'products');
+        // console.log(actualPrice+'acp');
         let offerPrice  =0;
         if(offerData.status == 'Available'){
             offerPrice =Math.round(actualPrice -((actualPrice*offerData.discount)/100));
-            console.log(offerPrice+'apply');
+            // console.log(offerPrice+'apply');
         }
         await Products.findByIdAndUpdate({_id:productId},{
             $set:{

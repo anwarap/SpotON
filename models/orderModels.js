@@ -58,6 +58,10 @@ const orderSchema = mongoose.Schema({
                 'Pending Return Approval','Returned'],
         required:true
     },
+    date:{
+        type:String,
+        required:true
+    },
     couponCode:{
         type:String,
     },

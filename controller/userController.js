@@ -6,6 +6,7 @@ const bcrypt=require('bcrypt');
 const dotenv = require('dotenv').config();
 const crypto = require('crypto');
 const {updateWallet} = require('../helpers/helpersFunction');
+const referralCode = require('../helpers/generator')
 const nodemailer = require('nodemailer');
 const RazorPay = require('razorpay');
 
@@ -69,7 +70,12 @@ const loadSignup = async(req,res,next)=>{
     try {
         var emailExistMessage = req.app.locals.specialContext;
         req.app.locals.specialContext = null;
-        res.render('signup',{title:"SignUp",emailExistMessage});
+        req.session.referral = '';
+        if (req.query.referral) {
+            req.session.referral = req.query.referral;
+            //console.log(req.query.referral);
+        }
+        res.render('signup',{title:"SignUp",referral: req.session.referral,emailExistMessage});
     } catch (error) {
         next(error)
     }
@@ -187,9 +193,12 @@ const postResentverifyOtp  =async(req,res,next)=>{
 }
    
 
+
+
 const postSignup = async(req,res,next)=>{
     try{
       const {fname,lname,email,mobile,password,cpassword} = req.body;
+      
     if(password === cpassword){
         const userData = await User.findOne({email:email});
         if(userData){
@@ -203,7 +212,7 @@ const postSignup = async(req,res,next)=>{
         req.session.email = email; 
         req.session.mobile = mobile;
         req.session.password = password;
-     
+        console.log(OTP+'otp');
         sendVerifyMail(fname, lname, email, OTP);
         res.render('otpPage',{title:"OTP verify page",fname,lname,email,mobile,password,emailExistMessage:"please check your email"})
 
@@ -250,13 +259,36 @@ const sendVerifyMail = async(fname,lname,email,OTP,next)=>{
 const postOTPVerify = async(req,res,next)=>{
     try {
         const enteredOtp = Number(req.body.otp);
-        const sharedOtp = Number(req.session.OTP);   
-        const {fname,lname,email,mobile,password}  = req.session;
-
+        const sharedOtp = Number(req.session.OTP);  
+        const {fname,lname,email,mobile,password,referral}  = req.session;
+        console.log(sharedOtp+'otp');
        if(enteredOtp == sharedOtp){
            const secPassword = await securePassword(password);
-           const user = new User({fname,lname,email,mobile,password:secPassword});
-           const newUserData = await user.save();
+           const newReferralCode = await referralCode()
+        //    console.log(newReferralCode+'rrefferal,');
+        let newUserData ;
+           if(referral){
+            const isReferrerExist = await User.findOne({referralCode:referral});
+            let joiningBonus = 100;
+            if(isReferrerExist){
+                // console.log('lll');
+                let refereredUserId = isReferrerExist._id;
+
+                const walletHistory = {
+                    date:new Date(),
+                    amount:joiningBonus ,
+                    message:'Joining Bonus'
+                }
+                newUserData = await  new User({fname,lname,email,mobile,password:secPassword,
+                    referralCode: newReferralCode, referredBy: referral, isReferred: true, wallet: 100,walletHistory}).save();
+                    // console.log(newUserData+'ddd');
+                updateWallet(refereredUserId, 100, 'Referral Reward')
+
+            }
+           }else{
+            newUserData = await  new User({fname,lname,email,mobile,password:secPassword, referralCode: newReferralCode, isReferred: false}).save();
+           }
+           
            req.session.userId = newUserData._id;
            return res.redirect('/login'); 
         }else{
@@ -266,6 +298,18 @@ const postOTPVerify = async(req,res,next)=>{
 } catch (error) {
     next(error)
 }
+}
+
+const getResendOtp = async(req,res,next)=>{
+    try {
+        const email = req.query.id
+        const resendedOTP = getOTP()
+        req.session.OTP = resendedOTP
+        sendVerifyMail(req.session.fname, req.session.lname, email, resendedOTP);
+        res.render('otpPage', { title: 'Verification Page', fname: req.session.fname, lname: req.session.lname, email: req.session.email, mobno: req.session.mobile, password: req.session.password, message: 'OTP resended successfully,Please check your email' });
+    } catch (error) {
+        next(error)
+    }
 }
 
 
@@ -628,5 +672,6 @@ module.exports ={
     postLoginForgetPassword,
     postResentverifyOtp,
     addMoneyTowallet,
-    verifyWalletPayment
+    verifyWalletPayment,
+    getResendOtp
 }
