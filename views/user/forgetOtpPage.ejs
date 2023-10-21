@@ -47,19 +47,17 @@
                                 <a class="active" data-toggle="tab" href="#login">
                                     <h4>otp verification page login </h4>
                                 </a>
+                                <% if(typeof message !=='undefined' ){ %>
+                                    <p class="text-success fw-bold">
+                                        <%= message %>
+                                    </p>
+                                    <%} %>
                            
                             </div>
                             <div class="tab-content">
                                 <div id="login" class="tab-pane active">
                                     <div class="login-form-container">
-                                        <div class="text-center text-danger">
-                                            <% if(typeof message !=="undefined"){%>
-                                 <p class="" style="    color: red;
-                                 margin-bottom: 5px;">
-                                     <%= message %>
-                                 </p>
-                             <%}%>
-                                     </div>
+                            
                                      <div class="text-center text-success">
                                         <%=locals.otpErrorMessage?otpErrorMessage:''%> 
                                     </div>
@@ -74,12 +72,14 @@
                                                         <input type="hidden" name="email" value="<%= email %>" class="form-control">
                                                     </div>
                                                     <br> 
-                                                    <div id="countdown-container">
+                                                    <!-- <div id="countdown-container">
                                                         <span id="countdown"></span>
+                                                    </div> -->
+                                                    <div class="reset" id="resend-container" style="color: rgb(255, 0, 0);">
+                                                        you didnot get the otp  click here
+                                                        <a href="/forgot-resend?id=<%= email %>">Resend OTP</a>
                                                     </div>
-                                                    <div class="reset" id="resend-container" style="display: none;">
-                                                        <a href="/resend-otp?id=<%= email %>" class="text-danger">Resend OTP</a>
-                                                    </div>
+                                                   
                                                 </div>
                                             </div>
                                             </form>

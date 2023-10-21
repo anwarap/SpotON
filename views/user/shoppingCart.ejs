@@ -107,37 +107,37 @@
                                                  
                                                 }
                                                 %>
-                                                <h5>&#8377;<%= currPrice %></h5>
+                                                <!-- <h5>&#8377;<%= //currPrice %></h5> -->
 
-                                                <span style="color: red;" id="<%= cartItems[i]._id %>msg"></span>
                                                 <td class="product-price-cart">
                                                     <span class="amount">  <%= cartItems[i].productId.price%></span></td>
-                                                <!-- <td class="product-quantity pro-details-quality"> -->
-                                                  
-                                                    <!-- <div class="cart-plus-minus">
-                                                        <input class="cart-plus-minus-box" type="text" name="qtybutton" value="<%=//cartItems[i].quantity  %>">
-                                                    </div> -->
-                                                    <td class="quantity__item">
-                                                        <div class="text-nowrap">
+                                                    <!-- <td class="product-quantity pro-details-quality"> -->
+                                                        
+                                                        <!-- <div class="cart-plus-minus">
+                                                            <input class="cart-plus-minus-box" type="text" name="qtybutton" value="<%=//cartItems[i].quantity  %>">
+                                                        </div> -->
+                                                        <td class="quantity__item">
+                                                            <div class="text-nowrap">
             
-                                                            <button id="<%= cartItems[i]._id %>minus"
+                                                                <button id="<%= cartItems[i]._id %>minus"
                                                                     onclick="updateCart(-1,'<%= cartItems[i].productId._id%>','<%= cartItems[i]._id %>')">
                                                                     -
-                                                            </button>
-            
-                                                            <span class="mx-2 quantity"  id="<%= cartItems[i]._id %>" data-max-quantity="<%= cartItems[i].productId.quantity %>">
-                                                                <%= cartItems[i].quantity %>
+                                                                </button>
+                                                                
+                                                                <span class="mx-2 quantity"  id="<%= cartItems[i]._id %>" data-max-quantity="<%= cartItems[i].productId.quantity %>">
+                                                                    <%= cartItems[i].quantity %>
                                                             </span>
-            
+                                                            
                                                             <button id="<%= cartItems[i]._id %>plus"
                                                                 onclick="updateCart(1,'<%= cartItems[i].productId._id%>','<%= cartItems[i]._id %>')">
                                                                 +
                                                             </button>
                                                             <br>
                                                             <span style="color: red;" id="<%= cartItems[i]._id %>msg"></span>
-            
+                                                            
                                                         </div>
                                                       
+                                                        <span style="color: red;" id="<%= cartItems[i]._id %>msg"></span>
         
                                                     </td>
                                                 </td>

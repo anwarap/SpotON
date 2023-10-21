@@ -14,6 +14,7 @@ const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date(
                 }
             }
         )
+        
 
         let totalIncome = 0;
         for( const order of ordersData){
@@ -23,6 +24,7 @@ const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date(
                 }
             }
         }
+        console.log(totalIncome+'totaslIncome');
         
         return formatNum(totalIncome)
 
@@ -52,6 +54,7 @@ const countSales = async(startDate = new Date('1990-01-01'), endDate = new Date(
             }
         }
 
+        console.log(salesCount+'sales count');
         return salesCount;
 
     } catch (error) {
@@ -65,7 +68,7 @@ const findSalesData = async(startDate = new Date('1990-01-01'), endDate = new Da
             {
                 $match: {
                     status: 'Delivered',
-                    date: {
+                    createdAt: {
                         $gte: startDate,
                         $lt: endDate
                     }
@@ -84,6 +87,7 @@ const findSalesData = async(startDate = new Date('1990-01-01'), endDate = new Da
 
         const orderData = await Orders.aggregate(pipeline)
         return orderData
+        console.log(orderData+'oddd');
 
     } catch (error) {
         throw error
@@ -97,7 +101,7 @@ const findSalesDataOfYear = async(year) => {
             {
                 $match: {
                     status: 'Delivered',
-                    date: {
+                    createdAt: {
                         $gte: new Date(`${year}-01-01`),
                         $lt: new Date(`${year + 1}-01-01`)
                     }
@@ -127,12 +131,15 @@ const findSalesDataOfMonth = async(year, month) => {
 
         const firstDayOfMonth = new Date(year, month - 1, 1);
         const lastDayOfMonth = new Date(year, month, 0);
+        console.log(firstDayOfMonth+'firsst');
+        console.log(lastDayOfMonth +'last');
+        
 
         const pipeline = [
             {
                 $match: {
                     status: 'Delivered',
-                    date: {
+                    createdAt: {
                         $gte: firstDayOfMonth,
                         $lt: lastDayOfMonth
                     }
@@ -158,9 +165,13 @@ const findSalesDataOfMonth = async(year, month) => {
             },
             { $sort: { '_id.createdAt': 1 } }
         ]
+        console.log(pipeline,'sales');
 
-        const orderData = await Orders.aggregate(pipeline)
-        return orderData
+
+        let orderData;
+        
+        
+        return orderData = await Orders.aggregate(pipeline)
 
     } catch (error) {
         throw error

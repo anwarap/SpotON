@@ -1,7 +1,15 @@
+require("dotenv").config();
 const express =require('express')
 const path = require('path');
 const mongoose =require('mongoose');
-mongoose.connect("mongodb://127.0.0.1:27017/spoton")
+const mongoURI = process.env.MONGODB_URI;
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, w: 'majority' })
+    .then(() => {
+        console.log('Connected to MongoDB');
+    })
+    .catch((err) => {
+        console.error('Error during connecting to MongoDB', err);
+    });
 const userRoute = require('./routes/userRoute');
 const adminRoute = require('./routes/adminRoute');
 const {randomUUID} = require('crypto');
@@ -35,7 +43,7 @@ app.use(err404)
 app.use(err500)
 
 
-app.listen(3003,()=>{
-    console.log('server is on http://localhost:3003/login');
+app.listen(3000,()=>{
+    console.log('server is on http://localhost:3000/login');
 })
 

@@ -142,8 +142,12 @@
                         if(status < 4){
                             %>
                             <div class="col-md-2 d-flex justify-content-center align-items-center">
-                                <button type="button" class="btn btn-danger" onclick="showConfirmationModal('<%=orderData._id%>')" >
+                                <!-- <button type="button" class="btn btn-danger" onclick="showConfirmationModal('<%=//orderData._id%>')" >
                                     Cancel Order
+                                </button> -->
+                                <button style="border: none;" data-bs-toggle="modal" data-bs-target="#exampleM"
+                                class="popupBTN  btn btn-danger" data-id="<%= orderData._id  %>">Cancel
+                                
                                 </button>
                             </div>
                             <%  
@@ -214,7 +218,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex">
-                                        <a href="/shop/productOverview/<%= pdt.productId._id %>">
+                                        <a href="">
                                             <div class="mx-3">
                                                 <img src="/assets/images/productImages/<%=pdt.productId.images[0] %>"
                                                     class="img-fluid" alt="" width="120rem">
@@ -251,7 +255,13 @@
                                             <% 
                                             if(pdt.status == 'Order Confirmed' || pdt.status == 'Shipped' || pdt.status == 'Out For Delivery'){
                                                 %>
-                                                <a href="/cancelSinglePdt/<%= orderData._id %>/<%= pdt._id %>?cancelledBy=user" class="btn btn-danger"> Cancel </a>
+                                                <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                                    <button style="border: none;" data-bs-toggle="modal" data-bs-target="#exampleMo"
+                                                    class="popupBTN  btn btn-danger" data-id="<%= orderData._id  %>">Cancel
+                                                    
+                                                    </button>
+                                                </div>
+                                                <!-- <a href="/cancelSinglePdt/<%=// orderData._id %>/<%= //pdt._id %>?cancelledBy=user" class="btn btn-danger"> Cancel </a> -->
                                                 <%  
                                             }else if(pdt.status == 'Delivered'){
                                                 %>
@@ -302,6 +312,36 @@
                             </div>
                         </div>
                         <!-- Confirmation Modal -->
+                        <!-- Modal Start -->
+ <div class="modal fade " id="exampleMo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reason For the Cancel</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form action="/cancelSinglePdt/<%= orderData._id %>/<%= pdt._id %>?cancelledBy=user" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="orderId" id="orderId" value="">
+                    <small for="status">Reason For the Cancel</small>
+                    <select name="status" class="form-control border" id="status">
+                        <option value="Shipped">Order Created My Mistake</option>
+                        <option value="Out For Delivery">Item Price Too high</option>
+                        <option value="Delivered">Found Cheaper Somewhere else</option>
+                    </select>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Return</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal End  -->
                     <%  
                 }
                 %>
@@ -345,48 +385,39 @@
 </div>
 <!-- Modal End  -->
 
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-aria-hidden="true">
-<div class="modal-dialog">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      Are you sure you want to perform this action?
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-        Cancel
-      </button>
-      <a href="#" id="confirmationAction" class="btn btn-danger">Confirm</a>
-    </div>
-  </div>
-</div>
-</div>
-<!-- Confirmation Modal -->
 
-  <!-- Modal -->
-  <!-- <div class="modal fade" id="cancelOrderPopup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <!-- Modal Start -->
+ <div class="modal fade " id="exampleM" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div  id="myInput" class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel"> Are you sure? </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="tru">&times;</span>
-          </button>
-        </div> 
-        <div class="modal-body">
-            <strong> Are you sure? Do you want to Cancel this Order!?</strong>
-            <div class="modal-footer mt-2">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a id="confirmOrderCancellationBTN" href="" class="btn btn-danger">Confirm Cancellation</a>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reason For the Return</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
+            <form action="/cancelOrder/<%= orderData._id %>?cancelledBy=user" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="orderId" id="orderId" value="">
+                    <small for="status">Reason For the Cancel</small>
+                    <select name="status" class="form-control border" id="status">
+                        <option value="Shipped">Order Created My Mistake</option>
+                        <option value="Out For Delivery">Item Price Too high</option>
+                        <option value="Delivered">Found Cheaper Somewhere else</option>
+                    </select>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Cancel</button>
+                </div>
+            </form>
         </div>
-      </div>
     </div>
-  </div> -->
+</div>
+<!-- Modal End  -->
+
+
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
   integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
   crossorigin="anonymous"></script>
@@ -395,15 +426,5 @@ aria-hidden="true">
   crossorigin="anonymous"></script>
   
 
-<script>
-    function showConfirmationModal(orderId) {
-      const modal = new bootstrap.Modal(
-        document.getElementById("confirmationModal")
-      );
-      const confirmationAction = document.getElementById("confirmationAction");
-      confirmationAction.href = `/cancelOrder/${orderId}?cancelledBy=user`;
-      modal.show();
-    }
-  </script>
 <%- include('../partials/script.ejs') %>
 <%- include('../partials/footer.ejs') %>

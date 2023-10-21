@@ -1,6 +1,8 @@
 
 <%- include('../partials/adminAside.ejs') %>
 
+
+
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 
    <%- include('../partials/adminNavbar.ejs') %>
@@ -24,13 +26,13 @@
 
                       <div class="form-outline mb-3 row input-group input-group-outline  ">
                         <div class=" col-md-6 col-12 mb-3">
-                            <label for="code">Coupon Code</label>
+                            <strong for="code">Coupon Code</strong>
                             <input type="text" id="code" class="form-control form-control-md rounded-0"
                               placeholder="Enter Coupon Code" value="<%= couponData.code %>" name="code" required/>
                             <small id="codeErr" class="error"></small>
                         </div>
                         <div class="col-md-6 col-12">
-                          <label for="discountType">Discount Type</label>
+                          <strong for="discountType">Discount Type</strong>
                           <select name="discountType" id="discountType" class="form-control form-control-md " required>
                             <option value="<%= couponData.discountType %>"><%= couponData.discountType %></option>
                             <% 
@@ -49,38 +51,57 @@
                     </div>
                     <div class="form-outline mb-3 row input-group input-group-outline ">
                       <div class="col-md-6 col-12">
-                        <label for="discountAmount">Discount Amount</label>
+                        <strong for="discountAmount">Discount Amount</strong>
                         <input type="number" id="discountAmount" value="<%= couponData.discountAmount %>" class="form-control form-control-md rounded-0" placeholder="Enter Discount" name="discountAmount" required/>
                         <small id="discountAmountErr" class="error"></small>
                       </div>
                       <div class="col-md-6 col-12">
-                          <label for="maxDiscountAmount">Max Discount</label>
+                          <strong for="maxDiscountAmount">Max Discount</strong>
                           <input type="number" id="maxDiscountAmount" value="<%= couponData.maxDiscountAmount %>" class="form-control form-control-md rounded-0" placeholder="Enter Max Discount" name="maxDiscountAmount" required/>
                           <small id="maxDiscountAmountErr" class="error"></small>                                     
                       </div>
                   </div>
                     <div class="form-outline mb-3 row input-group input-group-outline ">
                         <div class=" col-md-6 col-12 mb-3">
-                            <label for="minPurchase">Min Purchase</label>
+                            <strong for="minPurchase">Min Purchase</strong>
                             <input type="number" id="minPurchase"  value="<%= couponData.minPurchase %>"
                                 class="form-control form-control-md rounded-0" placeholder="Enter Min Purchase." name="minPurchase" required/>
                             <small id="minPurchaseErr" class="error"></small>
                         </div>
                         <div class="col-md-6 col-12">
-                            <label for="expiryDate">Expiry Date</label>
+                            <strong for="expiryDate">Expiry Date</strong>
+                            <% 
+                            function formatDate(isoDate) {
+                             // console.log()
+                              if (!isoDate) {
+                                return '';
+                              }
+                              const dateObj = new Date(isoDate);
+                              const day = dateObj.getDate();
+                              const month = dateObj.getMonth() + 1; // Months are zero-based
+                              const year = dateObj.getFullYear();
+                          
+                              return `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year}`;
+                            }
+                            console.log(typeof couponData.expiryDate.toISOString().substr(0, 10))
+                            %>
                             <input type="date" id="expiryDate" class="form-control form-control-md rounded-0"  value="<%= couponData.expiryDate ? couponData.expiryDate.toISOString().substr(0, 10) : '' %>" placeholder="Enter Expiry Date" name="expiryDate" required/>
+                            <input type="date" id="expiryDate" class="form-control form-control-md rounded-0" 
+                                  value="<%= formatDate(couponData.expiryDate) //couponData.expiryDate ? formatDate(couponData.expiryDate) : '' %>" 
+                                  placeholder="Enter Expiry Date" name="expiryDate" required/>
+
                             <small id="expiryDateErr" class="error"></small>                                     
                         </div>
                     </div>
                     <div class="form-outline mb-3 row input-group input-group-outline ">
                         <div class="col-md-6 col-12 mb-3">
-                            <label for="description">Description</label>
+                            <strong for="description">Description</strong>
                             <input type="text" id="description" value="<%= couponData.description %>"
                                 class="form-control rounded-0" placeholder="Enter Coupon Description" name="description" required/>
                             <small id="descriptionErr" class="error"></small>
                         </div>
                         <div class="col-md-6 col-12 mb-3">
-                          <label for="description">Coupon Count</label>
+                          <strong for="description">Coupon Count</strong>
                           <input type="number" id="couponCount"  value="<%= couponData.couponCount %>"
                               class="form-control rounded-0" placeholder="Enter Count (Optional)" name="couponCount"/>
                           <small id="couponCountErr" class="error"></small>
@@ -107,7 +128,7 @@
 </main>
 
 
-<script src="/validations/couponValidation.js"></script>
+<script src="/assets/validations/couponVallidation.js"></script>
 
 <script>
   const discountType = document.getElementById('discountType')
@@ -126,6 +147,41 @@
     }
   })
 </script>
+
+<script type="text/javascript">
+  // document.addEventListener('DOMContentLoaded', function)
+  // function formatDate(isoDate) {
+  //   if (!isoDate) {
+  //     return '';
+  //   }
+  //   const dateObj = new Date(isoDate);
+  //   const day = dateObj.getDate();
+  //   const month = dateObj.getMonth() + 1; // Months are zero-based
+  //   const year = dateObj.getFullYear();
+
+  //   return `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year}`;
+  // }
+</script>
+<!-- <script>
+  // Get a reference to the input field
+  const inputField = document.getElementById('expiryDate');
+
+  // Assuming couponData.expiryDate is the ISO date string (yyyy-mm-dd) you mentioned earlier
+  const couponData = {
+    expiryDate: couponData.expiryDate ? couponData.expiryDate.toISOString().substr(0, 10) : ''
+  };
+
+  // Modify the date format for display
+  if (couponData.expiryDate) {
+    const [year, month, day] = couponData.expiryDate.split('-');
+    const formattedDate = `${day}-${month}-${year}`;
+    inputField.value = formattedDate;
+  }
+</script> -->
+
+
+
+
     
 
 <%- include('../partials/adminScript.ejs') %>

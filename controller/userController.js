@@ -24,7 +24,8 @@ const securePassword =async(password)=>{
         console.log(error.message);
     }
 }
-let getOTP =()=>Math.floor(Math.random()*1000000);
+
+const getOTP = () => Math.floor(Math.random() * 900000) + 100000;
 
 
 
@@ -54,12 +55,13 @@ const loadLogout = async(req,res,next)=>{
 
 const loadLogin =async(req,res,next)=>{
     try {
-        
+        var loginErrorMessage = req.app.locals.specialContext;
+        req.app.locals.specialContext = null;
         if(req.session.user){
             res.redirect('/');
         }else{
 
-            res.render('login')
+            res.render('login',{loginErrorMessage})
         }
     } catch (error) {
         next(error)
@@ -85,6 +87,7 @@ const loadSignup = async(req,res,next)=>{
 
 const postLogin = async(req,res,next)=>{
     try {
+        
        const email =req.body.email;
        const password = req.body.password;
        const userData = await User.findOne({email:email});
@@ -98,15 +101,18 @@ const postLogin = async(req,res,next)=>{
                    req.session.wishCount = userData.wishlist.length
                     res.redirect('/');
               }else{
-                  req.app.locals.message = 'password is not matching';
-                   res.render('login');
+                req.app.locals.specialContext = 'password is not matching';
+                  return res.redirect('/login');
                   
               }
            }else{
-               req.app.locals.message = 'Your account is blocked ';
+            req.app.locals.specialContext = 'Your account is blocked ';
                 res.redirect('/login');
        
            }
+       } else{
+        req.app.locals.specialContext = 'Invalid Email, Please re-check your email'
+        return res.redirect('/login');
        }
     } catch (error) {
         next(error)
@@ -131,19 +137,24 @@ const postLoginForgetPassword = async(req,res,next)=>{
         const userData = await User.findOne({email:email});
         if(userData){
             
-            if(newpassword === confirmpassword){
-    
+             if(newpassword === confirmpassword){
+                
                 req.session.newpassword = newpassword;
                 req.session.confirmpassword = confirmpassword;
-                req.session.userData = userData;
+                req.session.user = userData;
                 var otpErrorMessage = req.app.locals.specialContext;
                 req.app.locals.specialContext = null;
-                const OTP = getOTP();
-                req.session.otp = OTP;
-                req.session.save();
-                sendVerifyMail(userData.fname, userData.lname, userData.email,OTP);
                 res.render('forgetOtpPage',{title:'Resent password OTP Verification',email,otpErrorMessage});
-            }
+                const OTP = getOTP();
+                req.session.OTP = OTP;
+                req.session.save();
+                
+                console.log(userData.fname)
+                console.log(userData.lname)
+                console.log(userData.email)
+                
+                sendVerifyMail(userData.fname, userData.lname, userData.email,OTP);
+             }
         }else{
             req.app.locals.specialContext = 'Email not found';
             return res.redirect('/forgotpassword');
@@ -157,9 +168,10 @@ const postResentverifyOtp  =async(req,res,next)=>{
     try {
    
         const otp = Number(req.body.otp);
-        const userData = req.session.userData;
+        const userData = req.session.user;
+        console.log({userData:userData});
        
-        const OTP = Number(req.session.otp);
+        const OTP = Number(req.session.OTP);
         const newpassword = req.session.newpassword;
         const confirmpassword = req.session.confirmpassword;
         if (OTP === otp) {
@@ -178,13 +190,15 @@ const postResentverifyOtp  =async(req,res,next)=>{
                     }
                     );
                     req.app.locals.specialContext = 'Password changed successfully';
+                    req.session.destroy();
                 
-                return res.redirect('/login');
-            }
-        } else {
-            req.app.locals.specialContext = 'Invalid OTP entered';
-            req.session.destroy();
-            return res.redirect('/login');
+                    return res.redirect('/login');
+                }
+            } else {
+                req.app.locals.specialContext = 'Invalid OTP entered';
+                let otpErrorMessage=req.app.locals.specialContext
+                
+                return res.render('forgetOtpPage',{title:'Resent password OTP Verification',email:userData.email,otpErrorMessage});
         }
         
     } catch (error) {
@@ -222,7 +236,7 @@ const postSignup = async(req,res,next)=>{
     }
 }
 
-const sendVerifyMail = async(fname,lname,email,OTP,next)=>{
+const sendVerifyMail = async(fname,lname,email,OTP)=>{
     try{
         const transporter =nodemailer.createTransport({
             host:'smtp.gmail.com',
@@ -234,20 +248,25 @@ const sendVerifyMail = async(fname,lname,email,OTP,next)=>{
                 pass:process.env.PASS
             }
         });
+        let userName;
+        if(fname===''||lname===''){
+            userName ='user'
+        }else{
+            userName =fname+lname
+        }
 
         const mailOptions = {
             from:'anwaraliap1122@gmail.com',
             to:email,
             subject: "Verify your account",
-            // text:OTP +'give it to me '
-           html: `<h1>Hello, ${fname} ${lname}</h1><h5>Your OTP for verification is,</h5><p>OTP: ${OTP}</p>`
+           html: `<h1>Hello, ${userName}</h1><h5>Your OTP for verification is,</h5><p>OTP: ${OTP}</p>`
 
     }
-    transporter.sendMail(mailOptions,(err,info)=>{
-        if(err){
-            console.log(err);
+    transporter.sendMail(mailOptions,(error,info)=>{
+        if(error){
+            console.log(error)
         }else{
-            console.log("OTP send successfully",info.response);
+            console.log("Email send successfully",info.response);
         }
     })
     } catch(error){
@@ -312,6 +331,22 @@ const getResendOtp = async(req,res,next)=>{
     }
 }
 
+const getForgotResendOTP = async(req,res,next)=>{
+    try {
+        const email = req.query.id;
+        console.log(email+'ee');
+        const resendedOTP = getOTP()
+        req.session.OTP = resendedOTP;
+       console.log( req.session.fname+'lll')
+        sendVerifyMail('', '', email, resendedOTP);
+        res.render('forgetOtpPage', { title: 'Verification Page',email,  message: 'OTP resended successfully,Please check your email' });
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
 
 const getProfile = async(req,res,next)=>{
     try {
@@ -346,9 +381,11 @@ const postEditProfile = async(req,res,next)=>{
 
 const getChangePassword = async(req,res,next)=>{
     try{
+        var changePasswordMessage = req.app.locals.specialContext;
+        req.app.locals.specialContext = null;
         const user = req.session.user;
         const userData = await User.findById({_id:user._id});
-        res.render('changePass',{user:userData,isLoggedIn:true})
+        res.render('changePass',{user:userData,isLoggedIn:true,changePasswordMessage })
     } catch(error){
         next(error) 
     }
@@ -357,22 +394,25 @@ const getChangePassword = async(req,res,next)=>{
 const postChangePassword = async(req,res,next)=>{
     try{
         const user = req.session.user;
-        const {oldpassword,newpassword,confirmpassword} = req.body;
-        if(newpassword !== confirmpassword){
+        const {oldPassword,newPassword,confirmPassword} = req.body;
+        console.log(oldPassword,newPassword,confirmPassword);
+       
+
+        if(newPassword !== confirmPassword){
             return res.redirect('/profile/changePassword');
         }
 
         const userData = await User.findById({_id: user._id});
-        const passwordMatch = await bcrypt.compare(oldpassword,userData.password);
+        const passwordMatch = await bcrypt.compare(oldPassword,userData.password);
 
         if(passwordMatch){
-            const sPassword = await securePassword(newpassword);
+            const sPassword = await securePassword(newPassword);
             await User.findByIdAndUpdate({_id: user._id},{
                 $set:{password: sPassword}
             })
             return res.redirect('/profile')
         }else{
-            req.app.locals.oldpass = 'old password not match'
+           req.app.locals.specialContext = 'Old password not match';
             return res.redirect('/profile/changePassword')
         }
     } catch(error){
@@ -658,8 +698,6 @@ module.exports ={
     postOTPVerify,
     getProfile,
     postEditProfile,
-    getChangePassword,
-    postChangePassword,
     getShoppingCart,
     addToCart,
     removeCartItems,
@@ -673,5 +711,8 @@ module.exports ={
     postResentverifyOtp,
     addMoneyTowallet,
     verifyWalletPayment,
-    getResendOtp
+    getResendOtp,
+    getForgotResendOTP,
+    getChangePassword,
+    postChangePassword
 }

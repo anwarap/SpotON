@@ -46,16 +46,17 @@ const loadDashboard = async(req,res,next)=>{
     try {
         const today = new Date();
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        
         const firstDayOfPreviousMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         const jan1OfTheYear =  new Date(today.getFullYear(), 0, 1);
         
         const totalIncome = await findIncome()
         const thisMonthIncome = await findIncome(firstDayOfMonth)
         const thisYearIncome = await findIncome(jan1OfTheYear)
-
+        
         const totalUsersCount = formatNum(await User.find({}).count()) 
         const usersOntheMonth = formatNum(await User.find({ createdAt:{ $gte: firstDayOfMonth }}).count()) 
-
+        
         const totalSalesCount = formatNum(await countSales()) 
         const salesOnTheYear = formatNum(await countSales(jan1OfTheYear)) 
         const salesOnTheMonth = formatNum(await countSales(firstDayOfMonth)) 
@@ -65,34 +66,37 @@ const loadDashboard = async(req,res,next)=>{
         if(req.query.salesYear){
             salesYear = parseInt(req.query.salesYear)
         }
-
+        
         if(req.query.year){
             salesYear = parseInt(req.query.year)
             displayValue = req.query.year
             xDisplayValue = 'Months'
         }
-
+        
         let monthName = ''
         if(req.query.month){
             salesMonth = 'Weeks',
             monthName = getMonthName(req.query.month)
             displayValue = `${salesYear} - ${monthName}`
         }
-
+        
         const totalYears = await Orders.aggregate([
             { $group: { _id: { createdAt:{ $dateToString: {format: '%Y', date: '$createdAt'}}}}},
             { $sort: {'_id:createdAt': -1 }}
         ]);
-
+        
         const displayYears = [];  //use map if possible
-        // console.log(totalYears);
+        console.log(totalYears,'terte');
         totalYears.forEach((year) => {
             displayYears.push(year._id.createdAt)
         });
+        
+        console.log(req.query.month+'today');
+        console.log(req.query.year+'today');
 
         let orderData;
         if(req.query.year && req.query.month){
-            orderData = await findSalesDataOfMonth( salesYear, req.query.month )
+            orderData = await findSalesDataOfMonth( req.query.year, req.query.month )
         }else if(req.query.year && !req.query.month){
             orderData = await findSalesDataOfYear(salesYear)
         }else{
@@ -120,7 +124,7 @@ const loadDashboard = async(req,res,next)=>{
         }
 
         let totalSales = sales.reduce((acc,curr) => acc += curr , 0)
-
+        console.log(totalSales+'fff')
         // category sales
         let categories = []
         let categorySales = []

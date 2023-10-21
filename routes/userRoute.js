@@ -15,10 +15,13 @@ router.get('/',userController.loadHome);
 
 router.get('/login', isUserLoggedOut,userController.loadLogin);
 router.post('/login', isUserLoggedOut,userController.postLogin);
+
 router.get('/forgotpassword',userController.getLoginForgetPassword);
 router.post('/login-resetpassword',userController.postLoginForgetPassword);
+
 router.post('/resetPassword-verifyotp',userController.postResentverifyOtp);
 router.get('/resend-otp',userController.getResendOtp);
+router.get('/forgot-resend',userController.getForgotResendOTP)
 
 
 router.get('/logout',userController.loadLogout)
@@ -31,6 +34,8 @@ router.post('/otpverify', isUserLoggedOut,userController.postOTPVerify);
 router.get('/shop',productController.getShop);
 router.get('/shop/productOverview/:id',productController.getProductOverview);
 
+router.use(isUserLoggedIn)
+
 router.get('/profile',userController.getProfile);
 router.post('/profile/editProfile',userController.postEditProfile);
 router.get('/profile/addAddress',addressController.getAddAddress);
@@ -41,8 +46,6 @@ router.get('/profile/deleteAddress/:id',addressController.deleteAddress);
 
 router.get('/profile/changePassword',userController.getChangePassword);
 router.post('/profile/changePassword',userController.postChangePassword);
-
-
 
 router.get('/shoppingCart',userController.getShoppingCart);
 router.get('/shop/addToCart/:id',userController.addToCart);
@@ -59,8 +62,8 @@ router.get('/removeWishlist/:productId',userController.removeWishlist);
 
 router.get('/profile/myOrder',orderController.getMyOrder);
 router.get('/viewOrderDetails/:orderId',orderController.getOrderDetails)
-router.get('/cancelOrder/:orderId',orderController.cancelOrder);
-router.get('/cancelSinglePdt/:orderId/:pdtId',orderController.cancelSinglePdt);
+router.post('/cancelOrder/:orderId',orderController.cancelOrder);
+router.post('/cancelSinglePdt/:orderId/:pdtId',orderController.cancelSinglePdt);
 router.post('/returnOrder/:orderId',orderController.returnOrder);
 router.post('/returnSingleprdt/:orderId/:pdtId',orderController.returnSinglePdt);
 router.get('/downloadInvoice/:orderId',orderController.getInvoice);

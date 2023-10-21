@@ -255,11 +255,15 @@ const getShop = async(req,res,next)=>{
         let userData;
         let wishlist;
         let cart;
-        if(req.session.user._id){
-            userData = await User.findById({_id:req.session.user._id});
-            wishlist = userData.wishlist;
-            cart = userData.cart.map(item => item.productId.toString());
-        }
+        
+        // if(req.session.user){
+            if(req.session.user?._id){
+
+                userData = await User.findById({_id:req.session.user._id});
+                wishlist = userData.wishlist;
+                cart = userData.cart.map(item => item.productId.toString());
+            }
+        
         res.render('shop',{
             pdtsData,
             userId:req.session.userId,

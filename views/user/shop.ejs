@@ -117,108 +117,164 @@
                                     <div class="row">
 
                                         <% if(pdtsData && pdtsData.length > 0){
+                                            
                                             for(let i=0;i<pdtsData.length; i++){
+                                              
                                                  %> 
-                                                 
-                                                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
-                                                    <div class="single-product-wrap mb-35">
-                                                        <div class="product-img product-img-zoom mb-15">
-                                                            <a href="/shop/productOverview/<%= pdtsData[i]._id %>">
-                                                                <img src="/assets/images/productImages/<%= pdtsData[i].images[0] %>" alt="">
-                                                                <% 
-                                                                if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
-                                                                    console.log(pdtsData[i].offer.name)
+                                                 <% if (pdtsData[i].quantity ==0) { %>
+                                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                                                        <div class="single-product-wrap mb-35">
+                                                            <div class="product-img product-img-zoom mb-15">
+                                                                <a href="">
+                                                                    <img src="/assets/images/productImages/<%= pdtsData[i].images[0] %>" alt="">
+                                                                    <span class="pro-badge left bg-red">Out of Stock</span>
+                                                                    <% 
+                                                                    if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
+                                                                         
+                                                                        %>
+                                                                        <!-- <span class="label"></span> -->
+                                                                <span class="pro-badge left bg-red"><%= pdtsData[i].offer.name %></span>
+    
+                                                                        <%  
+                                                                    }
                                                                     %>
-                                                                    <!-- <span class="label"></span> -->
-                                                            <span class="pro-badge left bg-red"><%= pdtsData[i].offer.name %></span>
-
-                                                                    <%  
-                                                                }
-                                                                %>
-                                                            </a>
-                                                            <div class="product-action-2 tooltip-style-2">
-                                                                    
-                                                                   
-                                                                <% 
-                                                                if(wishlist.includes(pdtsData[i]._id)){
-                                                                    
-                                                                    %> 
-                                                                    <button title="Wishlist"> <a  href="/removeWishlist/<%= pdtsData[i]._id %>?returnPage=shop"><i class="bi bi-heart-fill text-danger"></i></a></button>
-                                                                    
-                                                                    <% }else{ %>
+                                                                </a>
+                                                                <div class="product-action-2 tooltip-style-2">
+                                                                        
                                                                        
-                                                                        <button title="Wishlist"> <a  href="/addToWishlist/<%= pdtsData[i]._id %>?returnPage=shop"><i class="bi bi-heart"></i></a></button>
-                                                                        <% } %>
-                                                           
-                                                           
-                                                
-                                                            </div>
-                                                        </div>
-                                                        <% 
-                                                            let currPrice;
-                                                            let discount=0;
-                                                            let dis=0;
-                                                            if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
-                                                                discount = pdtsData[i].offer.discount;
-                                                                dis = Math.round((pdtsData[i].price*discount)/100);
-                                                                currPrice = pdtsData[i].price-dis
+                                                                    
                                                                
-                                                            }else{
-                                                                currPrice = pdtsData[i].price;
-                                                            }
-                                                            
-                                                            %>
-                                                        <div class="product-content-wrap-2 text-center">
-
-                                                            <!-- <div class="product-rating-wrap">
-                                                                <div class="product-rating">
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                </div>
-                                                                <span>(5)</span>
-                                                            </div> -->
-                                                            <h3><a href="/shop/productOverview"> <%= pdtsData[i].name %></a></h3>
-                                                            <div class="product-price-2">
-                                                                <span class="new-price">&#8377; <%= currPrice %></span>
-                                                                <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="product-content-wrap-2 product-content-position text-center">
-                                                            <!-- <div class="product-rating-wrap">
-                                                                <div class="product-rating">
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                    <i class="icon_star"></i>
-                                                                </div>
-                                                                <span>(5)</span>
-                                                            </div> -->
-                                                            <h3><a href="product-details.html"><%= pdtsData[i].name %></a></h3>
-                                                            <div class="product-price-2">
-                                                                <span class="new-price">&#8377; <%= currPrice %></span> 
-                                                                <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
-                                                            </div>
-                                                            
-                                                            
-                                                             <div class="d-flex align-content-center">
-                                                
-                                                <div>
+                                                               
                                                     
-                                                    <strong class="ml-3" style="color: green;"><%= discount %>% off</strong>
-                                                </div>
-                                            </div>
-                                                            <form action="/shop/addToCart/<%= pdtsData[i]._id %>">
-                                                                <div class="pro-add-to-cart"  href="#" >
-                                                                    <button title="Add to Cart" >Add To Cart</button>
                                                                 </div>
-                                                            </form>
+                                                            </div>
+                                                            <% 
+                                                                let currPrice;
+                                                                let discount=0;
+                                                                let dis=0;
+                                                                if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
+                                                                    discount = pdtsData[i].offer.discount;
+                                                                    dis = Math.round((pdtsData[i].price*discount)/100);
+                                                                    currPrice = pdtsData[i].price-dis
+                                                                   
+                                                                }else{
+                                                                    currPrice = pdtsData[i].price;
+                                                                }
+                                                                
+                                                                %>
+                                                            <div class="product-content-wrap-2 text-center">
+    
+                                                                <h3><a href="/shop/productOverview"> <%= pdtsData[i].name %></a></h3>
+                                                                <div class="product-price-2">
+                                                                    <span class="new-price">&#8377; <%= currPrice %></span>
+                                                                    <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-content-wrap-2 product-content-position text-center">
+                                                               
+                                                                <h3><a href=""><%= pdtsData[i].name %></a></h3>
+                                                                <div class="product-price-2">
+                                                                    <span class="new-price">&#8377; <%= currPrice %></span> 
+                                                                    <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
+                                                                </div>
+                                                                
+                                                                
+                                                                 <div class="d-flex align-content-center">
+                                                    
+                                                    <div>
+                                                        
+                                                        <strong class="ml-3" style="color: green;"><%= discount %>% off</strong>
+                                                    </div>
+                                                </div>
+                                                                
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                <% } else { %>
+                                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                                                        <div class="single-product-wrap mb-35">
+                                                            <div class="product-img product-img-zoom mb-15">
+                                                                <a href="/shop/productOverview/<%= pdtsData[i]._id %>">
+                                                                    <img src="/assets/images/productImages/<%= pdtsData[i].images[0] %>" alt="">
+                                                                    <% 
+                                                                    if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
+                                                                         
+                                                                        %>
+                                                                        <!-- <span class="label"></span> -->
+                                                                <span class="pro-badge left bg-red"><%= pdtsData[i].offer.name %></span>
+    
+                                                                        <%  
+                                                                    }
+                                                                    %>
+                                                                </a>
+                                                                <div class="product-action-2 tooltip-style-2">
+                                                                        
+                                                                       
+                                                                    <% 
+                                                                    
+                                                                    if(wishlist?.includes(pdtsData[i]._id)){
+                                                                        
+                                                                        %> 
+                                                                        <button title="Wishlist"> <a  href="/removeWishlist/<%= pdtsData[i]._id %>?returnPage=shop"><i class="bi bi-heart-fill text-danger"></i></a></button>
+                                                                        
+                                                                        <% }else{ %>
+                                                                           
+                                                                            <button title="Wishlist"> <a  href="/addToWishlist/<%= pdtsData[i]._id %>?returnPage=shop"><i class="bi bi-heart"></i></a></button>
+                                                                            <% } %>
+                                                               
+                                                               
+                                                    
+                                                                </div>
+                                                            </div>
+                                                            <% 
+                                                                let currPrice;
+                                                                let discount=0;
+                                                                let dis=0;
+                                                                if(pdtsData[i].offer && pdtsData[i].offer.status == 'Available'){
+                                                                    discount = pdtsData[i].offer.discount;
+                                                                    dis = Math.round((pdtsData[i].price*discount)/100);
+                                                                    currPrice = pdtsData[i].price-dis
+                                                                   
+                                                                }else{
+                                                                    currPrice = pdtsData[i].price;
+                                                                }
+                                                                
+                                                                %>
+                                                            <div class="product-content-wrap-2 text-center">
+    
+                                                                <h3><a href="/shop/productOverview"> <%= pdtsData[i].name %></a></h3>
+                                                                <div class="product-price-2">
+                                                                    <span class="new-price">&#8377; <%= currPrice %></span>
+                                                                    <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-content-wrap-2 product-content-position text-center">
+                                                               
+                                                                <h3><a href=""><%= pdtsData[i].name %></a></h3>
+                                                                <div class="product-price-2">
+                                                                    <span class="new-price">&#8377; <%= currPrice %></span> 
+                                                                    <span class="old-price">&#8377; <%= pdtsData[i].price %></span>
+                                                                </div>
+                                                                
+                                                                
+                                                                 <div class="d-flex align-content-center">
+                                                    
+                                                    <div>
+                                                        
+                                                        <strong class="ml-3" style="color: green;"><%= discount %>% off</strong>
                                                     </div>
+                                                </div>
+                                                                <form action="/shop/addToCart/<%= pdtsData[i]._id %>">
+                                                                    <div class="pro-add-to-cart"  href="#" >
+                                                                        <button title="Add to Cart" >Add To Cart</button>
+                                                                    </div>
+                                                                </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                <% } %>
+                                                 
+                                                
 
                                                  <% 
                                             }
@@ -835,7 +891,7 @@
                                         <div class="row">
                                             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
                                                 <div class="product-list-img">
-                                                    <a href="product-details.html">
+                                                    <a href="">
                                                         <img src="assets/images/product/product-13.jpg" alt="Product Style">
                                                     </a>
                                                     <div class="product-list-quickview">
@@ -845,7 +901,7 @@
                                             </div>
                                             <div class="col-xl-8 col-lg-7 col-md-6 col-sm-6">
                                                 <div class="shop-list-content">
-                                                    <h3><a href="product-details.html">Basic Joggin Shorts</a></h3>
+                                                    <h3><a href="">Basic Joggin Shorts</a></h3>
                                                     <div class="pro-list-price">
                                                         <span class="new-price">$35.45</span>
                                                         <span class="old-price">$45.80</span>
@@ -874,7 +930,7 @@
                                         <div class="row">
                                             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
                                                 <div class="product-list-img">
-                                                    <a href="product-details.html">
+                                                    <a href="">
                                                         <img src="assets/images/product/product-14.jpg" alt="Product Style">
                                                     </a>
                                                     <div class="product-list-quickview">
@@ -884,7 +940,7 @@
                                             </div>
                                             <div class="col-xl-8 col-lg-7 col-md-6 col-sm-6">
                                                 <div class="shop-list-content">
-                                                    <h3><a href="product-details.html">Make Thing Happen T-Shirt</a></h3>
+                                                    <h3><a href="">Make Thing Happen T-Shirt</a></h3>
                                                     <div class="pro-list-price">
                                                         <span class="new-price">$35.45</span>
                                                         <span class="old-price">$45.80</span>
@@ -913,7 +969,7 @@
                                         <div class="row">
                                             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
                                                 <div class="product-list-img">
-                                                    <a href="product-details.html">
+                                                    <a href="">
                                                         <img src="assets/images/product/product-15.jpg" alt="Product Style">
                                                     </a>
                                                     <div class="product-list-quickview">
@@ -923,7 +979,7 @@
                                             </div>
                                             <div class="col-xl-8 col-lg-7 col-md-6 col-sm-6">
                                                 <div class="shop-list-content">
-                                                    <h3><a href="product-details.html">Basic White Simple Sneaker</a></h3>
+                                                    <h3><a href="">Basic White Simple Sneaker</a></h3>
                                                     <div class="pro-list-price">
                                                         <span class="new-price">$35.45</span>
                                                         <span class="old-price">$45.80</span>
@@ -952,7 +1008,7 @@
                                         <div class="row">
                                             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
                                                 <div class="product-list-img">
-                                                    <a href="product-details.html">
+                                                    <a href="">
                                                         <img src="assets/images/product/product-16.jpg" alt="Product Style">
                                                     </a>
                                                     <div class="product-list-quickview">
@@ -962,7 +1018,7 @@
                                             </div>
                                             <div class="col-xl-8 col-lg-7 col-md-6 col-sm-6">
                                                 <div class="shop-list-content">
-                                                    <h3><a href="product-details.html">Simple Rounded Sunglasses</a></h3>
+                                                    <h3><a href="">Simple Rounded Sunglasses</a></h3>
                                                     <div class="pro-list-price">
                                                         <span class="new-price">$35.45</span>
                                                         <span class="old-price">$45.80</span>
@@ -991,7 +1047,7 @@
                                         <div class="row">
                                             <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
                                                 <div class="product-list-img">
-                                                    <a href="product-details.html">
+                                                    <a href="">
                                                         <img src="assets/images/product/product-17.jpg" alt="Product Style">
                                                     </a>
                                                     <div class="product-list-quickview">
@@ -1001,7 +1057,7 @@
                                             </div>
                                             <div class="col-xl-8 col-lg-7 col-md-6 col-sm-6">
                                                 <div class="shop-list-content">
-                                                    <h3><a href="product-details.html">Vintage Socks X3</a></h3>
+                                                    <h3><a href="">Vintage Socks X3</a></h3>
                                                     <div class="pro-list-price">
                                                         <span class="new-price">$35.45</span>
                                                         <span class="old-price">$45.80</span>

@@ -56,14 +56,9 @@
                             <div class="tab-content">
                                 <div id="login" class="tab-pane active">
                                     <div class="login-form-container">
-                                        <div class="text-center text-danger">
-                                            <% if(typeof message !=="undefined"){%>
-                                 <p class="" style="    color: red;
-                                 margin-bottom: 5px;">
-                                     <%= message %>
-                                 </p>
-                             <%}%>
-                                     </div>
+                                        <div class="text-center text-success">
+                                            <%=locals.emailMessage?emailMessage:''%> 
+                                        </div>
                                         <div class="login-register-form">
                                             <form action="/otpverify" method="post" id="submit-form">
                                                 <label for="firstname-input" class="form-label"></label>
@@ -79,11 +74,11 @@
                                                     <input type="hidden" name="email" value="<%= email %>" class="form-control">
                                                 </div>
                                                 <br> 
-                                                <div id="countdown-container">
+                                                <!-- <div id="countdown-container">
                                                     <span id="countdown"></span>
-                                                </div>
+                                                </div> -->
                                                 <div class="reset" id="resend-container" style="color: rgb(255, 0, 0);">
-                                                    you didnot get the otp before the time ends click here
+                                                    you didnot get the otp  click here
                                                     <a href="/resend-otp?id=<%= email %>">Resend OTP</a>
                                                 </div>
                                             </form>
@@ -101,31 +96,31 @@
        
        
         <script>
-            var timerReachedZero = false;
-            function startTimer(duration,display){
-                var timer = duration,minutes,seconds;
-                var timerInterval = setInterval(function(){
-                    minutes = parseInt(timer/60,10);
-                    seconds = parseInt(timer %60,10);
-                    minutes = minutes<10?"0" + minutes: minutes;
-                    seconds = seconds<10?"0" + seconds:seconds;
-                    display.textContent = minutes + ":" + seconds;
-                    if(timer <= 0){
-                        display.textContent = "Time's up!";
-                        /**Hide the countdown container **/
-                        document.getElementById("countdown-container").style.display = "none";
-                        /**Display the verify button**/
-                        document.querySelector(".button-verify").disabled= true;
-                        /**Show the resend button**/
-                        document.getElementById("resend-container").style.display = "block";
-                        /**Set the variable to true**/
-                        timerReachedZero = true;
-                        clearInterval(timerInterval);
-                    }else{
-                        timer--;
-                    }
-                },1000);
-            }
+            // var timerReachedZero = false;
+            // function startTimer(duration,display){
+            //     var timer = duration,minutes,seconds;
+            //     var timerInterval = setInterval(function(){
+            //         minutes = parseInt(timer/60,10);
+            //         seconds = parseInt(timer %60,10);
+            //         minutes = minutes<10?"0" + minutes: minutes;
+            //         seconds = seconds<10?"0" + seconds:seconds;
+            //         display.textContent = minutes + ":" + seconds;
+            //         if(timer <= 0){
+            //             display.textContent = "Time's up!";
+            //             /**Hide the countdown container **/
+            //             document.getElementById("countdown-container").style.display = "none";
+            //             /**Display the verify button**/
+            //             document.querySelector(".button-verify").disabled= true;
+            //             /**Show the resend button**/
+            //             document.getElementById("resend-container").style.display = "block";
+            //             /**Set the variable to true**/
+            //             timerReachedZero = true;
+            //             clearInterval(timerInterval);
+            //         }else{
+            //             timer--;
+            //         }
+            //     },1000);
+            // }
             /**Start the countdown when the page load**/
             window.onload = function(){
                 var oneMinute = 60,

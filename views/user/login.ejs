@@ -50,11 +50,7 @@
                                 <div id="login" class="tab-pane active">
                                     <div class="login-form-container">
                                         <div class="text-center text-danger">
-                                               <% if(typeof message !=="undefined"){%>
-                                    <p class="" style="color:red">
-                                        <%= message %>
-                                    </p>
-                                <%}%>
+                                            <%=locals.loginErrorMessage?loginErrorMessage:''%> 
                                         </div>
                                         <div class="login-register-form">
                                             <form action="/login" method="post" id="submit-form">
@@ -66,7 +62,7 @@
                                                 </div>
                                                 <div class="login-toggle-btn">
                                                     Not a member ?   <a href="/signup">Register</a><br>
-                                                    Forget Password? <a href="/forgotpassword">Click Here</a>
+                                                    Forgot Password? <a href="/forgotpassword">Click Here</a>
                                                   
                                                 </div>
                                             </form>
