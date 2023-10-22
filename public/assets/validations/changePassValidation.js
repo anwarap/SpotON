@@ -3,7 +3,7 @@ const oldPasswordError = document.getElementById("oldPasswordErr")
 const newPasswordError = document.getElementById("newPasswordErr")
 const confirmPasswordError = document.getElementById("confirmPasswordErr")
 
-const passwordRegex =  /^\d{5,}$/;
+const passwordRegex = /^\d{5,}$/;
 
 
 function validatePassword() {

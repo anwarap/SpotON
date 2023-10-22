@@ -86,13 +86,13 @@ const loadDashboard = async(req,res,next)=>{
         ]);
         
         const displayYears = [];  //use map if possible
-        console.log(totalYears,'terte');
+        
         totalYears.forEach((year) => {
             displayYears.push(year._id.createdAt)
         });
         
-        console.log(req.query.month+'today');
-        console.log(req.query.year+'today');
+        
+        
 
         let orderData;
         if(req.query.year && req.query.month){
@@ -102,7 +102,7 @@ const loadDashboard = async(req,res,next)=>{
         }else{
             orderData = await findSalesData()
         }
-        console.log(orderData+'oddd');
+        
         let months = []
         let sales = []
 
@@ -124,7 +124,7 @@ const loadDashboard = async(req,res,next)=>{
         }
 
         let totalSales = sales.reduce((acc,curr) => acc += curr , 0)
-        console.log(totalSales+'fff')
+        
         // category sales
         let categories = []
         let categorySales = []
@@ -172,7 +172,7 @@ const loadDashboard = async(req,res,next)=>{
             { $group: { _id: '$paymentMethod', count: { $sum: 1 }}}
         ]);
 
-        // console.log(paymentData);
+        
 
         let paymentMethods = []
         let paymentCount = []
@@ -187,7 +187,7 @@ const loadDashboard = async(req,res,next)=>{
             orderDataToDownload = await Orders.find({ status: 'Delivered', createdAt: { $gte: fromDate, $lte: toDate }}).sort({ createdAt: 1 })
 
         }
-        console.log(sales+'sales');
+        
         res.render('dashboard',{
             page:'Dashboard',
             totalUsersCount, 

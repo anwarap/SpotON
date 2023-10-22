@@ -396,7 +396,7 @@ const postChangePassword = async(req,res,next)=>{
         const user = req.session.user;
         const {oldPassword,newPassword,confirmPassword} = req.body;
         console.log(oldPassword,newPassword,confirmPassword);
-       
+        console.log(oldPassword)
 
         if(newPassword !== confirmPassword){
             return res.redirect('/profile/changePassword');
