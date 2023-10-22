@@ -33,9 +33,9 @@ app.use(nocache());
 app.use('/static',express.static(path.join(__dirname,'public')));
 app.use('/assets',express.static(path.join(__dirname,'public/assets')));
 
+app.use('/admin',adminRoute);
 app.use('/',userRoute);
 
-app.use('/admin',adminRoute);
 
 app.set('views','./views/errors');
 

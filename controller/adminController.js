@@ -10,7 +10,6 @@ const { findIncome, countSales, findSalesData, findSalesDataOfYear, findSalesDat
 
 const loadLogin = async (req,res,next)=>{
     try {
-        
         res.render('login',{title:'Admin Login'});
         
     } catch (error) {

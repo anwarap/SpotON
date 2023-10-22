@@ -5,7 +5,7 @@ const isUserLoggedIn = async(req,res,next)=>{
         if(req.session.user){
             next()
         }else{
-
+            
             return res.redirect('/login');
         }
     } catch(error){
@@ -59,8 +59,10 @@ const isAdminLoggeedIn = async(req,res,next)=>{
 const isAdminLoggedOut = async(req,res,next)=>{
     try {
         if(req.session.admin){
+            
             return res.redirect('/admin/dashboard');
         }
+        
         next();
     } catch (error) {
         next(error);
