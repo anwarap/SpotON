@@ -3,7 +3,7 @@ const Orders = require('../models/orderModels');
 
 const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date()) => {
     try {
-        console.log(startDate, endDate);
+        
 
         const ordersData = await Orders.find(
             {
@@ -24,7 +24,7 @@ const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date(
                 }
             }
         }
-        console.log(totalIncome+'totaslIncome');
+        
         
         return formatNum(totalIncome)
 
@@ -54,7 +54,7 @@ const countSales = async(startDate = new Date('1990-01-01'), endDate = new Date(
             }
         }
 
-        console.log(salesCount+'sales count');
+    
         return salesCount;
 
     } catch (error) {
@@ -87,7 +87,7 @@ const findSalesData = async(startDate = new Date('1990-01-01'), endDate = new Da
 
         const orderData = await Orders.aggregate(pipeline)
         return orderData
-        console.log(orderData+'oddd');
+        
 
     } catch (error) {
         throw error
@@ -131,8 +131,7 @@ const findSalesDataOfMonth = async(year, month) => {
 
         const firstDayOfMonth = new Date(year, month - 1, 1);
         const lastDayOfMonth = new Date(year, month, 0);
-        console.log(firstDayOfMonth+'firsst');
-        console.log(lastDayOfMonth +'last');
+      
         
 
         const pipeline = [
@@ -165,7 +164,7 @@ const findSalesDataOfMonth = async(year, month) => {
             },
             { $sort: { '_id.createdAt': 1 } }
         ]
-        console.log(pipeline,'sales');
+        
 
 
         let orderData;
