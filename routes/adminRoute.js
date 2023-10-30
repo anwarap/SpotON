@@ -5,6 +5,7 @@ const productController = require('../controller/productController');
 const orderController = require('../controller/orderController');
 const coupanController = require('../controller/couponController');
 const offerController = require('../controller/offerController');
+const bannerController = require('../controller/bannerController');
 const express = require('express');
 const upload = require('../config/multer')
 const router =express();
@@ -67,5 +68,11 @@ router.post('/applyOfferToCategory',categoryController.applyOfferToCategory);
 router.post('/removeCategoryOffer/:catId',categoryController.removeCategoryOffer);
 router.post('/applyOfferToProduct',productController.applyOfferToProduct);
 router.post('/removeProductOffer/:productId',productController.removeProductOffer);
+
+router.get('/banners',bannerController.loadBannerList) 
+router.post('/addBanner',upload.single('bannerImage'),bannerController.addBanner)
+router.post('/updateBanner/:bannerId',upload.single('bannerImage'),bannerController.UpdateBanner)
+
+
 
 module.exports=router

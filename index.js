@@ -44,6 +44,6 @@ app.use(err500)
 
 
 app.listen(3000,()=>{
-    console.log('server is on http://localhost:3000/login');
+    console.log('server is on http://localhost:3000/');
 })
 

@@ -2,6 +2,7 @@ const User=require('../models/userModel');
 const Products = require('../models/productModels');
 const Categories = require('../models/categoryModels');
 const Addresses = require('../models/addressModels');
+const Banners = require('../models/bannerModels');
 const bcrypt=require('bcrypt');
 const dotenv = require('dotenv').config();
 const crypto = require('crypto');
@@ -9,6 +10,7 @@ const {updateWallet} = require('../helpers/helpersFunction');
 const referralCode = require('../helpers/generator')
 const nodemailer = require('nodemailer');
 const RazorPay = require('razorpay');
+
 
 
 var instance = new RazorPay({
@@ -32,8 +34,9 @@ const getOTP = () => Math.floor(Math.random() * 900000) + 100000;
 const loadHome =async(req,res,next)=>{
     try {
        
-        const isLoggedIn = Boolean(req.session.user)
-        res.render('home',{ isLoggedIn })
+        const isLoggedIn = Boolean(req.session.user);
+        const banners = await Banners.find({});
+        res.render('home',{ isLoggedIn , banners});
         
     } catch (error) {
         next(error)
