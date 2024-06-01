@@ -1,6 +1,6 @@
 const Admin =require('../models/adminModels');
 const User = require('../models/userModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Orders = require('../models/orderModels');
 const { getMonthName } = require('../helpers/helpersFunction');
 const { findIncome, countSales, findSalesData, findSalesDataOfYear, findSalesDataOfMonth, formatNum } = require('../helpers/orderHelper');
